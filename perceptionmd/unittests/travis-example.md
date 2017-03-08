@@ -1,0 +1,75 @@
+<General>
+random_seed = "time"
+input_label_font_size = 32
+input_field_font_size = 32
+title_font_size = 64
+//background_color = 1,1,1,1
+button_font_color = 0.1,0.1,0.1,1
+button_font_size = 32
+button_size = 32
+logdir = "/tmp/"
+
+<Timeline>
+- CHOICE: "terms and conditions"
+  text        = [term_and_conditions.md]
+  options     = "Agree", "Disagree"
+  IF "Disagree" THEN "thanks but"
+
+- QUESTION: "login"
+  text = [login.md]
+  username   <- STRING : "Name"
+  age        <- INT    : "Age"
+  profession <- STRING : "Profession"
+  experience <- FLOAT  : "Years of experience"
+  comment    <- STRING : "Comment/remark:"
+
+- QUESTION: "thanks"
+  text = [thanks.md]
+  button = "Finish"
+  answer   <- STRING : "Comment or feedback"
+
+- END: "regular_end"
+
+- INFO: "thanks but"
+  text = [thanksbut.md]
+  button = "Finish"
+
+- END: "did_not_agree_end"
+
+
+Content: [term_and_conditions.md] {
+Participation in research
+-------------------------
+
+Your participation in this study is completely voluntary.
+If you don't want to take part in it, or you change your
+mind later, you can withdraw yourself anytime without any consequence,
+and you don't have to explain your decision.
+
+The aim of this research is to improve diagnostic image quality.
+No personal information will be used for this purpose,
+only statistical informations play role.
+
+If you feel uncomfortable with any if the questions, then you
+don't have to answer them. However, in this case, the rest of your
+answers also must be discarded.
+}
+
+Content: [thanks.md] {
+Thank you for your time, that was all.
+
+If you have any final comment or feedback,
+then please this is the time to let us know.
+}
+
+Content: [thanksbut.md] {
+Thank you for your time, but unfortunatelly, if you do not accept the conditions,
+then you can't participate in the study.
+}
+
+Content: [login.md] {
+In order to perform the experiment, we need some information about you.
+
+Would you be kind to fill the fields below?
+}
+

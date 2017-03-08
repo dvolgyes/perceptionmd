@@ -1,0 +1,8 @@
+cython
+pydicom
+matplotlib
+cachetools
+textx
+kivy
+matplotlib
+pycontracts

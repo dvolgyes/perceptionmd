@@ -14,9 +14,7 @@
     BoxLayout:
         size_hint: None,None
         size: img.size[0],1080
-
         orientation: 'vertical'
-
         Image:
             id: img
             size_hint: None,None
@@ -53,14 +51,13 @@
             background_color: 0.5, 0.5, 0.5, 1
         GridLayout:
             id: grid
-            cols: 2
-            spacing: 20
-            padding: 20
+            cols: 3
+            spacing: 30
+            padding: 15
             DICOMVIEW:
                 id: dcm1
             DICOMVIEW:
                 id: dcm2
-
         BoxLayout:
             id: button_line
             font_size: 32
@@ -93,31 +90,11 @@
                 text: "0"
                 font_size: 16
                 id: grid3
+        Image:
+            size: 10,930
+            size_hint: None,None
+            pos: 947,60
 
-<Info>:
-    document: rst
-    button: btn
-    BoxLayout:
-        orientation: 'vertical'
-        spacing: 20
-        canvas:
-            Color:
-                rgba: 0.5, 0.5, 0.5, 1
-            Rectangle:
-                size: self.size
-        RstDocument:
-            id: rst
-            base_font_size: 64
-            background_color: 0.5, 0.5, 0.5, 1
-
-        Button:
-            id: btn
-            text: "Next"
-            font_size: 32
-            size_hint: 1,None
-            size: 32,32
-            on_press:
-                root.on_button_press(args)
 <Choice>:
     document: rst
     layout: button_line
