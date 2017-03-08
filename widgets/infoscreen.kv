@@ -1,0 +1,234 @@
+#:kivy 1.9
+
+<ImageButton@Button>:
+    source: None
+    Image:
+        source: root.source
+        pos: root.pos
+        size: root.size
+
+<DICOMVIEW>
+    dcm_image: img
+    rel: img.pos
+
+    BoxLayout:
+        size_hint: None,None
+        size: img.size[0],1080
+
+        orientation: 'vertical'
+
+        Image:
+            id: img
+            size_hint: None,None
+            size: 930,930
+            canvas:
+                Color:
+                    rgb: 1, 1, 1
+                Rectangle:
+                    size: img.size
+                    pos: self.pos
+                    texture: self.texture
+
+<Pair>:
+    document: rst
+    grid_layout: grid
+    layout: button_line
+    dcmview1: dcm1
+    dcmview2: dcm2
+    hu_width: grid1
+    hu_center: grid2
+    axial_pos: grid3
+
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 10
+        canvas:
+            Color:
+                rgba: 0.5, 0.5, 0.5, 1
+            Rectangle:
+                size: self.size
+        RstDocument:
+            id: rst
+            base_font_size: 64
+            background_color: 0.5, 0.5, 0.5, 1
+        GridLayout:
+            id: grid
+            cols: 2
+            spacing: 20
+            padding: 20
+            DICOMVIEW:
+                id: dcm1
+            DICOMVIEW:
+                id: dcm2
+
+        BoxLayout:
+            id: button_line
+            font_size: 32
+            size_hint: 1,None
+            size: 60,30
+    ScatterLayout:
+        GridLayout:
+            pos: 720,16
+            size: 480,60
+            size_hint: None,None
+            rows: 1
+            Label:
+                text: "HU width:"
+                font_size: 16
+            Label:
+                text: "600"
+                font_size: 16
+                id: grid1
+            Label:
+                text: "HU center:"
+                font_size: 16
+            Label:
+                text: "200"
+                font_size: 16
+                id: grid2
+            Label:
+                text: "Axial:"
+                font_size: 16
+            Label:
+                text: "0"
+                font_size: 16
+                id: grid3
+
+<Info>:
+    document: rst
+    button: btn
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 20
+        canvas:
+            Color:
+                rgba: 0.5, 0.5, 0.5, 1
+            Rectangle:
+                size: self.size
+        RstDocument:
+            id: rst
+            base_font_size: 64
+            background_color: 0.5, 0.5, 0.5, 1
+
+        Button:
+            id: btn
+            text: "Next"
+            font_size: 32
+            size_hint: 1,None
+            size: 32,32
+            on_press:
+                root.on_button_press(args)
+<Choice>:
+    document: rst
+    layout: button_line
+
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 20
+        canvas:
+            Color:
+                rgba: 0.5, 0.5, 0.5, 1
+            Rectangle:
+                size: self.size
+        RstDocument:
+            id: rst
+            base_font_size: 64
+            background_color: 0.5, 0.5, 0.5, 1
+        BoxLayout:
+            id: button_line
+            font_size: 32
+            size_hint: 1,None
+            size: 60,30
+
+<Question>:
+    document: rst
+    layout: grid_layout
+    button: btn
+
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 20
+        canvas:
+            Color:
+                rgba: 0.5, 0.5, 0.5, 1
+            Rectangle:
+                size: self.size
+        RstDocument:
+            id: rst
+            base_font_size: 64
+            background_color: 0.5, 0.5, 0.5, 1
+            size_hint: 1,2
+        GridLayout:
+            id: grid_layout
+            size_hint: 1,1
+            cols: 2
+            font_size: 32
+        Button:
+            id: btn
+            text: "Next"
+            font_size: 32
+            size_hint: 1,None
+            size: 32,32
+            on_press:
+                root.on_button_press(args)
+
+<VGA>:
+    button: btn
+    dcmview: dcm
+    hu_width: grid1
+    hu_center: grid2
+    axial_pos: grid3
+    vga_box: vgaarray
+
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 20
+        canvas:
+            Color:
+                rgba: 0.5, 0.5, 0.5, 1
+            Rectangle:
+                size: self.size
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 20
+            DICOMVIEW:
+                id: dcm1
+            BoxLayout:
+                id: vgaarray
+                orientation: 'vertical'
+
+    ScatterLayout:
+        GridLayout:
+            pos: 720,16
+            size: 480,60
+            size_hint: None,None
+            rows: 1
+            Label:
+                text: "HU width:"
+                font_size: 16
+            Label:
+                text: "600"
+                font_size: 16
+                id: grid1
+            Label:
+                text: "HU center:"
+                font_size: 16
+            Label:
+                text: "200"
+                font_size: 16
+                id: grid2
+            Label:
+                text: "Axial:"
+                font_size: 16
+            Label:
+                text: "0"
+                font_size: 16
+                id: grid3
+        Button:
+            id: btn
+            text: "Next"
+            font_size: 32
+            size_hint: 1,None
+            size: 32,32
+            on_press:
+                root.on_button_press(args)

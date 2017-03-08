@@ -1,0 +1,105 @@
+ExperimentModel:
+  settings=GeneralSettings
+  timeline=Timeline
+  contents*=Content
+;
+
+GeneralSettings:
+    "<General>"
+    keyvalue+=KeyValue
+;
+
+Timeline:
+    "<Timeline>"
+    events+=Events
+;
+
+TIME:
+    FLOAT ("msec"|"sec"|"s"|"ms")
+;
+
+WORD:
+    /\b\S+\b/
+;
+
+Events:
+    CHOICE|VGA|QUESTION|INFO|PAIR|END|GOTO
+;
+
+CHOICE:
+    "-" type="CHOICE" ":" (name=STRING)?
+    keyvalue*=KeyValue
+    branch*= IFTHEN
+;
+
+END:
+    "-" type="END" ":" (name=STRING)?
+    keyvalue*=KeyValue
+;
+
+GOTO:
+    "-" type="GOTO" ":" (name=STRING)?
+    keyvalue*=KeyValue
+;
+QUESTION:
+    "-" type="QUESTION" ":" (name=STRING)?
+    keyvalue*=KeyValue
+    question+=InputField
+;
+
+INFO:
+    "-" type="INFO" ":" (name=STRING)?
+    keyvalue*=KeyValue
+;
+
+PAIR:
+    "-" type="PAIR" ":" (name=STRING)?
+    keyvalue*=KeyValue
+;
+
+
+VGA:
+    "-" type="VGA" ":" (name=STRING)?
+    keyvalue*=KeyValue
+;
+
+InputField:
+    variable = ID
+    "<-"
+    type=INPUTTYPE
+    ":"
+    message=STRING
+;
+
+INPUTTYPE:
+    "INT"|"FLOAT"|"STRING"
+;
+
+GeneralType:
+    BASETYPE|LINK
+;
+
+KeyValue:
+    key=ID "=" value+=GeneralType[","]
+
+;
+
+IFTHEN:
+    ("if"|"IF") condition=STRING ("then"|"THEN") consequence=STRING
+;
+
+LINK:
+ "["
+ /[^\]]+/
+ "]"
+;
+
+Content:
+  'Content:' name=LINK "{"
+  content=/[^}]*/
+  '}'
+;
+
+Comment:
+  /\/\/.*$/|/\/\*(.|\n)*?\*\//  // Non-greedy match of block component content
+;
