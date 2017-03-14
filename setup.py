@@ -21,6 +21,11 @@ setup(
   keywords = ['testing', 'example'],
   classifiers = [],
   license = 'AGPL3',
+  install_requires=[
+  "cachetools",
+  "pydicom",
+  "textx",
+  ],
 )
 
 #  package_dir = {'perceptionmd': 'perceptionmd'},
