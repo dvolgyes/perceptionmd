@@ -1,4 +1,5 @@
 # README file
 
-This will be filled later.
+Install:
+pip install git+https://github.com/dvolgyes/perception-md
 
