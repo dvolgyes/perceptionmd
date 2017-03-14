@@ -25,6 +25,12 @@ setup(
   "cachetools",
   "pydicom",
   "textx",
+  "cython",
+  "matplotlib",
+  "kivy",
+  "pycontracts",
+  "docutils",
+  "pygame",
   ],
 )
 
