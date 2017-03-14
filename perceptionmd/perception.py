@@ -817,10 +817,16 @@ class InfoApp(App):
         d = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
         self.logger('  date = "%s"' % d)
         self.logger('  timestamp = %s' % t)
+        if var['random_seed'] == "time":
+            seed = int(time.time())
+        else:
+            seed = int(var['random_seed'])
+        self.logger('  random_seed = %s' % seed)
+        random.seed(seed)
         self.logger("")
         self.logger("<Timeline>")
         self.logger("")
-        random.seed(123)
+
         return self.sm
 
 def run(*argv):
@@ -831,11 +837,14 @@ def run(*argv):
             print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")
             sys.exit(1)
 
-        if not os.path.exists(argv[1]):
-            print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")
-            print("Note: the file must exist and readable!")
-            sys.exit(1)
-        filename = argv[1]
+        if argv[1] == "example":
+            filename = os.path.join(dir_path,"unittests/travis-example.md")
+        else:
+            if not os.path.exists(argv[1]):
+                print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")
+                print("Note: the file must exist and readable!")
+                sys.exit(1)
+            filename = argv[1]
     else:
         filename = os.path.join(dir_path,"unittests/travis-example.md")
 
@@ -849,7 +858,7 @@ def run(*argv):
     Window.fullscreen = True
 
     defaultvalues = {"font_size": 32, 'logfile': 'results.txt',
-                     "random_seed": "time",
+                     "random_seed": time.time(),
                      "input_label_font_size": 32,
                      "input_field_font_size": 32,
                      "title_font_size": 64,
