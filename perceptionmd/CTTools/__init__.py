@@ -2,5 +2,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 
-__all__ = ["DCM"]
+__all__ = ["DCM","RAW"]
 

@@ -1,13 +1,16 @@
 <General>
-random_seed = "time"
+//full_screen = 1
+//window_width = 1920
+//window_height = 1080
+//random_seed = "time"
+//background_color = 1,1,1,1
 input_label_font_size = 32
 input_field_font_size = 32
 title_font_size = 64
-//background_color = 1,1,1,1
 button_font_color = 0.1,0.1,0.1,1
 button_font_size = 32
 button_size = 32
-logdir = "/tmp/"
+logfile = "/tmp/results.txt"
 
 <Timeline>
 - CHOICE: "terms and conditions"

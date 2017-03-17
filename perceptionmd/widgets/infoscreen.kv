@@ -36,6 +36,7 @@
     hu_width: grid1
     hu_center: grid2
     axial_pos: grid3
+    color_legend: colorimg
 
     BoxLayout:
         orientation: 'vertical'
@@ -73,27 +74,28 @@
                 text: "HU width:"
                 font_size: 16
             Label:
-                text: "600"
+                text: ""
                 font_size: 16
                 id: grid1
             Label:
                 text: "HU center:"
                 font_size: 16
             Label:
-                text: "200"
+                text: ""
                 font_size: 16
                 id: grid2
             Label:
                 text: "Axial:"
                 font_size: 16
             Label:
-                text: "0"
+                text: ""
                 font_size: 16
                 id: grid3
         Image:
+            id: colorimg
             size: 10,930
             size_hint: None,None
-            pos: 947,60
+            pos: 947,55
 
 <Choice>:
     document: rst

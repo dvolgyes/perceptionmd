@@ -12,3 +12,6 @@ kivy.deps.angle
 kivy.deps.gstreamer
 kivy.deps.sdl2
 kivy.deps.glew
+scipy
+numpy
+scandir
