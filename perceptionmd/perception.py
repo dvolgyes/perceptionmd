@@ -138,6 +138,9 @@ class TaskScreen(Screen):
         if self.automated_test:
             Clock.schedule_once(self.move_on,3)
 
+    def on_key_down(self, win, key, scancode, string, modifiers):
+        pass
+
     def clear(self, *args, **kwargs):
         gc.collect()
 
@@ -169,7 +172,7 @@ class DICOMVIEW(BoxLayout):
         self.mainw = None
         self.dcm_image = ObjectProperty(None)
         self.rel = ListProperty([0, 0])
-        self.empty = np.zeros(shape=(512, 512), dtype=np.uint8)
+        self.empty = np.zeros(shape=(512, 512), dtype=np.uint8).ravel()
         self.black = np.ones(shape=(1,512,512),dtype=np.float32)*-32000
         self.array = np.zeros(shape=(1, 512, 512), dtype=np.uint8)
         self.volume = np.zeros(shape=(1, 512, 512), dtype=np.uint8)
@@ -180,6 +183,10 @@ class DICOMVIEW(BoxLayout):
         self.wwidth = 100
         self.initialized = False
         self.colormap = None
+        self.flips =[False,False,False]
+        self.rotate = 0
+        self.axis = 0
+        self.core_volume = self.volume
 
     def clear(self):
         self.volume = None
@@ -193,29 +200,33 @@ class DICOMVIEW(BoxLayout):
         self.set_window(self.wcenter, self.wwidth)
 
     @contract
-    def set_volume(self, volume,axis=0,rotate=0,flip=(False,False,False)):
+    def set_volume(self, volume):
         """
         :type volume: array[NxMxM]
         """
+        self.core_volume = volume
         self.volume = volume
-        if axis>0:
-            self.volume = np.swapaxes(self.volume,0,axis)
-        if rotate>0:
+        self.orient_volume()
+
+    def orient_volume(self):
+        self.volume = self.core_volume
+        if self.axis>0:
+            self.volume = np.swapaxes(self.volume,0,self.axis)
+        if self.rotate>0:
             t = np.swapaxes(self.volume,0,2)
-            t = np.rot90(t,k=rotate)
+            t = np.rot90(t,k=self.rotate)
             self.volume = np.swapaxes(t,0,2)
 
-        if flip[0]:
+        if self.flips[0]:
             self.volume = self.volume[::-1,...]
-        if flip[1]:
+        if self.flips[1]:
             self.volume = self.volume[:,::-1,...]
-        if flip[2]:
+        if self.flips[2]:
             self.volume = self.volume[...,::-1]
 
-        self.z_max = volume.shape[0] - 1
+        self.z_max = self.volume.shape[0] - 1
         self.z_pos = min(self.z_pos,self.z_max)
         self.set_window(self.wcenter, self.wwidth)
-
 
 
     def set_dummy_volume(self):
@@ -246,8 +257,10 @@ class DICOMVIEW(BoxLayout):
         if not self.initialized:
             self.dcm_image.texture = self.img_texture
             self.initialized = True
-            self.dcm_image.texture.blit_buffer(
-                self.empty.tostring(), colorfmt='luminance', bufferfmt='ubyte')
+            self.dcm_image.texture.blit_buffer(self.empty, colorfmt='luminance', bufferfmt='ubyte')
+        #~ if self.dcm_image.texture.size != self.volume.shape[1:]:
+            #~ self.dcm_image.texture = Texture.create(size=self.volume.shape[1:])
+            #~ self.empty = np.zeros(shape = self.dcm_image.texture.size, dtype=np.uint8)
         if show:
             shift = self.wcenter - self.wwidth / 2.0
             array = (self.volume[self.z_pos, :, :] - shift) / (self.wwidth / 255.0)
@@ -257,16 +270,12 @@ class DICOMVIEW(BoxLayout):
                 array = padding(np.clip(array, 0, 255).astype(np.uint8),(512,512) )
 
             if self.colormap is not None:
-                slice_str = (self.colormap(array) *
-                             255).astype(np.uint8).tostring()
-                self.dcm_image.texture.blit_buffer(
-                    slice_str, colorfmt='rgba', bufferfmt='ubyte')
+                slice_str = (self.colormap(array) * 255).astype(np.uint8)
+                self.dcm_image.texture.blit_buffer( slice_str.ravel(), colorfmt='rgba', bufferfmt='ubyte')
             else:
-                self.dcm_image.texture.blit_buffer(
-                    array.tostring(), colorfmt='luminance', bufferfmt='ubyte')
+                self.dcm_image.texture.blit_buffer(array.ravel(), colorfmt='luminance', bufferfmt='ubyte')
         else:
-            self.dcm_image.texture.blit_buffer(
-                (self.empty).tostring(), colorfmt='luminance', bufferfmt='ubyte')
+            self.dcm_image.texture.blit_buffer(self.empty.ravel(), colorfmt='luminance', bufferfmt='ubyte')
 
         #~ self.dcm_image.texture.ask_update()
         self.dcm_image.canvas.ask_update()
@@ -373,6 +382,10 @@ class Pair(TaskScreen):
         self.loglines.append("    results:")
         self.loglines.append(
             "        question, set, left, right, answer button, answer text, selected volume, @time")
+
+        self.plane = {'XY':0,'XZ':1,'YZ':2}.get(self.var.get('plane','XY'),0)
+        self.flips = list(map(bool,(self.var.get('flipped_axes',(0,0,0)))))
+        self.rotate = self.var.get('rotate',0)
         self.next()
         self.update_scene()
         return result
@@ -403,10 +416,21 @@ class Pair(TaskScreen):
             print(self.serieses)
             series1 = self.serieses[selected_set][volID1][0]
             series2 = self.serieses[selected_set][volID2][0]
+            self.dcmview1.rotate = self.rotate
+            self.dcmview1.flips = self.flips
+            self.dcmview1.axis = self.plane
+            self.dcmview2.rotate = self.rotate
+            self.dcmview2.flips = self.flips
+            self.dcmview2.axis = self.plane
+
             self.dcmview1.set_volume(self.volumedirs[selected_set].volume(series1))
             self.dcmview2.set_volume(self.volumedirs[selected_set].volume(series2))
             self.dcmview1.set_window(self.wcenter, self.wwidth)
             self.dcmview2.set_window(self.wcenter, self.wwidth)
+
+            self.dcmview1.orient_volume()
+            self.dcmview2.orient_volume()
+
             self.z_max = self.dcmview1.z_max
             poslist = self.var.get('z_position',list())
             colormap = self.var.get('colormap',"")
@@ -437,15 +461,6 @@ class Pair(TaskScreen):
             Clock.schedule_once(self.display_image)
             self.start_time = time.time()
 
-        #~ def gen_image(self, obj):
-            #~ array = self.array
-            #~ self.img_texture.blit_buffer(
-            #~ array.tostring(), colorfmt='luminance', bufferfmt='ubyte')
-            #~ if self.first:
-            #~ self.dcm_image.texture = self.img_texture
-            #~ self.first = False
-            #~ self.dcm_image.texture = self.img_texture
-            #~ self.canvas.ask_update()
 
     def disable_buttons(self):
         for button in self.choice_idx:
@@ -540,8 +555,51 @@ class Pair(TaskScreen):
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         self.keypresses[keycode[1]] = True
 
+        print(keycode,keycode[1])
+
         if keycode[1] == 'escape':
             keyboard.release()
+
+
+        if keycode[1] == 'f3':
+            self.dcmview1.axis = 0
+            self.dcmview2.axis = 0
+
+        if keycode[1] == 'f4':
+            self.dcmview1.axis = 1
+            self.dcmview2.axis = 1
+
+        if keycode[1] == 'f5':
+            self.dcmview1.axis = 2
+            self.dcmview2.axis = 2
+
+        if keycode[1] == 'f6':
+            self.dcmview1.flips[0] = not self.dcmview1.flips[0]
+            self.dcmview2.flips[0] = self.dcmview1.flips[0]
+
+        if keycode[1] == 'f7':
+            self.dcmview1.flips[1] = not self.dcmview1.flips[1]
+            self.dcmview2.flips[1] = self.dcmview1.flips[1]
+
+        if keycode[1] == 'f8':
+            self.dcmview1.flips[2] = not self.dcmview1.flips[2]
+            self.dcmview2.flips[2] = self.dcmview1.flips[2]
+
+        if keycode[1] == 'f9':
+            self.dcmview1.rotate = (self.dcmview1.rotate+1) % 4
+            self.dcmview2.rotate = self.dcmview1.rotate
+
+        if keycode[1] == 'f10':
+            self.dcmview1.rotate = (self.dcmview1.rotate+3) % 4
+            self.dcmview2.rotate = self.dcmview1.rotate
+
+        if keycode[1] in ['f3','f4','f5','f6','f7','f8','f9','f10']:
+            self.dcmview1.orient_volume()
+            self.dcmview2.orient_volume()
+            self.dcmview1.display_image()
+            self.dcmview2.display_image()
+            return True
+
         return True
 
     def _on_keyboard_up(self, keyboard, keycode):
@@ -580,18 +638,16 @@ class Pair(TaskScreen):
                 self.on_scroll(1)
             if touch.button == 'scrollup':
                 self.on_scroll(-1)
-            if touch.button == self.var['HU_mouse_button']:
+            if touch.button == 'left':
                 for b in self.buttons:
                     if b.on_touch_down(touch):
-                        break
-                #~ else:
-                    #~ touch.grab(self)
-
+                        return True
             if touch.button == self.var['HU_mouse_button']:
                 touch.grab(self)
                 self.touch_pos = touch.pos
                 self.tcenter = self.wcenter
                 self.twidth = self.wwidth
+                return True
 
     def on_touch_move(self, touch):
         if touch.grab_current is self:
@@ -663,7 +719,6 @@ class Pair(TaskScreen):
         self.dcmview1.clear()
         self.dcmview2.clear()
         gc.collect()
-
 
 class VGA(TaskScreen):
 
@@ -825,11 +880,12 @@ class Viewport(ScatterPlane):
 
 class InfoApp(App):
 
-    scancode_dict = {282:'f1',283:'f2',284:'f3',285:'f4',286:'f5',287:'f6',288:'f7',289:'f8',290:'f9',291:'f10',95:'f11',284:'f12',
+    scancode_dict = {67:'f1',68:'f2',69:'f3',70:'f4',71:'f5',72:'f6',73:'f7',74:'f8',75:'f9',76:'f10',95:'f11',96:'f12',
     278:'home',279:'end',277:'ins',127:'del'}
 
     def __init__(self, *args, **kwargs):
         super(InfoApp, self).__init__(*args, **kwargs)
+        self.screen_dict=dict()
 
     def callback(self, *args, **kwargs):
         pass
@@ -866,7 +922,6 @@ class InfoApp(App):
             for s in self.screens:
                 s.canvas.ask_update()
             return True
-
 
     def build(self):
 
@@ -946,6 +1001,7 @@ class InfoApp(App):
         screen = End(name="automatic exit point")
         self.sm.add_widget(screen)
         self.screens.append(screen)
+        self.screen_dict[screen.name] = screen
         for s in self.screens:
             s.log = self.logger
 
