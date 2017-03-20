@@ -371,7 +371,6 @@ class Pair(TaskScreen):
         result = []
         for qidx, question in enumerate(self.texts):
             taskl = []
-            print("serieses",self.serieses)
             for vidx, series in enumerate(self.serieses):
                 for pair in random_combinations(series):
                     task = (qidx, vidx, pair)
@@ -379,7 +378,6 @@ class Pair(TaskScreen):
             random.shuffle(taskl)
             result.extend(taskl)
         self.tasklist = result
-        print("TASKLIST",result)
         self.loglines.append("    results:")
         self.loglines.append(
             "        question, set, left, right, answer button, answer text, selected volume,  @time, axial pos, wwidth, wcenter")
@@ -411,8 +409,6 @@ class Pair(TaskScreen):
     def up(self):
         with self.lock:
             self.next_refresh = time.time() + self.min_refresh
-            print(self.tasklist)
-
             task = self.tasklist[self.current_task_idx]
             (question, selected_set, (volID1, volID2)) = task
             series1 = self.serieses[selected_set][volID1][0]
@@ -447,18 +443,14 @@ class Pair(TaskScreen):
             self.dcmview1.orient_volume()
             self.dcmview2.orient_volume()
 
-            print("prepare for preload0",len(self.tasklist),self.current_task_idx)
             if len(self.tasklist) > 1 + self.current_task_idx:
-                print("prepare for preload")
                 nexttask = self.tasklist[self.current_task_idx + 1]
                 (next_question, next_selected_set,
                  (next_volID1, next_volID2)) = nexttask
                 next_series1 = self.serieses[next_selected_set][next_volID1][0]
                 next_series2 = self.serieses[next_selected_set][next_volID2][0]
-                print("prepare for preload 2")
                 self.volumedirs[next_selected_set].preload_volume(next_series1)
                 self.volumedirs[next_selected_set].preload_volume(next_series2)
-                print("prepare for preload 3")
 
             self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
             self.hu_center.text = str(self.wcenter)
@@ -546,7 +538,6 @@ class Pair(TaskScreen):
         selection = task[2][i]
         self.loglines.append('        {:^8},{:^4},{:^5},{:^6},{:^14},{:^12},{:^16}, {:6.3f}, {:9}, {:^7}, {:^6}'.format(
             task[0], task[1], task[2][0], task[2][1], i, self.choice_label[i], selection, elapsed, self.z_pos, self.wwidth, self.wcenter))
-        print(self.loglines[-1])
         self.winner[selection] = self.winner[selection] + 1
         #~ self.manager.current = self.manager.next()
         # save current selection
@@ -664,8 +655,6 @@ class Pair(TaskScreen):
 
     def on_touch_move(self, touch):
         if touch.grab_current is self:
-            #~ dx,dy = (self.touch_pos[0]-touch.x),(self.touch_pos[1]-touch.y)
-            #~ print(dx,dy)
             dx, dy = touch.dpos
             r = np.sqrt(dx * dx + dy * dy)
             direction = abs(dx) > abs(dy)
