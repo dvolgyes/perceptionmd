@@ -35,7 +35,6 @@ from contracts import contract
 import textx
 import textx.metamodel
 
-import perceptionmd.CTTools as CTTools
 import perceptionmd.volumes.DCM as DCM
 
 from perceptionmd.volumes import VolumeReader
