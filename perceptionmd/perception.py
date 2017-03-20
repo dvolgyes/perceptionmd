@@ -36,9 +36,10 @@ import textx
 import textx.metamodel
 
 import perceptionmd.CTTools as CTTools
-import perceptionmd.CTTools.DCM as DCM
-import perceptionmd.CTTools.RAW as RAW
+import perceptionmd.volumes.DCM as DCM
 
+from perceptionmd.volumes import VolumeReader
+from perceptionmd.volumes import RAW
 
 @contract
 def create_color_map(name, filename=None, arr=None):
@@ -101,6 +102,7 @@ def padding(array,shape):
 class Logger():
 
     def __init__(self, filename):
+        print("Logfile: ",  os.path.abspath(filename))
         self.filename = filename
         with open(self.filename, "a+"):
             pass
@@ -246,9 +248,7 @@ class DICOMVIEW(BoxLayout):
         :type z: int, >=0
         """
         new_z = int(max(0, min(self.z_max, z)))
-        if new_z != self.z_pos:
-            self.z_pos = new_z
-            self.display_image()
+        self.z_pos = new_z
 
     def on_scroll(self, touch, rel):
         return None
@@ -311,15 +311,15 @@ class Pair(TaskScreen):
         self.next_refresh = time.time()
 
     def set_colormap(self,cmap):
-        self.colormap=plt.get_cmap(cmap)
-        self.dcmview1.set_colormap(self.colormap)
-        self.dcmview2.set_colormap(self.colormap)
+        if cmap is not None:
+            self.colormap=plt.get_cmap(cmap)
+            self.dcmview1.set_colormap(self.colormap)
+            self.dcmview2.set_colormap(self.colormap)
 
     def add_dirs(self, dirs, cache):
         for s, d in enumerate(dirs):
             result = re.match(r"(?P<protocol>[a-zA-Z]+)(\((?P<shape>\W.*)\))?::(?P<dirname>.*)",d[1:-1])
             if result:
-                print(result.groups)
                 protocol = result.group('protocol')
                 shape = result.group('shape')
                 if shape is None or len(shape)==0:
@@ -329,7 +329,7 @@ class Pair(TaskScreen):
                 dirname = result.group('dirname')
             else:
                 protocol = "DCM"
-                dirname = d
+                dirname = d[1:-1]
                 shape = 'auto'
 
             if protocol == "RAW":
@@ -344,14 +344,14 @@ class Pair(TaskScreen):
             if protocol == "DCM":
                 self.serieses.append(dict())
                 dicomdir = DCM.DICOMDIR(cache=cache)
-                dicomdir.find_dicoms(d[1:-1])
                 self.loglines.append("    dicom-set %s:" % s)
-                for idx, series in enumerate(dicomdir.series_iterator()):
-                    directory = os.path.dirname(dicomdir._files[series][-1][1])
-                    desc = dicomdir._texts[series]
+                for idx, series in enumerate(dicomdir.volume_iterator(dirname)):
+                    directory = series
+                    desc = dicomdir.UID2dir(series)
+                    #~ directory = os.path.dirname(dicomdir._files[series][-1][1])
+                    #~ desc = dicomdir._texts[series]
                     self.serieses[-1][idx] = (series, directory)
-                    self.loglines.append(
-                        '        volume %s: "%s" ("%s")' % (idx, directory, desc))
+                    self.loglines.append('        volume %s: "%s" ("%s")' % (idx, directory, desc))
                 self.volumedirs.append(dicomdir)
 
     def add_questions(self, questions):
@@ -372,6 +372,7 @@ class Pair(TaskScreen):
         result = []
         for qidx, question in enumerate(self.texts):
             taskl = []
+            print("serieses",self.serieses)
             for vidx, series in enumerate(self.serieses):
                 for pair in random_combinations(series):
                     task = (qidx, vidx, pair)
@@ -379,9 +380,10 @@ class Pair(TaskScreen):
             random.shuffle(taskl)
             result.extend(taskl)
         self.tasklist = result
+        print("TASKLIST",result)
         self.loglines.append("    results:")
         self.loglines.append(
-            "        question, set, left, right, answer button, answer text, selected volume, @time")
+            "        question, set, left, right, answer button, answer text, selected volume,  @time, axial pos, wwidth, wcenter")
 
         self.plane = {'XY':0,'XZ':1,'YZ':2}.get(self.var.get('plane','XY'),0)
         self.flips = list(map(bool,(self.var.get('flipped_axes',(0,0,0)))))
@@ -410,10 +412,10 @@ class Pair(TaskScreen):
     def up(self):
         with self.lock:
             self.next_refresh = time.time() + self.min_refresh
+            print(self.tasklist)
+
             task = self.tasklist[self.current_task_idx]
             (question, selected_set, (volID1, volID2)) = task
-            print(task)
-            print(self.serieses)
             series1 = self.serieses[selected_set][volID1][0]
             series2 = self.serieses[selected_set][volID2][0]
             self.dcmview1.rotate = self.rotate
@@ -425,27 +427,39 @@ class Pair(TaskScreen):
 
             self.dcmview1.set_volume(self.volumedirs[selected_set].volume(series1))
             self.dcmview2.set_volume(self.volumedirs[selected_set].volume(series2))
+
+
+            self.z_max = self.dcmview1.z_max
+            poslist = self.var.get('z_position',list())
+            hu_center_list = self.var.get('hu_center',list())
+            hu_width_list  = self.var.get('hu_width',list())
+            colormap = self.var.get('colormap',None)
+            self.set_colormap(colormap)
+
+            self.z_pos = int(poslist[selected_set] if selected_set <len(poslist) else self.z_max // 2)
+            if selected_set<len(hu_center_list):
+                self.wcenter = int(hu_center_list[selected_set])
+            if selected_set<len(hu_width_list):
+                self.wwidth = int(hu_width_list[selected_set])
+
             self.dcmview1.set_window(self.wcenter, self.wwidth)
             self.dcmview2.set_window(self.wcenter, self.wwidth)
 
             self.dcmview1.orient_volume()
             self.dcmview2.orient_volume()
 
-            self.z_max = self.dcmview1.z_max
-            poslist = self.var.get('z_position',list())
-            colormap = self.var.get('colormap',"")
-            self.set_colormap(colormap)
-
-            self.z_pos = int(poslist[selected_set] if selected_set <len(poslist) else self.z_max // 2)
-
-            if len(self.tasklist) + 1 < self.current_task_idx:
+            print("prepare for preload0",len(self.tasklist),self.current_task_idx)
+            if len(self.tasklist) > 1 + self.current_task_idx:
+                print("prepare for preload")
                 nexttask = self.tasklist[self.current_task_idx + 1]
                 (next_question, next_selected_set,
                  (next_volID1, next_volID2)) = nexttask
                 next_series1 = self.serieses[next_selected_set][next_volID1][0]
                 next_series2 = self.serieses[next_selected_set][next_volID2][0]
-                self.volumedirs[next_selected_set].preload_volumes(next_series1)
-                self.volumedirs[next_selected_set].preload_volumes(next_series2)
+                print("prepare for preload 2")
+                self.volumedirs[next_selected_set].preload_volume(next_series1)
+                self.volumedirs[next_selected_set].preload_volume(next_series2)
+                print("prepare for preload 3")
 
             self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
             self.hu_center.text = str(self.wcenter)
@@ -531,8 +545,9 @@ class Pair(TaskScreen):
         self.total_time += elapsed
         #~ question,set,left,right,answerselectedvolume
         selection = task[2][i]
-        self.loglines.append('        {:^8},{:^4},{:^5},{:^6},{:^14},{:^12},{:^16}, {:.3f}'.format(
-            task[0], task[1], task[2][0], task[2][1], i, self.choice_label[i], selection, elapsed))
+        self.loglines.append('        {:^8},{:^4},{:^5},{:^6},{:^14},{:^12},{:^16}, {:6.3f}, {:9}, {:^7}, {:^6}'.format(
+            task[0], task[1], task[2][0], task[2][1], i, self.choice_label[i], selection, elapsed, self.z_pos, self.wwidth, self.wcenter))
+        print(self.loglines[-1])
         self.winner[selection] = self.winner[selection] + 1
         #~ self.manager.current = self.manager.next()
         # save current selection
@@ -555,7 +570,6 @@ class Pair(TaskScreen):
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         self.keypresses[keycode[1]] = True
 
-        print(keycode,keycode[1])
 
         if keycode[1] == 'escape':
             keyboard.release()
@@ -927,7 +941,7 @@ class InfoApp(App):
 
         self.screens = []
         self.sm = ScreenManager()
-        self.volumecache = cachetools.LRUCache(maxsize=4)
+        self.volumecache = cachetools.LRUCache(maxsize=6)
 
         for idx, event in enumerate(self.events):
             if event.type == "END":

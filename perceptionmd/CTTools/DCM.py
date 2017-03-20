@@ -225,7 +225,7 @@ class DICOMDIR(object):
         self._texts = dict()
         self._sorter = dict()
         self.lock = threading.Lock()
-        self.cache = kwargs.get('cache',RRCache(maxsize=6))
+        self.cache = kwargs.get('cache',LRUCache(maxsize=6))
         self.lock = threading.Lock()
         self.threads = dict()
 
@@ -413,8 +413,8 @@ class DICOMDIR(object):
 
     def preload_volumes(self,UID):
         with self.lock:
-            self.threads.append(caching_thread)
             caching_thread = threading.Thread(target=self.volume,args=(UID,))
+            self.threads.append(caching_thread)
         caching_thread.start()
 
     def cleanup(self):
