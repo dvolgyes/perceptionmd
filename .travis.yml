@@ -8,10 +8,10 @@ matrix:
 
 
 install:
-#    - sudo apt-get update
-#    - sudo apt-get install python-kivy cython graphviz python-dev;
-#    - sudo apt-get -y install xvfb pulseaudio;
-#    - pip install cython
+    - sudo apt-get update
+    - sudo apt-get install python-kivy cython graphviz python-dev;
+    - sudo apt-get -y install xvfb pulseaudio;
+    - pip install cython
 #    - pip install -r requirements.txt;
     - pip install git+https://github.com/dvolgyes/perception-md
 
