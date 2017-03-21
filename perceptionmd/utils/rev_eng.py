@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
-from __future__ import division, print_function, absolute_import
+from __future__ import print_function, division, absolute_import, unicode_literals
 import numpy as np
 import six
 

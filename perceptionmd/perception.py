@@ -1,6 +1,6 @@
 #!/usr/bin/python2
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, absolute_import
+from __future__ import print_function, division, absolute_import, unicode_literals
 
 import sys
 import os
@@ -1122,4 +1122,4 @@ def run(*argv):
     app.run()
 
 if __name__ == '__main__':
-    run(*[unicode(x) for x in sys.argv])
+    run(*[unicode(x,'utf-8') for x in sys.argv])
