@@ -3,7 +3,6 @@
 
 from __future__ import division, print_function, absolute_import
 import numpy as np
-import scipy.fftpack
 import six
 
 if six.PY2:
@@ -25,6 +24,8 @@ def detect_shape(inputdata, dtype=np.float32):
 
     The function returns the data in the detected shape.
     """
+    import scipy.fftpack
+
 
     def divisors(n, trivial=False):
         large = []
