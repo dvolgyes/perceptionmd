@@ -24,7 +24,7 @@ setup(
   packages = ['perceptionmd','perceptionmd/utils','perceptionmd/volumes'],
   scripts=['PerceptionMD.py',],
   data_files = [('perceptionmd', ['LICENSE.txt','README.txt']),
-                ('perceptionmd/lang', ['perceptionmd/perception.tx']),
+                ('perceptionmd/lang', ['perceptionmd/lang/perception.tx']),
                 ('perceptionmd/widgets', ['perceptionmd/widgets/infoscreen.kv']),
                 ('perceptionmd/unittests',['perceptionmd/unittests/travis-example.md'])],
   keywords = ['testing', 'example'],

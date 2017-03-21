@@ -13,7 +13,7 @@ install:
     - sudo apt-get -y install xvfb pulseaudio xclip libmtdev1
     - pip install cython
 #    - pip install -r requirements.txt;
-    - pip install git+https://github.com/dvolgyes/perception-md
+    - pip install git+https://github.com/dvolgyes/perceptionmd
 
 before_script:
     - export DISPLAY=:99.0;
