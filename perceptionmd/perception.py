@@ -15,6 +15,7 @@ import operator
 import threading
 import gc
 import re
+import six
 from collections import defaultdict
 
 from kivy.uix.button import Button
@@ -909,19 +910,19 @@ class InfoApp(App):
 
     def on_key_down(self, win, key, scancode, string, modifiers):
         def key_match(scancode,modifiers,hotkey):
-            parts = list(map(unicode.strip,hotkey.lower().split("+")))
+            parts = list(map(six.text_type.strip,hotkey.lower().split("+")))
             code = parts[-1]
-            if unicode(self.scancode_dict.get(scancode,None)) != code:
+            if six.text_type(self.scancode_dict.get(scancode,None)) != code:
                 return False
             mods = set(parts[:-1])
             if len(mods ^ modifiers) > 0: return False
             return True
 
-        if key_match(scancode,set(modifiers),unicode(self.settings["screenshot_hotkey"])):
+        if key_match(scancode,set(modifiers),six.text_type(self.settings["screenshot_hotkey"])):
             self.screenshot()
             return True
 
-        if key_match(scancode,set(modifiers),unicode(self.settings["fullscreen_hotkey"])):
+        if key_match(scancode,set(modifiers),six.text_type(self.settings["fullscreen_hotkey"])):
             win.toggle_fullscreen()
             for s in self.screens:
                 s.canvas.ask_update()
@@ -1033,6 +1034,7 @@ class InfoApp(App):
 def run(*argv):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     travis = 'TRAVIS' in os.environ
+    print(argv)
     if not travis:
         if len(argv) != 2:
             print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")
@@ -1122,4 +1124,8 @@ def run(*argv):
     app.run()
 
 if __name__ == '__main__':
-    run(*[unicode(x,'utf-8') for x in sys.argv])
+    if six.PY2:
+        run(*[unicode(x,'utf-8') for x in sys.argv])
+    else:
+        run(*sys.argv)
+

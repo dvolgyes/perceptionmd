@@ -65,7 +65,8 @@ class DICOMDIR(VolumeReader.VolumeReader):
                     vol = ds.pixel_array.copy().astype(self.dtype)* slope + intercept
                     zpos.append( (z,vol) )
                 zpos=sorted(zpos,key=lambda x:x[0])
-                volume = np.stack(list(zip(*zpos)[1]))
+                _,volumes = zip(*zpos)
+                volume = np.stack(volumes)
             self.cache[UID] = volume
         return at_least_3d(volume)
 
