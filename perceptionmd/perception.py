@@ -308,6 +308,7 @@ class Pair(TaskScreen):
         self.initialized_cmap = False
         self.colormap = None
         self.next_refresh = time.time()
+        self.preselected_zpos = defaultdict(int)
 
     def set_colormap(self,cmap):
         if cmap is not None:
@@ -431,7 +432,11 @@ class Pair(TaskScreen):
             colormap = self.var.get('colormap',None)
             self.set_colormap(colormap)
 
-            self.z_pos = int(poslist[selected_set] if selected_set <len(poslist) else self.z_max // 2)
+            if selected_set in self.preselected_zpos:
+                self.z_pos = self.preselected_zpos[selected_set]
+            else:
+                self.z_pos = int(poslist[selected_set] if selected_set <len(poslist) else self.z_max // 2)
+
             if selected_set<len(hu_center_list):
                 self.wcenter = int(hu_center_list[selected_set])
             if selected_set<len(hu_width_list):
@@ -532,6 +537,8 @@ class Pair(TaskScreen):
         now = time.time()
         i = self.choice_idx[button]
         task = self.tasklist[self.current_task_idx]
+        (_, selected_set, (_, _)) = task
+
         elapsed = (now - self.start_time)
         self.total_time += elapsed
         #~ question,set,left,right,answerselectedvolume
@@ -539,6 +546,7 @@ class Pair(TaskScreen):
         self.loglines.append('        {:^8},{:^4},{:^5},{:^6},{:^14},{:^12},{:^16}, {:6.3f}, {:9}, {:^7}, {:^6}'.format(
             task[0], task[1], task[2][0], task[2][1], i, self.choice_label[i], selection, elapsed, self.z_pos, self.wwidth, self.wcenter))
         self.winner[selection] = self.winner[selection] + 1
+        self.preselected_zpos[selected_set] = self.z_pos
         #~ self.manager.current = self.manager.next()
         # save current selection
         if not self.next():
