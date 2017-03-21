@@ -1,5 +1,5 @@
 #!/usr/bin/python2
-from __future__ import print_function, division, absolute_import
+from __future__ import print_function, division, absolute_import, unicode_literals
 
 import sys
 import os
@@ -31,7 +31,6 @@ from kivy.clock import Clock
 from kivy.uix.scatter import ScatterPlane
 from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
-from contracts import contract
 import textx
 import textx.metamodel
 
@@ -40,15 +39,7 @@ import perceptionmd.volumes.DCM as DCM
 from perceptionmd.volumes import VolumeReader
 from perceptionmd.volumes import RAW
 
-@contract
 def create_color_map(name, filename=None, arr=None):
-    """
-    :type name: string
-    :type filename: string|None
-    :type arr: array[Nx3](uint8)
-    ), N>1
-    :rtype LinearSegmentedColormap
-    """
     if filename is not None:
         array = np.clip(np.fromfile(
             filename, sep=" ").reshape(-1, 3), 0, 255) / 255.0
@@ -63,24 +54,13 @@ def gc_collect(func):
     return func_wrapper
 
 
-@contract
 def KV(kvs, key):
-    """
-    :type kvs: list|tuple
-    :type key: string
-    """
     for kv in kvs:
         if kv.key == key:
             return kv.value
     return None
 
-
-@contract
 def random_combinations(lst, count=2):
-    """
-    :type lst: list|tuple|dict
-    :rtype list
-    """
     result = []
     comb = list(itertools.combinations(lst, count))
     random.shuffle(comb)
@@ -200,11 +180,7 @@ class DICOMVIEW(BoxLayout):
         self.colormap = cmap
         self.set_window(self.wcenter, self.wwidth)
 
-    @contract
     def set_volume(self, volume):
-        """
-        :type volume: array[NxMxM]
-        """
         self.core_volume = volume
         self.volume = volume
         self.orient_volume()
