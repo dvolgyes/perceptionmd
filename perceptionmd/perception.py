@@ -300,8 +300,8 @@ class Pair(TaskScreen):
         self.black = None
         self.z_pos = 0
         self.z_max = 0
-        self.wwidth = 600
-        self.wcenter = 200
+        self.wwidth = 400
+        self.wcenter = 20
         self.keypresses = defaultdict(lambda: False)
         self.min_refresh = 0.5
         self.winner = defaultdict(int)
@@ -657,7 +657,7 @@ class Pair(TaskScreen):
 
 
 
-            if touch.button in (self.var['HU_mouse_button'], self.var['mouse_window_scroll_button']):
+            if touch.button in (self.var['HU_mouse_button'],self.var['HU_mouse_button2'], self.var['mouse_window_scroll_button']):
                 touch.grab(self)
                 self.tzpos = self.z_pos
                 self.touch_pos = touch.pos
@@ -667,7 +667,7 @@ class Pair(TaskScreen):
 
     def on_touch_move(self, touch):
         if touch.grab_current is self:
-            if touch.button == self.var['HU_mouse_button']:
+            if touch.button in (self.var['HU_mouse_button'],self.var['HU_mouse_button2']):
                 dx, dy = touch.dpos
                 r = np.sqrt(dx * dx + dy * dy)
                 direction = abs(dx) > abs(dy)
@@ -1094,7 +1094,18 @@ def run(*argv):
                      "window_height": 1080,
                      "window_width": 1920,
                      "screenshot_hotkey": "shift+f12",
-                     "fullscreen_hotkey": "f11"}
+                     "fullscreen_hotkey": "f11",
+                     "HU_mouse_button": 'middle',
+                     "HU_mouse_button2": 'left',
+                     "mouse_window_scroll_button": 'right',
+                     "flipped_axes": [0,0,0],
+                     "plane": "XY",
+                     "rotate": 0,
+                     "z_position": [],
+                     "hu_center": [],
+                     "hu_width": [],
+                     "colormap": None,
+                     }
 
     contents = dict()
     settings = dict()
