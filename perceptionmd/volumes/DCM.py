@@ -35,12 +35,10 @@ class DICOMDIR(VolumeReader.VolumeReader):
                 except:
                     continue
         for volname in sorted(self.filename_cache.keys()):
-            print("yielded ",volname)
             yield volname
 
 
     def volume(self, UID):
-        print("volume enter",UID)
         with self.lock:
             if UID in self.cache:
                 return self.cache[UID]
@@ -68,6 +66,5 @@ class DICOMDIR(VolumeReader.VolumeReader):
                 zpos=sorted(zpos,key=lambda x:x[0])
                 volume = np.stack(list(zip(*zpos)[1]))
             self.cache[UID] = volume
-        print(volume.shape)
         return at_least_3d(volume)
 

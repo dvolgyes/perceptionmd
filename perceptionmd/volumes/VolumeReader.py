@@ -42,7 +42,6 @@ class VolumeReader(object):
         self.cache = cache
 
     def preload_volume(self, UID):
-        print("background thread started")
         with self.lock:
             caching_thread = threading.Thread(target=self.volume, args=(UID,))
             self.threads.append(caching_thread)

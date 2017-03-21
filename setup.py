@@ -8,7 +8,7 @@ for scheme in INSTALL_SCHEMES.values():
 
 system = platform.system()
 
-reqs = ['cachetools','pydicom','textx','matplotlib','kivy','pycontracts','docutils','pygame','numpy','scipy','scandir']
+reqs = ['cachetools','pydicom','textx','matplotlib','kivy','pycontracts','docutils','pygame','numpy','scipy','scandir','wget','six']
 
 if system != 'Linux':
     reqs+=['kivy.deps.angle','kivy.deps.gstreamer','kivy.deps.sdl2','kivy.deps.glew']
@@ -16,7 +16,7 @@ if system != 'Linux':
 setup(
   include_data_files = True,
   name = 'perceptionmd',
-  version = '0.1.3',
+  version = '0.1.4',
   description = 'Human observer tests for radiology',
   author = 'David Volgyes',
   author_email = 'david.volgyes@ieee.org',

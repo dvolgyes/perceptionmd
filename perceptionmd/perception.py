@@ -646,8 +646,12 @@ class Pair(TaskScreen):
                 for b in self.buttons:
                     if b.on_touch_down(touch):
                         return True
-            if touch.button == self.var['HU_mouse_button']:
+
+
+
+            if touch.button in (self.var['HU_mouse_button'], self.var['mouse_window_scroll_button']):
                 touch.grab(self)
+                self.tzpos = self.z_pos
                 self.touch_pos = touch.pos
                 self.tcenter = self.wcenter
                 self.twidth = self.wwidth
@@ -655,25 +659,38 @@ class Pair(TaskScreen):
 
     def on_touch_move(self, touch):
         if touch.grab_current is self:
-            dx, dy = touch.dpos
-            r = np.sqrt(dx * dx + dy * dy)
-            direction = abs(dx) > abs(dy)
+            if touch.button == self.var['HU_mouse_button']:
+                dx, dy = touch.dpos
+                r = np.sqrt(dx * dx + dy * dy)
+                direction = abs(dx) > abs(dy)
+                angle = int(math.atan2(dy, dx) / math.pi * 4) + 4
+                speed = 4 if self.keypresses[
+                    'ctrl'] or self.keypresses['rctrl'] else 1
 
-            angle = int(math.atan2(dy, dx) / math.pi * 4) + 4
-            speed = 4 if self.keypresses[
-                'ctrl'] or self.keypresses['rctrl'] else 1
-
-            if (angle % 2 == 0) :
-                if direction == (int(self.var['HU_center_vertical_mouse'])==0):
-                    delta = int(dx) * speed
-                    self.wwidth = max(10, self.wwidth + delta)
-                else:
-                    delta = int(dy) * speed
-                    self.wcenter = self.wcenter+delta
-            self.set_window()
-            self.display_image()
-        else:
-            pass
+                if (angle % 2 == 0) :
+                    if direction == (int(self.var['HU_center_vertical_mouse'])==0):
+                        delta = int(dx) * speed
+                        self.wwidth = max(10, self.wwidth + delta)
+                    else:
+                        delta = int(dy) * speed
+                        self.wcenter = self.wcenter+delta
+                self.set_window()
+                self.display_image()
+            elif touch.button == self.var['mouse_window_scroll_button']:
+                dx, dy = touch.dpos
+                r = np.sqrt(dx * dx + dy * dy)
+                direction = abs(dx) > abs(dy)
+                angle = int(math.atan2(dy, dx) / math.pi * 4) + 4
+                if (angle % 2 == 0) :
+                    dz = (touch.pos[1] - self.touch_pos[1])
+                    self.z_pos = min(self.z_max, max(
+                        0, self.tzpos + dz * 1.0))
+                    self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
+                    self.dcmview1.set_z(self.z_pos)
+                    self.dcmview2.set_z(self.z_pos)
+                    self.display_image()
+            else:
+                pass
 
     def set_window(self):
         self.wcenter = int(self.wcenter)
