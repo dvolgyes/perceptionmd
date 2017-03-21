@@ -1,5 +1,6 @@
 #!/usr/bin/python2
-from __future__ import print_function, division, absolute_import, unicode_literals
+# -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import
 
 import sys
 import os
@@ -1087,8 +1088,9 @@ def run(*argv):
     settings = dict()
 
     print("dirpath: ",dir_path)
-    print(list(os.walk(dir_path)))
-    explang_mm = textx.metamodel.metamodel_from_file(os.path.join(dir_path,'perception.tx'))
+    langfile = os.path.join(dir_path,'perception.tx')
+    print(langfile,os.path.exists(langfile))
+    explang_mm = textx.metamodel.metamodel_from_file(langfile)
     model = explang_mm.model_from_file(filename)
 
     settings.update(defaultvalues)

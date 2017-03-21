@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-from __future__ import print_function, division, absolute_import, unicode_literals
+# -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import
 import perceptionmd
 import sys
 perceptionmd.run(*sys.argv)
