@@ -8,7 +8,7 @@ for scheme in INSTALL_SCHEMES.values():
 
 system = platform.system()
 
-reqs = ['cachetools','pydicom','textx','matplotlib','kivy','pycontracts','docutils','pygame','numpy','scipy','wget','six']
+reqs = ['cachetools','pydicom','textx','matplotlib','kivy','pycontracts','docutils','pygame','numpy','wget','six']
 
 if system != 'Linux':
     reqs+=['kivy.deps.angle','kivy.deps.gstreamer','kivy.deps.sdl2','kivy.deps.glew']
