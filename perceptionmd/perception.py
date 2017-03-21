@@ -1086,6 +1086,8 @@ def run(*argv):
     contents = dict()
     settings = dict()
 
+    print("dirpath: ",dir_path)
+    print(list(os.walk(dir_path)))
     explang_mm = textx.metamodel.metamodel_from_file(os.path.join(dir_path,'perception.tx'))
     model = explang_mm.model_from_file(filename)
 
