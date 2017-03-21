@@ -25,7 +25,7 @@ setup(
   scripts=['PerceptionMD.py',],
   data_files = [('perceptionmd', ['LICENSE.txt','README.txt','perceptionmd/perception.tx']),
                 ('perceptionmd/widgets', ['perceptionmd/widgets/infoscreen.kv']),
-                ('perceptionmd/unittests/',['perceptionmd/unittests/travis-example.md'])],
+                ('perceptionmd/unittests',['perceptionmd/unittests/travis-example.md'])],
   keywords = ['testing', 'example'],
   classifiers = [],
   license = 'AGPL3',
