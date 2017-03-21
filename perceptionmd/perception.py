@@ -1087,14 +1087,9 @@ def run(*argv):
     contents = dict()
     settings = dict()
 
-    print("dirpath: ",dir_path)
-    langfile = os.path.join(dir_path,'perception.tx')
-    print(langfile,os.path.exists(langfile))
+    langfile = os.path.join(dir_path,'lang','perception.tx')
     explang_mm = textx.metamodel.metamodel_from_file(langfile)
-    print("metamodel loaded")
-    print("modelfile", filename)
     model = explang_mm.model_from_file(filename)
-    print("model loaded")
 
     settings.update(defaultvalues)
     for content in model.contents:
