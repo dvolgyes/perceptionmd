@@ -823,7 +823,7 @@ class Choice(TaskScreen):
         self.log("")
 
     def move_on(self,*args,**kwargs):
-        self.on_button(random.choice(self.buttons.keys()))
+        self.on_button(random.choice(list(self.buttons.keys())))
 
     def on_button(self, button):
         self.choice, key = self.buttons[button]
@@ -1034,7 +1034,6 @@ class InfoApp(App):
 def run(*argv):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     travis = 'TRAVIS' in os.environ
-    print(argv)
     if not travis:
         if len(argv) != 2:
             print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")
