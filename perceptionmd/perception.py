@@ -1094,7 +1094,7 @@ def run(*argv):
     print("metamodel loaded")
     print("modelfile", filename)
     model = explang_mm.model_from_file(filename)
-    print("model loaded"
+    print("model loaded")
 
     settings.update(defaultvalues)
     for content in model.contents:
