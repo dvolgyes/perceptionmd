@@ -1122,4 +1122,4 @@ def run(*argv):
     app.run()
 
 if __name__ == '__main__':
-    run(sys.argv)
+    run(*[unicode(x) for x in sys.argv])

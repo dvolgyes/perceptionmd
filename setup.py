@@ -11,7 +11,7 @@ system = platform.system()
 reqs = ['cachetools','pydicom','textx','matplotlib','kivy','pycontracts','docutils','pygame','numpy','wget','six']
 
 if system != 'Linux':
-    reqs+=['kivy.deps.angle','kivy.deps.gstreamer','kivy.deps.sdl2','kivy.deps.glew']
+    reqs=['kivy.deps.angle','kivy.deps.gstreamer','kivy.deps.sdl2','kivy.deps.glew'] + reqs
 
 setup(
   include_data_files = True,
@@ -23,7 +23,8 @@ setup(
   url = 'https://github.com/dvolgyes/perceptionmd',
   packages = ['perceptionmd','perceptionmd/utils','perceptionmd/volumes'],
   scripts=['PerceptionMD.py',],
-  data_files = [('perceptionmd', ['LICENSE.txt','README.txt','perceptionmd/perception.tx']),
+  data_files = [('perceptionmd', ['LICENSE.txt','README.txt'),
+                ('perceptionmd/lang', ['perceptionmd/perception.tx']),
                 ('perceptionmd/widgets', ['perceptionmd/widgets/infoscreen.kv']),
                 ('perceptionmd/unittests',['perceptionmd/unittests/travis-example.md'])],
   keywords = ['testing', 'example'],
