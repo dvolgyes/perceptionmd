@@ -14,5 +14,7 @@ gc_ctx_before = utils.gc_ctx_before
 detect_shape = rev_eng.detect_shape
 detect_filetype = rev_eng.detect_filetype
 scandir = utils.scandir
+random_combinations = utils.random_combinations
+padding = utils.padding
 __all__ = ["utils","rev_eng"]
 

@@ -6,6 +6,26 @@ import gc as garbage_collector
 from contextlib import contextmanager
 from functools import wraps
 import importlib
+import itertools
+import random
+import numpy as np
+
+def random_combinations(lst, count=2):
+    result = []
+    comb = list(itertools.combinations(lst, count))
+    random.shuffle(comb)
+    for c in comb:
+        v = c if random.randint(0, 1) == 0 else c[::-1]
+        result.append(v)
+    return result
+
+def padding(array,shape):
+    result = []
+    for i in range(len(shape)):
+        d = shape[i] - array.shape[i]
+        result.append( (d//2,d-d//2) )
+    return np.pad(array,tuple(result),mode='constant')
+
 
 def test_module(name):
     """

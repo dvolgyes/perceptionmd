@@ -31,54 +31,21 @@ from kivy.config import Config
 from kivy.graphics.texture import Texture
 from kivy.clock import Clock
 from kivy.uix.scatter import ScatterPlane
-from matplotlib.colors import LinearSegmentedColormap
-import matplotlib.pyplot as plt
 import textx
 import textx.metamodel
 
 import perceptionmd.volumes.DCM as DCM
+from perceptionmd.volumes import VolumeReader,RAW
+import perceptionmd.volumes.colors as colors
 
-from perceptionmd.volumes import VolumeReader
-from perceptionmd.volumes import RAW
-
-def create_color_map(name, filename=None, arr=None):
-    if filename is not None:
-        array = np.clip(np.fromfile(
-            filename, sep=" ").reshape(-1, 3), 0, 255) / 255.0
-    return LinearSegmentedColormap.from_list(name, array.tolist(), array.shape[0])
-
-
-def gc_collect(func):
-    def func_wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-        gc.collect()
-        return result
-    return func_wrapper
-
+from perceptionmd.defaults import default_settings
+import perceptionmd.utils as utils
 
 def KV(kvs, key):
     for kv in kvs:
         if kv.key == key:
             return kv.value
     return None
-
-def random_combinations(lst, count=2):
-    result = []
-    comb = list(itertools.combinations(lst, count))
-    random.shuffle(comb)
-    for c in comb:
-        v = c if random.randint(0, 1) == 0 else c[::-1]
-        result.append(v)
-    return result
-
-def padding(array,shape):
-    result = []
-    for i in range(len(shape)):
-        d = shape[i] - array.shape[i]
-        result.append( (d//2,d-d//2) )
-    return np.pad(array,tuple(result),mode='constant')
-
-
 
 class Logger():
 
@@ -242,9 +209,9 @@ class DICOMVIEW(BoxLayout):
             shift = self.wcenter - self.wwidth / 2.0
             array = (self.volume[self.z_pos, :, :] - shift) / (self.wwidth / 255.0)
             if self.dcm_image.texture.size!=array.shape:
-                array = padding(np.clip(array, 0, 255).astype(np.uint8),(512,512) )
+                array = utils.padding(np.clip(array, 0, 255).astype(np.uint8),(512,512) )
             else:
-                array = padding(np.clip(array, 0, 255).astype(np.uint8),(512,512) )
+                array = utils.padding(np.clip(array, 0, 255).astype(np.uint8),(512,512) )
 
             if self.colormap is not None:
                 slice_str = (self.colormap(array) * 255).astype(np.uint8)
@@ -289,10 +256,11 @@ class Pair(TaskScreen):
         self.preselected_zpos = defaultdict(int)
 
     def set_colormap(self,cmap):
-        if cmap is not None:
-            self.colormap=plt.get_cmap(cmap)
-            self.dcmview1.set_colormap(self.colormap)
-            self.dcmview2.set_colormap(self.colormap)
+        if cmap is None:
+            return
+        self.colormap=colors.create_colormap(self.name+"_colormap",cmap)
+        self.dcmview1.set_colormap(self.colormap)
+        self.dcmview2.set_colormap(self.colormap)
 
     def add_dirs(self, dirs, cache):
         for s, d in enumerate(dirs):
@@ -312,7 +280,7 @@ class Pair(TaskScreen):
 
             if protocol == "RAW":
                 self.serieses.append(dict())
-                rawdir = RAW.RAWDIR(dirname,dtype=np.dtype(self.var.get('raw_type','float32')))
+                rawdir = RAW.RAWDIR(dirname,dtype=np.dtype(self.var['raw_type']))
                 for idx,fn in enumerate(rawdir.volume_iterator()):
                     directory,filename = os.path.split(fn)
                     self.serieses[-1][idx] = (fn, directory)
@@ -351,7 +319,7 @@ class Pair(TaskScreen):
         for qidx, question in enumerate(self.texts):
             taskl = []
             for vidx, series in enumerate(self.serieses):
-                for pair in random_combinations(series):
+                for pair in utils.random_combinations(series):
                     task = (qidx, vidx, pair)
                     taskl.append(task)
             random.shuffle(taskl)
@@ -361,9 +329,9 @@ class Pair(TaskScreen):
         self.loglines.append(
             "        question, set, left, right, answer button, answer text, selected volume,  @time, axial pos, wwidth, wcenter")
 
-        self.plane = {'XY':0,'XZ':1,'YZ':2}.get(self.var.get('plane','XY'),0)
-        self.flips = list(map(bool,(self.var.get('flipped_axes',(0,0,0)))))
-        self.rotate = self.var.get('rotate',0)
+        self.plane = {'XY':0,'XZ':1,'YZ':2}[self.var['plane']]
+        self.flips = list(map(bool,self.var['flipped_axes']))
+        self.rotate = self.var['rotate']
         self.next()
         self.update_scene()
         return result
@@ -402,13 +370,11 @@ class Pair(TaskScreen):
             self.dcmview1.set_volume(self.volumedirs[selected_set].volume(series1))
             self.dcmview2.set_volume(self.volumedirs[selected_set].volume(series2))
 
-
-            self.z_max = self.dcmview1.z_max
-            poslist = self.var.get('z_position',list())
-            hu_center_list = self.var.get('hu_center',list())
-            hu_width_list  = self.var.get('hu_width',list())
-            colormap = self.var.get('colormap',None)
-            self.set_colormap(colormap)
+            self.z_max = min(self.dcmview1.z_max,self.dcmview2.z_max)
+            poslist = self.var['z_position']
+            hu_center_list = self.var['hu_center']
+            hu_width_list  = self.var['hu_width']
+            self.set_colormap(self.var['colormap'])
 
             if selected_set in self.preselected_zpos:
                 self.z_pos = self.preselected_zpos[selected_set]
@@ -422,7 +388,6 @@ class Pair(TaskScreen):
 
             self.dcmview1.set_window(self.wcenter, self.wwidth)
             self.dcmview2.set_window(self.wcenter, self.wwidth)
-
             self.dcmview1.orient_volume()
             self.dcmview2.orient_volume()
 
@@ -436,8 +401,8 @@ class Pair(TaskScreen):
                 self.volumedirs[next_selected_set].preload_volume(next_series2)
 
             self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
-            self.hu_center.text = str(self.wcenter)
-            self.hu_width.text = str(self.wwidth)
+            self.hu_center.text = str(int(self.wcenter))
+            self.hu_width.text = str(int(self.wwidth))
             self.dcmview1.set_z(self.z_pos)
             self.dcmview2.set_z(self.z_pos)
 
@@ -1057,42 +1022,15 @@ def run(*argv):
     Config.set('kivy', 'exit_on_escape', '1')
     Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
-    defaultvalues = {"font_size": 32,
-                     'logfile': os.path.join(os.getcwd(),'results.txt'),
-                     "random_seed": time.time(),
-                     "input_label_font_size": 32,
-                     "input_field_font_size": 32,
-                     "title_font_size": 64,
-                     "background_color": "None",
-                     "button_font_size": 48,
-                     "button_size": 48,
-                     "button_font_color": "None",
-                     "button_background_color": "None",
-                     "full_screen": 1,
-                     "window_height": 1080,
-                     "window_width": 1920,
-                     "screenshot_hotkey": "shift+f12",
-                     "fullscreen_hotkey": "f11",
-                     "HU_mouse_button": 'middle',
-                     "HU_mouse_button2": 'left',
-                     "mouse_window_scroll_button": 'right',
-                     "flipped_axes": [0,0,0],
-                     "plane": "XY",
-                     "rotate": 0,
-                     "z_position": [],
-                     "hu_center": [],
-                     "hu_width": [],
-                     "colormap": None,
-                     }
-
-    contents = dict()
-    settings = dict()
-
     langfile = os.path.join(dir_path,'lang','perception.tx')
     explang_mm = textx.metamodel.metamodel_from_file(langfile)
     model = explang_mm.model_from_file(filename)
 
-    settings.update(defaultvalues)
+    # Parsing global settings
+    contents = dict()
+    settings = dict()
+
+    settings.update(default_settings)
     for content in model.contents:
         k = content.name[1:-1]
         v = content.content
@@ -1107,6 +1045,7 @@ def run(*argv):
         else:
             settings[k] = v
 
+    # Building application and its window
     Builder.load_file(os.path.join(dir_path,"widgets/infoscreen.kv"))
     Window.size = (int(settings['window_width']), int(settings['window_height']))
     Window.fullscreen = settings['full_screen'] != 0
