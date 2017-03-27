@@ -9,6 +9,9 @@ import importlib
 import itertools
 import random
 import numpy as np
+import shutil
+import tempfile
+import os
 
 def random_combinations(lst, count=2):
     result = []
@@ -125,6 +128,30 @@ def gc_ctx_after():
     yield
     garbage_collector.collect()
 
+@contextmanager
+def tmpdir_ctx():
+    tmpdir = tempfile.mkdtemp()
+    yield tmpdir
+    shutil.rmtree(tmpdir)
+
+@contextmanager
+def delete_file_ctx(f):
+    yield
+    if type(f)==file:
+        name = f.name
+        if not f.closed:
+            f.close()
+        os.remove(name)
+    else:
+        os.remove(f)
+
+
+@contextmanager
+def tmpfile_ctx():
+    tmpfile = tempfile.mkstemp()
+    with open(tmpfile[1],"wb+") as f:
+        yield f
+    os.remove(tmpfile[1])
 
 if __name__ == "__main__":
     @gc

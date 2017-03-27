@@ -3,6 +3,7 @@
 from __future__ import print_function, division, absolute_import, unicode_literals
 import numpy as np
 import six
+import re
 
 if six.PY2:
     import itertools
@@ -115,6 +116,59 @@ def detect_shape(inputdata, dtype=np.float32):
     shape = (-1,) + a + b
     return np.squeeze(data.reshape(shape))
 
+def recognize_filetype(fn):
+    filename = fn.lower()
+    LE = None
+    if filename.find("_le_")>-1:
+        LE = True
+    if filename.find("_little_")>-1:
+        LE = True
+    if filename.find("_little_endian_")>-1:
+        LE = True
+    if filename.find("_be_")>-1:
+        LE = False
+    if filename.find("_big_")>-1:
+        LE = False
+    if filename.find("_big_endian_")>-1:
+        LE = False
+    if filename.find("_mac_")>-1:
+        LE = False
+
+    if filename.find("_le.")>-1:
+        LE = True
+    if filename.find("_little.")>-1:
+        LE = True
+    if filename.find("_little_endian.")>-1:
+        LE = True
+    if filename.find("_be.")>-1:
+        LE = False
+    if filename.find("_big.")>-1:
+        LE = False
+    if filename.find("_big_endian.")>-1:
+        LE = False
+    if filename.find("_mac.")>-1:
+        LE = False
+    if filename.find("_float_")>-1: return np.float32,LE
+    if filename.find("float32")>-1: return np.float32,LE
+    if filename.find("float64")>-1: return np.float64,LE
+    if filename.find("double")>-1: return np.float64,LE
+    if filename.find("uint8")>-1: return np.uint8,LE
+    if filename.find("uint16")>-1: return np.uint16,LE
+    if filename.find("uint32")>-1: return np.uint32,LE
+    if filename.find("uint64")>-1: return np.uint64,LE
+    if filename.find("uint")>-1: return np.uint32,LE
+    if filename.find("ushort")>-1: return np.uint16,LE
+    if filename.find("ulong")>-1: return np.uint64,LE
+
+    if filename.find("int8")>-1: return np.int8,LE
+    if filename.find("int16")>-1: return np.int16,LE
+    if filename.find("int32")>-1: return np.int32,LE
+    if filename.find("int64")>-1: return np.int64,LE
+    if filename.find("int")>-1: return np.int32,LE
+    if filename.find("short")>-1: return np.int16,LE
+    if filename.find("long")>-1: return np.int64,LE
+
+    return None,LE
 
 def detect_filetype(filename, offset=0, types='all', endian='all', count=-1):
     """
