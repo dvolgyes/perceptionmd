@@ -50,7 +50,6 @@ def KV(kvs, key):
 class Logger():
 
     def __init__(self, filename):
-        print("Logfile: ",  os.path.abspath(filename))
         self.filename = filename
         with open(self.filename, "a+"):
             pass
