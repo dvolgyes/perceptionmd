@@ -23,7 +23,7 @@ if not conda:
 setup(
   include_data_files = True,
   name = 'perceptionmd',
-  version = '0.1.5',
+  version = '0.1.6',
   description = 'Human observer tests for radiology',
   author = 'David Volgyes',
   author_email = 'david.volgyes@ieee.org',
