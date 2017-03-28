@@ -1,1 +1,1 @@
-CALL %~dp0\..\python.exe PerceptionMD.py %~dp0\"%1"
+CALL %~dp0\..\python.exe %~dp0\PerceptionMD.py "%1"
