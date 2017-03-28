@@ -1004,7 +1004,7 @@ def run(*argv):
             sys.exit(1)
 
         if argv[1] == "example":
-            filename = os.path.join(dir_path,"unittests/travis-example.md")
+            filename = os.path.join(dir_path,"unittests/travis-example.pmd")
         else:
             if not os.path.exists(argv[1]):
                 print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")
@@ -1012,7 +1012,7 @@ def run(*argv):
                 sys.exit(1)
             filename = argv[1]
     else:
-        filename = os.path.join(dir_path,"unittests/travis-example.md")
+        filename = os.path.join(dir_path,"unittests/travis-example.pmd")
 
     import kivy
     kivy.require('1.8.0')
