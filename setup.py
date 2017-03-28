@@ -2,16 +2,22 @@
 from distutils.core import setup
 from distutils.command.install import INSTALL_SCHEMES
 import platform
+import sys
 
+conda = sys.version.find("conda")>-1
 for scheme in INSTALL_SCHEMES.values():
     scheme['data'] = scheme['purelib']
 
 system = platform.system()
 
-reqs = ['cachetools','pydicom','textx','matplotlib','kivy','pycontracts','docutils','pygame','numpy','wget','six']
+reqs = ['cachetools','pydicom','textx','matplotlib','pycontracts','docutils','pygame','numpy','wget','six']
 
-if system != 'Linux':
-    reqs=['kivy.deps.angle','kivy.deps.gstreamer','kivy.deps.sdl2','kivy.deps.glew'] + reqs
+print("Conda is detected" if conda else "Conda is not detected")
+
+if not conda:
+    reqs += ["kivy"]
+    if system != 'Linux':
+        reqs=['kivy.deps.angle','kivy.deps.gstreamer','kivy.deps.sdl2','kivy.deps.glew'] + reqs
 
 setup(
   include_data_files = True,
