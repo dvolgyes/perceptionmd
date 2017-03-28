@@ -30,7 +30,7 @@ setup(
   url = 'https://github.com/dvolgyes/perceptionmd',
   packages = ['perceptionmd','perceptionmd/utils','perceptionmd/volumes'],
   scripts=['PerceptionMD.py','PerceptionMD.bat'],
-  data_files = [('perceptionmd', ['LICENSE.txt','README.txt']),
+  data_files = [('perceptionmd', ['LICENSE.txt','README.md']),
                 ('perceptionmd/lang', ['perceptionmd/lang/perception.tx']),
                 ('perceptionmd/widgets', ['perceptionmd/widgets/infoscreen.kv']),
                 ('perceptionmd/unittests',['perceptionmd/unittests/travis-example.pmd'])],
