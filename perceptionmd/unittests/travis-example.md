@@ -10,7 +10,7 @@ title_font_size = 64
 button_font_color = 0.1,0.1,0.1,1
 button_font_size = 32
 button_size = 32
-logfile = "/tmp/results.txt"
+logfile = "results.txt"
 
 <Timeline>
 - CHOICE: "terms and conditions"
