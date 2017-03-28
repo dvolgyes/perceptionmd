@@ -1015,7 +1015,7 @@ def run(*argv):
         filename = os.path.join(dir_path,"unittests/travis-example.md")
 
     import kivy
-    kivy.require('1.9.0')
+    kivy.require('1.8.0')
     Config.set('kivy', 'desktop', '1')
     Config.set('kivy', 'loglevel', 'error')
     Config.set('kivy', 'exit_on_escape', '1')
