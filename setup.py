@@ -33,7 +33,7 @@ setup(
   data_files = [('perceptionmd', ['LICENSE.txt','README.txt']),
                 ('perceptionmd/lang', ['perceptionmd/lang/perception.tx']),
                 ('perceptionmd/widgets', ['perceptionmd/widgets/infoscreen.kv']),
-                ('perceptionmd/unittests',['perceptionmd/unittests/travis-example.md'])],
+                ('perceptionmd/unittests',['perceptionmd/unittests/travis-example.pmd'])],
   keywords = ['testing', 'example'],
   classifiers = [],
   license = 'AGPL3',
