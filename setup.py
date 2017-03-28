@@ -29,7 +29,7 @@ setup(
   author_email = 'david.volgyes@ieee.org',
   url = 'https://github.com/dvolgyes/perceptionmd',
   packages = ['perceptionmd','perceptionmd/utils','perceptionmd/volumes'],
-  scripts=['PerceptionMD.py',],
+  scripts=['PerceptionMD.py','PerceptionMD.bat'],
   data_files = [('perceptionmd', ['LICENSE.txt','README.txt']),
                 ('perceptionmd/lang', ['perceptionmd/lang/perception.tx']),
                 ('perceptionmd/widgets', ['perceptionmd/widgets/infoscreen.kv']),
