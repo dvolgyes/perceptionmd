@@ -17,7 +17,8 @@ print("Conda is detected" if conda else "Conda is not detected")
 if not conda:
     reqs += ["kivy"]
     if system != 'Linux':
-        reqs=['kivy.deps.angle','kivy.deps.gstreamer','kivy.deps.sdl2','kivy.deps.glew'] + reqs
+        pass
+        #reqs=['kivy.deps.angle','kivy.deps.gstreamer','kivy.deps.sdl2','kivy.deps.glew'] + reqs
 
 setup(
   include_data_files = True,
