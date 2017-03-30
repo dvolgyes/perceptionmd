@@ -10,4 +10,5 @@ docutils
 pygame
 scipy
 numpy
-scandir
+wget
+six

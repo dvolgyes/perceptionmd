@@ -12,13 +12,10 @@ system = platform.system()
 
 reqs = ['cachetools','pydicom','textx','matplotlib','pycontracts','docutils','pygame','numpy','wget','six']
 
-print("Conda is detected" if conda else "Conda is not detected")
-
 if not conda:
     reqs += ["kivy"]
     if system != 'Linux':
         pass
-        #reqs=['kivy.deps.angle','kivy.deps.gstreamer','kivy.deps.sdl2','kivy.deps.glew'] + reqs
 
 setup(
   include_data_files = True,
@@ -34,7 +31,7 @@ setup(
                 ('perceptionmd/lang', ['perceptionmd/lang/perception.tx']),
                 ('perceptionmd/widgets', ['perceptionmd/widgets/infoscreen.kv']),
                 ('perceptionmd/unittests',['perceptionmd/unittests/travis-example.pmd'])],
-  keywords = ['testing', 'example'],
+  keywords = ['radiology', 'experiments', 'observer study'],
   classifiers = [],
   license = 'AGPL3',
   install_requires=reqs,
