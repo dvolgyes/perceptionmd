@@ -1,5 +1,20 @@
 # PerceptionMD
 
+Table of Contents
+=================
+
+      * [Introduction](#introduction)
+      * [Installation](#installation)
+         * [Linux install](#linux-install)
+         * [Windows install](#windows-install)
+            * [Installer file](#installer-file)
+            * [Using existing Python environment](#using-existing-python-environment)
+         * [Test of the installed program](#test-of-the-installed-program)
+            * [Linux](#linux)
+            * [Windows](#windows)
+      * [Designing experiments](#designing-experiments)
+
+
 ## Introduction
 
 PerceptionMD (PMD) is a tool for conducting observer studies in radiology.
