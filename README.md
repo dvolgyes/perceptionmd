@@ -1,18 +1,18 @@
 # PerceptionMD
 
 Table of Contents
-=================
+-----------------
 
-      * [Introduction](#introduction)
-      * [Installation](#installation)
-         * [Linux install](#linux-install)
-         * [Windows install](#windows-install)
-            * [Installer file](#installer-file)
-            * [Using existing Python environment](#using-existing-python-environment)
-         * [Test of the installed program](#test-of-the-installed-program)
-            * [Linux](#linux)
-            * [Windows](#windows)
-      * [Designing experiments](#designing-experiments)
+  * [Introduction](#introduction)
+  * [Installation](#installation)
+     * [Linux install](#linux-install)
+     * [Windows install](#windows-install)
+        * [Installer file](#installer-file)
+        * [Using existing Python environment](#using-existing-python-environment)
+     * [Test of the installed program](#test-of-the-installed-program)
+        * [Linux](#linux)
+        * [Windows](#windows)
+  * [Designing experiments](#designing-experiments)
 
 
 ## Introduction
@@ -95,3 +95,10 @@ will start the demo application.
 
 Please read the Language_description.md file for the details.
 Examples will be placed in the "Examples" directory.
+
+## Feedback
+
+Any feedback is very appreciated. Patches and improvements are even more welcomed.
+
+I will try to fix every issue but this is not a commercial product, and I don't offer
+any kind of 'official' support.
