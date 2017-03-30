@@ -196,7 +196,6 @@ Section "Miniconda environment" MinicondaInstall
 	ExecWait '$INSTDIR\Conda_for_PMD\Scripts\conda.exe update conda -y'
 	ExecWait '$INSTDIR\Conda_for_PMD\Scripts\conda.exe install numpy scipy cython pip wheel setuptools -y'
 	ExecWait '$INSTDIR\Conda_for_PMD\Scripts\conda.exe install -c krisvanneste kivy=1.8.0 -y'
-	WriteUninstaller $INSTDIR\Uninstall.exe
 SectionEnd
 
 Section "PerceptionMD executable" PMDInstall
@@ -221,6 +220,8 @@ Section "PerceptionMD executable" PMDInstall
 	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "NoRepair" 1
 	# Set the INSTALLSIZE constant (!defined at the top of this script) so Add/Remove Programs can accurately report the size
 	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "EstimatedSize" ${INSTALLSIZE}
+	WriteUninstaller $INSTDIR\Uninstall.exe
+
 SectionEnd
 
 Section "Register .pmd extension" RegisterPMD
@@ -235,7 +236,8 @@ SectionEnd
 Section "Add uninstaller to Start Menu" StartMenuInst
 	createDirectory "$SMPROGRAMS\${COMPANYNAME}"
 	createShortCut "$SMPROGRAMS\${COMPANYNAME}\uninstall.lnk" "$INSTDIR\Uninstall.exe"
-SectionEnd
+	createShortCut "$SMPROGRAMS\${COMPANYNAME}\example.lnk" "$INSTDIR\Conda_for_PMD\Scripts\PerceptionMD.bat"
+	SectionEnd
 
 ;--------------------------------
 ;Descriptions
