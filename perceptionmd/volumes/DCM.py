@@ -41,7 +41,7 @@ class DICOMDIR(VolumeReader.VolumeReader):
 
     def volume(self, UID):
         with self.lock:
-            if UID in self.cache:
+            if UID in self.cache and self.cache[UID] is not None:
                 return self.cache[UID]
             if len(self.filename_cache[UID]) == 1:
                 ds = dicom.read_file(self.filename_cache[UID][0])

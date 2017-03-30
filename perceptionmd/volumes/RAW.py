@@ -50,5 +50,4 @@ class RAWDIR(VolumeReader.VolumeReader):
         if shape == 'auto':
             shape = self.infer_shape(filename, dtype)
             self.volume_shapes[filename] = shape
-        print(os.getcwd(), filename, dtype)
         return np.memmap(filename, mode="r", offset=0, dtype=dtype).reshape(shape)

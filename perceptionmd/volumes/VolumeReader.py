@@ -25,9 +25,18 @@ class VolumeReader(object):
     def get_pixelsize(self):
         return self.pixelsize
 
-
     def UID2dir(self,UID):
         return self.UID2dir_cache[UID]
+
+    @gc_after
+    def clear(self):
+        self.cleanup()
+        self.UID2dir_cache = defaultdict(str)
+        del self.threads[:]
+        self.cache = dict()
+        self.UID2dir_cache.clear()
+        self.volume_shapes.clear()
+        self.volume_types.clear()
 
     @gc_after
     def cleanup(self):

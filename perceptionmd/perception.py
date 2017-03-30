@@ -40,6 +40,7 @@ import perceptionmd.volumes.colors as colors
 
 from perceptionmd.defaults import default_settings
 import perceptionmd.utils as utils
+from perceptionmd.utils import gc_after
 
 def KV(kvs, key):
     for kv in kvs:
@@ -91,10 +92,11 @@ class TaskScreen(Screen):
         pass
 
     def clear(self, *args, **kwargs):
-        gc.collect()
-
-    def on_leave(self,*args,**kwargs):
         pass
+
+    @gc_after
+    def on_leave(self,*args,**kwargs):
+        self.clear()
 
 class Goto(TaskScreen):
 
@@ -137,18 +139,16 @@ class DICOMVIEW(BoxLayout):
         self.axis = 0
         self.core_volume = self.volume
 
+    @gc_after
     def clear(self):
-        self.volume = None
-        self.array = None
-        self.empty = None
-        self.img_texture = None
-        self.colormap = None
+        self.set_dummy_volume()
 
     def set_colormap(self, cmap):
         self.colormap = cmap
         self.set_window(self.wcenter, self.wwidth)
 
     def set_volume(self, volume):
+        assert(volume is not None)
         self.core_volume = volume
         self.volume = volume
         self.orient_volume()
@@ -172,7 +172,6 @@ class DICOMVIEW(BoxLayout):
         self.z_max = self.volume.shape[0] - 1
         self.z_pos = min(self.z_pos,self.z_max)
         self.set_window(self.wcenter, self.wwidth)
-
 
     def set_dummy_volume(self):
         self.set_volume(self.black.reshape(1,512,512))
@@ -205,6 +204,10 @@ class DICOMVIEW(BoxLayout):
             #~ self.dcm_image.texture = Texture.create(size=self.volume.shape[1:])
             #~ self.empty = np.zeros(shape = self.dcm_image.texture.size, dtype=np.uint8)
         if show:
+            while self.volume is None:
+                self.log("ERROR: Volume is None!")
+                print("ERROR: Volume is None!")
+                return
             shift = self.wcenter - self.wwidth / 2.0
             array = (self.volume[self.z_pos, :, :] - shift) / (self.wwidth / 255.0)
             if self.dcm_image.texture.size!=array.shape:
@@ -220,7 +223,6 @@ class DICOMVIEW(BoxLayout):
         else:
             self.dcm_image.texture.blit_buffer(self.empty.ravel(), colorfmt='luminance', bufferfmt='ubyte')
 
-        #~ self.dcm_image.texture.ask_update()
         self.dcm_image.canvas.ask_update()
         self.canvas.ask_update()
 
@@ -247,7 +249,7 @@ class Pair(TaskScreen):
         self.wwidth = 400
         self.wcenter = 20
         self.keypresses = defaultdict(lambda: False)
-        self.min_refresh = 0.5
+        self.min_refresh = 0.4
         self.winner = defaultdict(int)
         self.initialized_cmap = False
         self.colormap = None
@@ -319,6 +321,8 @@ class Pair(TaskScreen):
             taskl = []
             for vidx, series in enumerate(self.serieses):
                 for pair in utils.random_combinations(series):
+                    pair = list(pair)
+                    random.shuffle(pair)
                     task = (qidx, vidx, pair)
                     taskl.append(task)
             random.shuffle(taskl)
@@ -353,8 +357,8 @@ class Pair(TaskScreen):
         self.update_thread.start()
 
     def up(self):
+        time.sleep(self.min_refresh)
         with self.lock:
-            self.next_refresh = time.time() + self.min_refresh
             task = self.tasklist[self.current_task_idx]
             (question, selected_set, (volID1, volID2)) = task
             series1 = self.serieses[selected_set][volID1][0]
@@ -404,15 +408,11 @@ class Pair(TaskScreen):
             self.hu_width.text = str(int(self.wwidth))
             self.dcmview1.set_z(self.z_pos)
             self.dcmview2.set_z(self.z_pos)
-
-            while time.time()<self.next_refresh:
-                time.sleep(0.05)
-
             self.document.text = self.texts[question]
             self.enable_buttons()
             Clock.schedule_once(self.display_image)
+            Clock.schedule_once(self.display_image,self.min_refresh)
             self.start_time = time.time()
-
 
     def disable_buttons(self):
         for button in self.choice_idx:
@@ -469,11 +469,6 @@ class Pair(TaskScreen):
             else:
                 self.log("      {:>3} ({}  win)".format(idx, wins))
         self.log("")
-
-        self.clear()
-
-    #~ def on_button_press(self, *args, **kwargs):
-        #~ self.manager.current = self.manager.next()
 
     def on_button(self, button, *args, **kwargs):
         now = time.time()
@@ -684,10 +679,13 @@ class Pair(TaskScreen):
             self.display_image()
             return True
 
+    @gc_after
     def clear(self):
         self.dcmview1.clear()
         self.dcmview2.clear()
-        gc.collect()
+        for dirs in self.volumedirs:
+            dirs.clear()
+        del self.volumedirs[:]
 
 class VGA(TaskScreen):
 
@@ -896,7 +894,7 @@ class InfoApp(App):
 
         self.screens = []
         self.sm = ScreenManager()
-        self.volumecache = cachetools.LRUCache(maxsize=6)
+        self.volumecache = cachetools.LRUCache(maxsize=4)
 
         for idx, event in enumerate(self.events):
             if event.type == "END":
