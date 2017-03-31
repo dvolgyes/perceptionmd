@@ -23,6 +23,7 @@ default_settings.update({
     'fullscreen_hotkey': 'f11',
     'HU_mouse_button': 'middle',
     'HU_mouse_button2': 'left',
+    'HU_center_vertical_mouse': 0,
     'mouse_window_scroll_button': 'right',
     'flipped_axes': (0, 0, 0),
     'plane': 'XY',

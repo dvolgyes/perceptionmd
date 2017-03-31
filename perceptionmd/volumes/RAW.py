@@ -17,14 +17,15 @@ class RAWDIR(VolumeReader.VolumeReader):
         self.directory = dirname
 
     def infer_shape(self, filename, dtype='auto'):
+
         shape_regexp = re.compile(
             r"\D+(\d+)\D+(\d+)\D+(\d+)\D*.raw", flags=re.IGNORECASE)
-        result = shape_regexp.match(filename)
+        result = shape_regexp.match(os.path.split(filename)[1])
         if result:
             z, y, x = result.group(1, 2, 3)
             z, y, x = int(z), int(y), int(x)
             return (z, y, x)
-        if dtype == 'auto':
+        if repr(dtype) == 'auto':
             dtype = detect_filetype(filename)
         return detect_shape(filename, dtype=dtype).shape
 

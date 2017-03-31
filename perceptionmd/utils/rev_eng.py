@@ -63,11 +63,11 @@ def detect_shape(inputdata, dtype=np.float32):
                 n = i
         return n
 
-    if isinstance(inputdata, str):
+    if isinstance(inputdata, six.string_types):
         data = np.fromfile(inputdata, dtype=dtype)
     else:
         data = inputdata
-
+    print(inputdata)
     if data.size <= 1:
         return data
 
@@ -110,7 +110,9 @@ def detect_shape(inputdata, dtype=np.float32):
     b = acc[-1][1]
 
     shape = (-1,) + a + b
-    return np.squeeze(data.reshape(shape))
+    data = np.squeeze(data.reshape(shape))
+    print(data.shape)
+    return data
 
 
 def recognize_filetype(fn):

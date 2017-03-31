@@ -124,7 +124,7 @@ class DICOMVIEW(BoxLayout):
         self.mainw = None
         self.dcm_image = ObjectProperty(None)
         self.rel = ListProperty([0, 0])
-        self.empty = np.zeros(shape=(512, 512), dtype=np.uint8).ravel()
+        self.empty = np.zeros(shape=(512, 512), dtype=np.uint8)
         self.black = np.ones(shape=(1, 512, 512), dtype=np.float32) * -32000
         self.array = np.zeros(shape=(1, 512, 512), dtype=np.uint8)
         self.volume = np.zeros(shape=(1, 512, 512), dtype=np.uint8)
@@ -195,38 +195,34 @@ class DICOMVIEW(BoxLayout):
     def on_scroll(self, touch, rel):
         return None
 
+    def blit(self, image, colorfmt, bufferfmt):
+        if self.dcm_image.texture.size != image.shape[0:2]:
+            self.dcm_image.texture = Texture.create(image.shape[0:2])
+            self.empty = np.zeros(shape=self.dcm_image.texture.size[0:2], dtype=np.uint8)
+        self.dcm_image.texture.blit_buffer(image.ravel(), colorfmt=colorfmt, bufferfmt=bufferfmt)
+
     def display_image(self, show=True):
         if not self.initialized:
             self.dcm_image.texture = self.img_texture
             self.initialized = True
-            self.dcm_image.texture.blit_buffer(
-                self.empty, colorfmt='luminance', bufferfmt='ubyte')
-        #~ if self.dcm_image.texture.size != self.volume.shape[1:]:
-            #~ self.dcm_image.texture = Texture.create(size=self.volume.shape[1:])
-            #~ self.empty = np.zeros(shape = self.dcm_image.texture.size, dtype=np.uint8)
+            self.blit(self.empty, colorfmt='luminance', bufferfmt='ubyte')
         if show:
             while self.volume is None:
                 self.log("ERROR: Volume is None!")
                 print("ERROR: Volume is None!")
                 return
             shift = self.wcenter - self.wwidth / 2.0
-            array = (self.volume[self.z_pos, :, :] -
-                     shift) / (self.wwidth / 255.0)
-            if self.dcm_image.texture.size != array.shape:
-                array = utils.padding(np.clip(array, 0, 255).astype(np.uint8), (512, 512))
-            else:
-                array = utils.padding(np.clip(array, 0, 255).astype(np.uint8), (512, 512))
+            array = (self.volume[self.z_pos, :, :] - shift) / (self.wwidth / 255.0)
+            if array.shape[0] != array.shape[1]:
+                array = utils.padding_square(np.clip(array, 0, 255).astype(np.uint8))
 
             if self.colormap is not None:
                 slice_str = (self.colormap(array) * 255).astype(np.uint8)
-                self.dcm_image.texture.blit_buffer(
-                    slice_str.ravel(), colorfmt='rgba', bufferfmt='ubyte')
+                self.blit(slice_str.reshape(array.shape + (-1,)), colorfmt='rgba', bufferfmt='ubyte')
             else:
-                self.dcm_image.texture.blit_buffer(
-                    array.ravel(), colorfmt='luminance', bufferfmt='ubyte')
+                self.blit(array, 'luminance', 'ubyte')
         else:
-            self.dcm_image.texture.blit_buffer(
-                self.empty.ravel(), colorfmt='luminance', bufferfmt='ubyte')
+            self.blit(self.empty, 'luminance', 'ubyte')
 
         self.dcm_image.canvas.ask_update()
         self.canvas.ask_update()
@@ -451,11 +447,8 @@ class Pair(TaskScreen):
                 self.color_legend.texture.blit_buffer(
                     self.color_legend_gradient.tostring(), colorfmt='luminance', bufferfmt='ubyte')
             else:
-                #~ self.color_legend.texture.blit_buffer(self.color_legend_gradient, colorfmt='luminance', bufferfmt='ubyte')
-                cmap_str = (self.colormap(self.color_legend_gradient)
-                            * 255).astype(np.uint8).tostring()
-                self.color_legend.texture.blit_buffer(
-                    cmap_str, colorfmt='rgba', bufferfmt='ubyte')
+                cmap_str = (self.colormap(self.color_legend_gradient) * 255).astype(np.uint8).tostring()
+                self.color_legend.texture.blit_buffer(cmap_str, colorfmt='rgba', bufferfmt='ubyte')
 
     def on_enter(self, *args, **kwargs):
         self.set()
@@ -622,8 +615,7 @@ class Pair(TaskScreen):
 #                r = np.sqrt(dx * dx + dy * dy)
                 direction = abs(dx) > abs(dy)
                 angle = int(math.atan2(dy, dx) / math.pi * 4) + 4
-                speed = 4 if self.keypresses[
-                    'ctrl'] or self.keypresses['rctrl'] else 1
+                speed = 4 if self.keypresses['ctrl'] or self.keypresses['rctrl'] else 1
 
                 if (angle % 2 == 0):
                     if direction == (int(self.var['HU_center_vertical_mouse']) == 0):

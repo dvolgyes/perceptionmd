@@ -32,6 +32,11 @@ def padding(array, shape):
     return np.pad(array, tuple(result), mode='constant')
 
 
+def padding_square(array):
+    largest_dimsize = max(array.shape)
+    return padding(array, (largest_dimsize,) * len(array.shape))
+
+
 def test_module(name):
     """
     Test if module is importable.
