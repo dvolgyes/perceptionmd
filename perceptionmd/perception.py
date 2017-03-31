@@ -9,11 +9,9 @@ import datetime
 import math
 import numpy as np
 import random
-import itertools
 import cachetools
 import operator
 import threading
-import gc
 import re
 import six
 from collections import defaultdict
@@ -35,18 +33,20 @@ import textx
 import textx.metamodel
 
 import perceptionmd.volumes.DCM as DCM
-from perceptionmd.volumes import VolumeReader,RAW
+from perceptionmd.volumes import RAW
 import perceptionmd.volumes.colors as colors
 
 from perceptionmd.defaults import default_settings
 import perceptionmd.utils as utils
 from perceptionmd.utils import gc_after
 
+
 def KV(kvs, key):
     for kv in kvs:
         if kv.key == key:
             return kv.value
     return None
+
 
 class Logger():
 
@@ -65,7 +65,7 @@ class Logger():
             self.append(line)
 
     def __call__(self, argument):
-        if type(argument) == list:
+        if isinstance(argument, list):
             self.append_list(argument)
         else:
             self.append(argument)
@@ -80,13 +80,13 @@ class TaskScreen(Screen):
     def on_button_press(self, *args, **kwargs):
         self.manager.current = self.manager.next()
 
-    def move_on(self,*args,**kwargs):
+    def move_on(self, *args, **kwargs):
         self.manager.current = self.manager.next()
 
     def on_enter(self, *args, **kwargs):
         self.start_time = time.time()
         if self.automated_test:
-            Clock.schedule_once(self.move_on,3)
+            Clock.schedule_once(self.move_on, 3)
 
     def on_key_down(self, win, key, scancode, string, modifiers):
         pass
@@ -95,8 +95,9 @@ class TaskScreen(Screen):
         pass
 
     @gc_after
-    def on_leave(self,*args,**kwargs):
+    def on_leave(self, *args, **kwargs):
         self.clear()
+
 
 class Goto(TaskScreen):
 
@@ -124,7 +125,7 @@ class DICOMVIEW(BoxLayout):
         self.dcm_image = ObjectProperty(None)
         self.rel = ListProperty([0, 0])
         self.empty = np.zeros(shape=(512, 512), dtype=np.uint8).ravel()
-        self.black = np.ones(shape=(1,512,512),dtype=np.float32)*-32000
+        self.black = np.ones(shape=(1, 512, 512), dtype=np.float32) * -32000
         self.array = np.zeros(shape=(1, 512, 512), dtype=np.uint8)
         self.volume = np.zeros(shape=(1, 512, 512), dtype=np.uint8)
         self.z_pos = 0
@@ -134,7 +135,7 @@ class DICOMVIEW(BoxLayout):
         self.wwidth = 100
         self.initialized = False
         self.colormap = None
-        self.flips =[False,False,False]
+        self.flips = [False, False, False]
         self.rotate = 0
         self.axis = 0
         self.core_volume = self.volume
@@ -155,26 +156,26 @@ class DICOMVIEW(BoxLayout):
 
     def orient_volume(self):
         self.volume = self.core_volume
-        if self.axis>0:
-            self.volume = np.swapaxes(self.volume,0,self.axis)
-        if self.rotate>0:
-            t = np.swapaxes(self.volume,0,2)
-            t = np.rot90(t,k=self.rotate)
-            self.volume = np.swapaxes(t,0,2)
+        if self.axis > 0:
+            self.volume = np.swapaxes(self.volume, 0, self.axis)
+        if self.rotate > 0:
+            t = np.swapaxes(self.volume, 0, 2)
+            t = np.rot90(t, k=self.rotate)
+            self.volume = np.swapaxes(t, 0, 2)
 
         if self.flips[0]:
-            self.volume = self.volume[::-1,...]
+            self.volume = self.volume[::-1, ...]
         if self.flips[1]:
-            self.volume = self.volume[:,::-1,...]
+            self.volume = self.volume[:, ::-1, ...]
         if self.flips[2]:
-            self.volume = self.volume[...,::-1]
+            self.volume = self.volume[..., ::-1]
 
         self.z_max = self.volume.shape[0] - 1
-        self.z_pos = min(self.z_pos,self.z_max)
+        self.z_pos = min(self.z_pos, self.z_max)
         self.set_window(self.wcenter, self.wwidth)
 
     def set_dummy_volume(self):
-        self.set_volume(self.black.reshape(1,512,512))
+        self.set_volume(self.black.reshape(1, 512, 512))
 
     def set_window(self, center, width):
         """
@@ -183,7 +184,6 @@ class DICOMVIEW(BoxLayout):
         """
         self.wcenter = center
         self.wwidth = width
-        shift = center - width / 2
 
     def set_z(self, z):
         """
@@ -199,7 +199,8 @@ class DICOMVIEW(BoxLayout):
         if not self.initialized:
             self.dcm_image.texture = self.img_texture
             self.initialized = True
-            self.dcm_image.texture.blit_buffer(self.empty, colorfmt='luminance', bufferfmt='ubyte')
+            self.dcm_image.texture.blit_buffer(
+                self.empty, colorfmt='luminance', bufferfmt='ubyte')
         #~ if self.dcm_image.texture.size != self.volume.shape[1:]:
             #~ self.dcm_image.texture = Texture.create(size=self.volume.shape[1:])
             #~ self.empty = np.zeros(shape = self.dcm_image.texture.size, dtype=np.uint8)
@@ -209,19 +210,23 @@ class DICOMVIEW(BoxLayout):
                 print("ERROR: Volume is None!")
                 return
             shift = self.wcenter - self.wwidth / 2.0
-            array = (self.volume[self.z_pos, :, :] - shift) / (self.wwidth / 255.0)
-            if self.dcm_image.texture.size!=array.shape:
-                array = utils.padding(np.clip(array, 0, 255).astype(np.uint8),(512,512) )
+            array = (self.volume[self.z_pos, :, :] -
+                     shift) / (self.wwidth / 255.0)
+            if self.dcm_image.texture.size != array.shape:
+                array = utils.padding(np.clip(array, 0, 255).astype(np.uint8), (512, 512))
             else:
-                array = utils.padding(np.clip(array, 0, 255).astype(np.uint8),(512,512) )
+                array = utils.padding(np.clip(array, 0, 255).astype(np.uint8), (512, 512))
 
             if self.colormap is not None:
                 slice_str = (self.colormap(array) * 255).astype(np.uint8)
-                self.dcm_image.texture.blit_buffer( slice_str.ravel(), colorfmt='rgba', bufferfmt='ubyte')
+                self.dcm_image.texture.blit_buffer(
+                    slice_str.ravel(), colorfmt='rgba', bufferfmt='ubyte')
             else:
-                self.dcm_image.texture.blit_buffer(array.ravel(), colorfmt='luminance', bufferfmt='ubyte')
+                self.dcm_image.texture.blit_buffer(
+                    array.ravel(), colorfmt='luminance', bufferfmt='ubyte')
         else:
-            self.dcm_image.texture.blit_buffer(self.empty.ravel(), colorfmt='luminance', bufferfmt='ubyte')
+            self.dcm_image.texture.blit_buffer(
+                self.empty.ravel(), colorfmt='luminance', bufferfmt='ubyte')
 
         self.dcm_image.canvas.ask_update()
         self.canvas.ask_update()
@@ -256,23 +261,24 @@ class Pair(TaskScreen):
         self.next_refresh = time.time()
         self.preselected_zpos = defaultdict(int)
 
-    def set_colormap(self,cmap):
+    def set_colormap(self, cmap):
         if cmap is None:
             return
-        self.colormap=colors.create_colormap(self.name+"_colormap",cmap)
+        self.colormap = colors.create_colormap(self.name + "_colormap", cmap)
         self.dcmview1.set_colormap(self.colormap)
         self.dcmview2.set_colormap(self.colormap)
 
     def add_dirs(self, dirs, cache):
         for s, d in enumerate(dirs):
-            result = re.match(r"(?P<protocol>[a-zA-Z]+)(\((?P<shape>\W.*)\))?::(?P<dirname>.*)",d[1:-1])
+            result = re.match(
+                r"(?P<protocol>[a-zA-Z]+)(\((?P<shape>\W.*)\))?::(?P<dirname>.*)", d[1:-1])
             if result:
                 protocol = result.group('protocol')
                 shape = result.group('shape')
-                if shape is None or len(shape)==0:
-                    shape='auto'
+                if shape is None or len(shape) == 0:
+                    shape = 'auto'
                 else:
-                    shape = tuple(map(int,shape.split(",")))
+                    shape = tuple(map(int, shape.split(",")))
                 dirname = result.group('dirname')
             else:
                 protocol = "DCM"
@@ -281,11 +287,13 @@ class Pair(TaskScreen):
 
             if protocol == "RAW":
                 self.serieses.append(dict())
-                rawdir = RAW.RAWDIR(dirname,dtype=np.dtype(self.var['raw_type']))
-                for idx,fn in enumerate(rawdir.volume_iterator()):
-                    directory,filename = os.path.split(fn)
+                rawdir = RAW.RAWDIR(
+                    dirname, dtype=np.dtype(self.var['raw_type']))
+                for idx, fn in enumerate(rawdir.volume_iterator()):
+                    directory, filename = os.path.split(fn)
                     self.serieses[-1][idx] = (fn, directory)
-                    self.loglines.append('        volume %s: "%s" ("%s")' % (idx, directory, filename))
+                    self.loglines.append(
+                        '        volume %s: "%s" ("%s")' % (idx, directory, filename))
                 self.volumedirs.append(rawdir)
 
             if protocol == "DCM":
@@ -298,7 +306,8 @@ class Pair(TaskScreen):
                     #~ directory = os.path.dirname(dicomdir._files[series][-1][1])
                     #~ desc = dicomdir._texts[series]
                     self.serieses[-1][idx] = (series, directory)
-                    self.loglines.append('        volume %s: "%s" ("%s")' % (idx, directory, desc))
+                    self.loglines.append(
+                        '        volume %s: "%s" ("%s")' % (idx, directory, desc))
                 self.volumedirs.append(dicomdir)
 
     def add_questions(self, questions):
@@ -332,8 +341,8 @@ class Pair(TaskScreen):
         self.loglines.append(
             "        question, set, left, right, answer button, answer text, selected volume,  @time, axial pos, wwidth, wcenter")
 
-        self.plane = {'XY':0,'XZ':1,'YZ':2}[self.var['plane']]
-        self.flips = list(map(bool,self.var['flipped_axes']))
+        self.plane = {'XY': 0, 'XZ': 1, 'YZ': 2}[self.var['plane']]
+        self.flips = list(map(bool, self.var['flipped_axes']))
         self.rotate = self.var['rotate']
         self.next()
         self.update_scene()
@@ -370,23 +379,26 @@ class Pair(TaskScreen):
             self.dcmview2.flips = self.flips
             self.dcmview2.axis = self.plane
 
-            self.dcmview1.set_volume(self.volumedirs[selected_set].volume(series1))
-            self.dcmview2.set_volume(self.volumedirs[selected_set].volume(series2))
+            self.dcmview1.set_volume(
+                self.volumedirs[selected_set].volume(series1))
+            self.dcmview2.set_volume(
+                self.volumedirs[selected_set].volume(series2))
 
-            self.z_max = min(self.dcmview1.z_max,self.dcmview2.z_max)
+            self.z_max = min(self.dcmview1.z_max, self.dcmview2.z_max)
             poslist = self.var['z_position']
             hu_center_list = self.var['hu_center']
-            hu_width_list  = self.var['hu_width']
+            hu_width_list = self.var['hu_width']
             self.set_colormap(self.var['colormap'])
 
             if selected_set in self.preselected_zpos:
                 self.z_pos = self.preselected_zpos[selected_set]
             else:
-                self.z_pos = int(poslist[selected_set] if selected_set <len(poslist) else self.z_max // 2)
+                self.z_pos = int(poslist[selected_set] if selected_set < len(
+                    poslist) else self.z_max // 2)
 
-            if selected_set<len(hu_center_list):
+            if selected_set < len(hu_center_list):
                 self.wcenter = int(hu_center_list[selected_set])
-            if selected_set<len(hu_width_list):
+            if selected_set < len(hu_width_list):
                 self.wwidth = int(hu_width_list[selected_set])
 
             self.dcmview1.set_window(self.wcenter, self.wwidth)
@@ -411,7 +423,7 @@ class Pair(TaskScreen):
             self.document.text = self.texts[question]
             self.enable_buttons()
             Clock.schedule_once(self.display_image)
-            Clock.schedule_once(self.display_image,self.min_refresh)
+            Clock.schedule_once(self.display_image, self.min_refresh)
             self.start_time = time.time()
 
     def disable_buttons(self):
@@ -429,17 +441,21 @@ class Pair(TaskScreen):
         self.dcmview2.display_image(show)
         if show:
             if not self.initialized_cmap:
-                self.color_legend.texture = Texture.create(size=(self.color_legend.size))
+                self.color_legend.texture = Texture.create(
+                    size=(self.color_legend.size))
                 x = np.linspace(1, 1, self.color_legend.size[0])
                 y = np.linspace(0, 255, self.color_legend.size[1])
                 xv, yv = np.meshgrid(x, y)
                 self.color_legend_gradient = yv.astype(np.uint8)
             if self.colormap is None:
-                self.color_legend.texture.blit_buffer(self.color_legend_gradient.tostring(), colorfmt='luminance', bufferfmt='ubyte')
+                self.color_legend.texture.blit_buffer(
+                    self.color_legend_gradient.tostring(), colorfmt='luminance', bufferfmt='ubyte')
             else:
                 #~ self.color_legend.texture.blit_buffer(self.color_legend_gradient, colorfmt='luminance', bufferfmt='ubyte')
-                cmap_str = (self.colormap(self.color_legend_gradient) * 255).astype(np.uint8).tostring()
-                self.color_legend.texture.blit_buffer(cmap_str,colorfmt='rgba', bufferfmt='ubyte')
+                cmap_str = (self.colormap(self.color_legend_gradient)
+                            * 255).astype(np.uint8).tostring()
+                self.color_legend.texture.blit_buffer(
+                    cmap_str, colorfmt='rgba', bufferfmt='ubyte')
 
     def on_enter(self, *args, **kwargs):
         self.set()
@@ -505,10 +521,8 @@ class Pair(TaskScreen):
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         self.keypresses[keycode[1]] = True
 
-
         if keycode[1] == 'escape':
             keyboard.release()
-
 
         if keycode[1] == 'f3':
             self.dcmview1.axis = 0
@@ -535,14 +549,14 @@ class Pair(TaskScreen):
             self.dcmview2.flips[2] = self.dcmview1.flips[2]
 
         if keycode[1] == 'f9':
-            self.dcmview1.rotate = (self.dcmview1.rotate+1) % 4
+            self.dcmview1.rotate = (self.dcmview1.rotate + 1) % 4
             self.dcmview2.rotate = self.dcmview1.rotate
 
         if keycode[1] == 'f10':
-            self.dcmview1.rotate = (self.dcmview1.rotate+3) % 4
+            self.dcmview1.rotate = (self.dcmview1.rotate + 3) % 4
             self.dcmview2.rotate = self.dcmview1.rotate
 
-        if keycode[1] in ['f3','f4','f5','f6','f7','f8','f9','f10']:
+        if keycode[1] in ['f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10']:
             self.dcmview1.orient_volume()
             self.dcmview2.orient_volume()
             self.dcmview1.display_image()
@@ -592,9 +606,8 @@ class Pair(TaskScreen):
                     if b.on_touch_down(touch):
                         return True
 
-
-
-            if touch.button in (self.var['HU_mouse_button'],self.var['HU_mouse_button2'], self.var['mouse_window_scroll_button']):
+            if touch.button in (self.var['HU_mouse_button'], self.var['HU_mouse_button2'],
+                                self.var['mouse_window_scroll_button']):
                 touch.grab(self)
                 self.tzpos = self.z_pos
                 self.touch_pos = touch.pos
@@ -604,33 +617,34 @@ class Pair(TaskScreen):
 
     def on_touch_move(self, touch):
         if touch.grab_current is self:
-            if touch.button in (self.var['HU_mouse_button'],self.var['HU_mouse_button2']):
+            if touch.button in (self.var['HU_mouse_button'], self.var['HU_mouse_button2']):
                 dx, dy = touch.dpos
-                r = np.sqrt(dx * dx + dy * dy)
+#                r = np.sqrt(dx * dx + dy * dy)
                 direction = abs(dx) > abs(dy)
                 angle = int(math.atan2(dy, dx) / math.pi * 4) + 4
                 speed = 4 if self.keypresses[
                     'ctrl'] or self.keypresses['rctrl'] else 1
 
-                if (angle % 2 == 0) :
-                    if direction == (int(self.var['HU_center_vertical_mouse'])==0):
+                if (angle % 2 == 0):
+                    if direction == (int(self.var['HU_center_vertical_mouse']) == 0):
                         delta = int(dx) * speed
                         self.wwidth = max(10, self.wwidth + delta)
                     else:
                         delta = int(dy) * speed
-                        self.wcenter = self.wcenter+delta
+                        self.wcenter = self.wcenter + delta
                 self.set_window()
                 self.display_image()
             elif touch.button == self.var['mouse_window_scroll_button']:
                 dx, dy = touch.dpos
-                r = np.sqrt(dx * dx + dy * dy)
+#                r = np.sqrt(dx * dx + dy * dy)
                 direction = abs(dx) > abs(dy)
                 angle = int(math.atan2(dy, dx) / math.pi * 4) + 4
-                if (angle % 2 == 0) :
+                if (angle % 2 == 0):
                     dz = (touch.pos[1] - self.touch_pos[1])
                     self.z_pos = min(self.z_max, max(
                         0, self.tzpos + dz * 1.0))
-                    self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
+                    self.axial_pos.text = " %s / %s " % (
+                        self.z_pos, self.z_max)
                     self.dcmview1.set_z(self.z_pos)
                     self.dcmview2.set_z(self.z_pos)
                     self.display_image()
@@ -657,19 +671,19 @@ class Pair(TaskScreen):
             speed = 1
             if self.keypresses['ctrl'] or self.keypresses['rctrl']:
                 speed = 5
-            if False:
-                pass
-            #~ elif self.keypresses['shift']:
-                #~ self.wcenter += direction*speed*2
-                #~ self.hu_center.text = str(self.wcenter)
-                #~ self.dcmview1.set_window(self.wcenter,self.wwidth)
-                #~ self.dcmview2.set_window(self.wcenter,self.wwidth)
-            #~ elif self.keypresses['ctrl'] or self.keypresses['rctrl']:
-                #~ self.wwidth += direction*speed*4
-                #~ self.wwidth = max(2,self.wwidth)
-                #~ self.hu_width.text = str(self.wwidth)
-                #~ self.dcmview1.set_window(self.wcenter,self.wwidth)
-                #~ self.dcmview2.set_window(self.wcenter,self.wwidth)
+#            if False:
+#                pass
+#            #~ elif self.keypresses['shift']:
+#                #~ self.wcenter += direction*speed*2
+#                #~ self.hu_center.text = str(self.wcenter)
+#                #~ self.dcmview1.set_window(self.wcenter,self.wwidth)
+#                #~ self.dcmview2.set_window(self.wcenter,self.wwidth)
+#            #~ elif self.keypresses['ctrl'] or self.keypresses['rctrl']:
+#                #~ self.wwidth += direction*speed*4
+#                #~ self.wwidth = max(2,self.wwidth)
+#                #~ self.hu_width.text = str(self.wwidth)
+#                #~ self.dcmview1.set_window(self.wcenter,self.wwidth)
+#                #~ self.dcmview2.set_window(self.wcenter,self.wwidth)
             else:
                 self.z_pos = min(self.z_max, max(
                     0, self.z_pos + direction * speed))
@@ -686,6 +700,7 @@ class Pair(TaskScreen):
         for dirs in self.volumedirs:
             dirs.clear()
         del self.volumedirs[:]
+
 
 class VGA(TaskScreen):
 
@@ -713,7 +728,7 @@ class Question(TaskScreen):
         self.questions = []
         self.variables = dict()
         self.start_time = None
-        self.focuses=[]
+        self.focuses = []
 
     def add_questions(self, qs):
         for q in qs:
@@ -725,18 +740,18 @@ class Question(TaskScreen):
             self.layout.add_widget(label)
             self.layout.add_widget(input)
             self.focuses.append(input)
-            input.is_focusable=True
-            input.write_tab=False
+            input.is_focusable = True
+            input.write_tab = False
         self.set_focuses()
         self.button.height = self.var['button_size']
         self.button.font_size = self.var['button_font_size']
 
     def set_focuses(self):
-        if len(self.focuses)>0:
+        if len(self.focuses) > 0:
             self.focuses[0].focus = True
-            for i in range(len(self.focuses)-1):
-                self.focuses[i].focus_next = self.focuses[i+1]
-                self.focuses[i+1].focus_previous = self.focuses[i]
+            for i in range(len(self.focuses) - 1):
+                self.focuses[i].focus_next = self.focuses[i + 1]
+                self.focuses[i + 1].focus_previous = self.focuses[i]
 
     def on_pre_leave(self, *args, **kwargs):
         leave_time = time.time()
@@ -784,7 +799,7 @@ class Choice(TaskScreen):
             assert(False)
         self.log("")
 
-    def move_on(self,*args,**kwargs):
+    def move_on(self, *args, **kwargs):
         self.on_button(random.choice(list(self.buttons.keys())))
 
     def on_button(self, button):
@@ -815,14 +830,16 @@ class Choice(TaskScreen):
             btn.bind(on_press=lambda x: self.on_button(x))
             self.layout.add_widget(btn)
 
+
 class Viewport(ScatterPlane):
+
     def __init__(self, **kwargs):
         kwargs.setdefault('size', (1920, 1080))
         kwargs.setdefault('size_hint', (None, None))
         kwargs.setdefault('do_scale', False)
         kwargs.setdefault('do_translation', False)
         kwargs.setdefault('do_rotation', False)
-        super(Viewport, self).__init__( **kwargs)
+        super(Viewport, self).__init__(**kwargs)
         Window.bind(system_size=self.on_window_resize)
         Clock.schedule_once(self.fit_to_window, -1)
 
@@ -830,9 +847,10 @@ class Viewport(ScatterPlane):
         self.fit_to_window()
 
     def fit_to_window(self, *args):
-        ratio = min(Window.width/float(self.width), Window.height/float(self.height))
+        ratio = min(Window.width / float(self.width),
+                    Window.height / float(self.height))
         self.scale = ratio
-        if (self.width < self.height) == (Window.width < Window.height): #portrait
+        if (self.width < self.height) == (Window.width < Window.height):  # portrait
             self.rotation = 0
         else:
             self.rotation = -90
@@ -845,46 +863,48 @@ class Viewport(ScatterPlane):
         super(Viewport, self).add_widget(w, *args, **kwargs)
         w.size = self.size
 
+
 class InfoApp(App):
 
-    scancode_dict = {67:'f1',68:'f2',69:'f3',70:'f4',71:'f5',72:'f6',73:'f7',74:'f8',75:'f9',76:'f10',95:'f11',96:'f12',
-    278:'home',279:'end',277:'ins',127:'del'}
+    scancode_dict = {67: 'f1', 68: 'f2', 69: 'f3', 70: 'f4', 71: 'f5', 72: 'f6', 73: 'f7', 74: 'f8', 75: 'f9', 76: 'f10', 95: 'f11', 96: 'f12',
+                     278: 'home', 279: 'end', 277: 'ins', 127: 'del'}
 
     def __init__(self, *args, **kwargs):
         super(InfoApp, self).__init__(*args, **kwargs)
-        self.screen_dict=dict()
+        self.screen_dict = dict()
 
     def callback(self, *args, **kwargs):
         pass
 
-    def on_start(self,*args,**kwargs):
+    def on_start(self, *args, **kwargs):
         Window.bind(on_key_down=self.on_key_down)
 
-    def screenshot(self,*args):
+    def screenshot(self, *args):
         pattern = "screenshot_{:03d}.png"
         directory = self.settings['screenshot_directory']
         i = 0
-        if not os.path_exists(directory): return
-        while os.path.exists(os.path.join(directory,pattern.format(i))):
-            i+=1
-        Window.screenshot(name=os.path.join(directory,pattern.format(i)))
-
+        if not os.path_exists(directory):
+            return
+        while os.path.exists(os.path.join(directory, pattern.format(i))):
+            i += 1
+        Window.screenshot(name=os.path.join(directory, pattern.format(i)))
 
     def on_key_down(self, win, key, scancode, string, modifiers):
-        def key_match(scancode,modifiers,hotkey):
-            parts = list(map(six.text_type.strip,hotkey.lower().split("+")))
+        def key_match(scancode, modifiers, hotkey):
+            parts = list(map(six.text_type.strip, hotkey.lower().split("+")))
             code = parts[-1]
-            if six.text_type(self.scancode_dict.get(scancode,None)) != code:
+            if six.text_type(self.scancode_dict.get(scancode, None)) != code:
                 return False
             mods = set(parts[:-1])
-            if len(mods ^ modifiers) > 0: return False
+            if len(mods ^ modifiers) > 0:
+                return False
             return True
 
-        if key_match(scancode,set(modifiers),six.text_type(self.settings["screenshot_hotkey"])):
+        if key_match(scancode, set(modifiers), six.text_type(self.settings["screenshot_hotkey"])):
             self.screenshot()
             return True
 
-        if key_match(scancode,set(modifiers),six.text_type(self.settings["fullscreen_hotkey"])):
+        if key_match(scancode, set(modifiers), six.text_type(self.settings["fullscreen_hotkey"])):
             win.toggle_fullscreen()
             for s in self.screens:
                 s.canvas.ask_update()
@@ -989,9 +1009,10 @@ class InfoApp(App):
         self.logger("<Timeline>")
         self.logger("")
 
-        self.viewport = Viewport(size=(1920,1080))
+        self.viewport = Viewport(size=(1920, 1080))
         self.viewport.add_widget(self.sm)
         return self.viewport
+
 
 def run(*argv):
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -1002,7 +1023,7 @@ def run(*argv):
             sys.exit(1)
 
         if argv[1] == "example":
-            filename = os.path.join(dir_path,"unittests/travis-example.pmd")
+            filename = os.path.join(dir_path, "unittests/travis-example.pmd")
         else:
             if not os.path.exists(argv[1]):
                 print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")
@@ -1010,7 +1031,7 @@ def run(*argv):
                 sys.exit(1)
             filename = argv[1]
     else:
-        filename = os.path.join(dir_path,"unittests/travis-example.pmd")
+        filename = os.path.join(dir_path, "unittests/travis-example.pmd")
 
     import kivy
     kivy.require('1.8.0')
@@ -1019,7 +1040,7 @@ def run(*argv):
     Config.set('kivy', 'exit_on_escape', '1')
     Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
-    langfile = os.path.join(dir_path,'lang','perception.tx')
+    langfile = os.path.join(dir_path, 'lang', 'perception.tx')
     explang_mm = textx.metamodel.metamodel_from_file(langfile)
     model = explang_mm.model_from_file(filename)
 
@@ -1043,8 +1064,9 @@ def run(*argv):
             settings[k] = v
 
     # Building application and its window
-    Builder.load_file(os.path.join(dir_path,"widgets/infoscreen.kv"))
-    Window.size = (int(settings['window_width']), int(settings['window_height']))
+    Builder.load_file(os.path.join(dir_path, "widgets/infoscreen.kv"))
+    Window.size = (int(settings['window_width']),
+                   int(settings['window_height']))
     Window.fullscreen = settings['full_screen'] != 0
 
     os.chdir(os.path.dirname(filename))
@@ -1060,7 +1082,6 @@ def run(*argv):
 
 if __name__ == '__main__':
     if six.PY2:
-        run(*[unicode(x,'utf-8') for x in sys.argv])
+        run(*[unicode(x, 'utf-8') for x in sys.argv])
     else:
         run(*sys.argv)
-

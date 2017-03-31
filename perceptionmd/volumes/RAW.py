@@ -7,12 +7,13 @@ import re
 import numpy as np
 
 from . import VolumeReader
-from perceptionmd.utils import detect_shape,detect_filetype,scandir
+from perceptionmd.utils import detect_shape, detect_filetype, scandir
+
 
 class RAWDIR(VolumeReader.VolumeReader):
 
     def __init__(self, dirname, shape='auto', *args, **kwargs):
-        super(RAWDIR, self).__init__(*args,**kwargs)
+        super(RAWDIR, self).__init__(*args, **kwargs)
         self.directory = dirname
 
     def infer_shape(self, filename, dtype='auto'):
@@ -33,7 +34,7 @@ class RAWDIR(VolumeReader.VolumeReader):
         for fn in sorted(scandir(dirname)):
             if fn.name.lower().endswith("raw"):
                 root = os.path.split(fn.name)
-                self.UID2dir_cache[series] = root
+                self.UID2dir_cache[dirname] = root
                 yield os.path.join(dirname, fn.name)
 
     def volume(self, filename, dtype=None, shape='auto'):

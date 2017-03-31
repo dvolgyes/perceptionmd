@@ -13,6 +13,7 @@ import shutil
 import tempfile
 import os
 
+
 def random_combinations(lst, count=2):
     result = []
     comb = list(itertools.combinations(lst, count))
@@ -22,12 +23,13 @@ def random_combinations(lst, count=2):
         result.append(v)
     return result
 
-def padding(array,shape):
+
+def padding(array, shape):
     result = []
     for i in range(len(shape)):
         d = shape[i] - array.shape[i]
-        result.append( (d//2,d-d//2) )
-    return np.pad(array,tuple(result),mode='constant')
+        result.append((d // 2, d - d // 2))
+    return np.pad(array, tuple(result), mode='constant')
 
 
 def test_module(name):
@@ -40,7 +42,8 @@ def test_module(name):
     except:
         return False
 
-def test_feature(module,name):
+
+def test_feature(module, name):
     try:
         importlib.import_module(name)
         return True
@@ -48,18 +51,18 @@ def test_feature(module,name):
         return False
 
 try:
-    import os
     scandir = os.scandir
+
 except AttributeError:
     try:
         import scandir
         scandir = scandir.scandir
     except ImportError:
-        import os
         def scandir(dirname="."):
-            for root,dirs,files in os.walk(dirname):
+            for root, dirs, files in os.walk(dirname):
                 for f in files:
-                    yield os.path.join(root,f)
+                    yield os.path.join(root, f)
+
 
 def gc(func):
     """
@@ -100,6 +103,7 @@ def gc_after(func):
         return result
     return func_wrapper
 
+
 @contextmanager
 def gc_ctx():
     """
@@ -110,6 +114,7 @@ def gc_ctx():
     yield
     garbage_collector.collect()
 
+
 @contextmanager
 def gc_ctx_before():
     """
@@ -118,6 +123,7 @@ def gc_ctx_before():
     """
     garbage_collector.collect()
     yield
+
 
 @contextmanager
 def gc_ctx_after():
@@ -128,16 +134,18 @@ def gc_ctx_after():
     yield
     garbage_collector.collect()
 
+
 @contextmanager
 def tmpdir_ctx():
     tmpdir = tempfile.mkdtemp()
     yield tmpdir
     shutil.rmtree(tmpdir)
 
+
 @contextmanager
 def delete_file_ctx(f):
     yield
-    if type(f)==file:
+    if isinstance(f, file):
         name = f.name
         if not f.closed:
             f.close()
@@ -149,7 +157,7 @@ def delete_file_ctx(f):
 @contextmanager
 def tmpfile_ctx():
     tmpfile = tempfile.mkstemp()
-    with open(tmpfile[1],"wb+") as f:
+    with open(tmpfile[1], "wb+") as f:
         yield f
     os.remove(tmpfile[1])
 

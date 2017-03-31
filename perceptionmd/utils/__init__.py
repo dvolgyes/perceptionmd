@@ -17,5 +17,4 @@ recognize_filetype = rev_eng.recognize_filetype
 scandir = utils.scandir
 random_combinations = utils.random_combinations
 padding = utils.padding
-__all__ = ["utils","rev_eng"]
-
+__all__ = ["utils", "rev_eng"]

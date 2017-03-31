@@ -10,9 +10,11 @@ from abc import abstractmethod
 import cachetools
 from collections import defaultdict
 
+
 class VolumeReader(object):
 
-    def __init__(self, lock=threading.Lock(),cache=cachetools.LRUCache(maxsize=1), dtype=np.float32, shape='auto', *args, **kwargs):
+    def __init__(self, lock=threading.Lock(), cache=cachetools.LRUCache(
+            maxsize=1), dtype=np.float32, shape='auto', *args, **kwargs):
         self.dtype = dtype
         self.volume_shapes = dict()
         self.volume_types = dict()
@@ -25,7 +27,7 @@ class VolumeReader(object):
     def get_pixelsize(self):
         return self.pixelsize
 
-    def UID2dir(self,UID):
+    def UID2dir(self, UID):
         return self.UID2dir_cache[UID]
 
     @gc_after

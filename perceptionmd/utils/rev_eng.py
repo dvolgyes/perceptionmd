@@ -3,7 +3,6 @@
 from __future__ import print_function, division, absolute_import, unicode_literals
 import numpy as np
 import six
-import re
 
 if six.PY2:
     import itertools
@@ -25,7 +24,6 @@ def detect_shape(inputdata, dtype=np.float32):
     The function returns the data in the detected shape.
     """
     import scipy.fftpack
-
 
     def divisors(n, trivial=False):
         large = []
@@ -65,7 +63,7 @@ def detect_shape(inputdata, dtype=np.float32):
                 n = i
         return n
 
-    if type(inputdata) == str:
+    if isinstance(inputdata, str):
         data = np.fromfile(inputdata, dtype=dtype)
     else:
         data = inputdata
@@ -98,8 +96,7 @@ def detect_shape(inputdata, dtype=np.float32):
     for i in range(idx1min, idx1max):
         k = detect_shape(q[:, i]).shape
         acc[k] = acc.get(k, 0) + 1
-    acc = list([(value, key) for (key, value) in acc.items()])
-    acc.sort()
+    acc = sorted([(value, key) for (key, value) in acc.items()])
     a = acc[-1][1]
 
     acc = dict()
@@ -116,59 +113,79 @@ def detect_shape(inputdata, dtype=np.float32):
     shape = (-1,) + a + b
     return np.squeeze(data.reshape(shape))
 
+
 def recognize_filetype(fn):
     filename = fn.lower()
     LE = None
-    if filename.find("_le_")>-1:
+    if filename.find("_le_") > -1:
         LE = True
-    if filename.find("_little_")>-1:
+    if filename.find("_little_") > -1:
         LE = True
-    if filename.find("_little_endian_")>-1:
+    if filename.find("_little_endian_") > -1:
         LE = True
-    if filename.find("_be_")>-1:
+    if filename.find("_be_") > -1:
         LE = False
-    if filename.find("_big_")>-1:
+    if filename.find("_big_") > -1:
         LE = False
-    if filename.find("_big_endian_")>-1:
+    if filename.find("_big_endian_") > -1:
         LE = False
-    if filename.find("_mac_")>-1:
+    if filename.find("_mac_") > -1:
         LE = False
 
-    if filename.find("_le.")>-1:
+    if filename.find("_le.") > -1:
         LE = True
-    if filename.find("_little.")>-1:
+    if filename.find("_little.") > -1:
         LE = True
-    if filename.find("_little_endian.")>-1:
+    if filename.find("_little_endian.") > -1:
         LE = True
-    if filename.find("_be.")>-1:
+    if filename.find("_be.") > -1:
         LE = False
-    if filename.find("_big.")>-1:
+    if filename.find("_big.") > -1:
         LE = False
-    if filename.find("_big_endian.")>-1:
+    if filename.find("_big_endian.") > -1:
         LE = False
-    if filename.find("_mac.")>-1:
+    if filename.find("_mac.") > -1:
         LE = False
-    if filename.find("_float_")>-1: return np.float32,LE
-    if filename.find("float32")>-1: return np.float32,LE
-    if filename.find("float64")>-1: return np.float64,LE
-    if filename.find("double")>-1: return np.float64,LE
-    if filename.find("uint8")>-1: return np.uint8,LE
-    if filename.find("uint16")>-1: return np.uint16,LE
-    if filename.find("uint32")>-1: return np.uint32,LE
-    if filename.find("uint64")>-1: return np.uint64,LE
-    if filename.find("uint")>-1: return np.uint32,LE
-    if filename.find("ushort")>-1: return np.uint16,LE
-    if filename.find("ulong")>-1: return np.uint64,LE
+    if filename.find("_float_") > -1:
+        return np.float32, LE
+    if filename.find("float32") > -1:
+        return np.float32, LE
+    if filename.find("float64") > -1:
+        return np.float64, LE
+    if filename.find("double") > -1:
+        return np.float64, LE
+    if filename.find("uint8") > -1:
+        return np.uint8, LE
+    if filename.find("uint16") > -1:
+        return np.uint16, LE
+    if filename.find("uint32") > -1:
+        return np.uint32, LE
+    if filename.find("uint64") > -1:
+        return np.uint64, LE
+    if filename.find("uint") > -1:
+        return np.uint32, LE
+    if filename.find("ushort") > -1:
+        return np.uint16, LE
+    if filename.find("ulong") > -1:
+        return np.uint64, LE
 
-    if filename.find("int8")>-1: return np.int8,LE
-    if filename.find("int16")>-1: return np.int16,LE
-    if filename.find("int32")>-1: return np.int32,LE
-    if filename.find("int64")>-1: return np.int64,LE
-    if filename.find("int")>-1: return np.int32,LE
-    if filename.find("short")>-1: return np.int16,LE
-    if filename.find("long")>-1: return np.int64,LE
+    if filename.find("int8") > -1:
+        return np.int8, LE
+    if filename.find("int16") > -1:
+        return np.int16, LE
+    if filename.find("int32") > -1:
+        return np.int32, LE
+    if filename.find("int64") > -1:
+        return np.int64, LE
+    if filename.find("int") > -1:
+        return np.int32, LE
+    if filename.find("short") > -1:
+        return np.int16, LE
+    if filename.find("long") > -1:
+        return np.int64, LE
 
-    return None,LE
+    return None, LE
+
 
 def detect_filetype(filename, offset=0, types='all', endian='all', count=-1):
     """
@@ -223,6 +240,5 @@ def detect_filetype(filename, offset=0, types='all', endian='all', count=-1):
 
             mean[dtype] = m
 
-    candidates = [(v, k) for k, v in mean.items()]
-    candidates.sort()
+    candidates = sorted([(v, k) for k, v in mean.items()])
     return np.dtype(candidates[0][1])
