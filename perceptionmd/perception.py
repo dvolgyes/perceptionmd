@@ -171,7 +171,7 @@ class DICOMVIEW(BoxLayout):
             self.volume = self.volume[..., ::-1]
 
         self.z_max = self.volume.shape[0] - 1
-        self.z_pos = min(self.z_pos, self.z_max)
+        self.z_pos = int(min(self.z_pos, self.z_max))
         self.set_window(self.wcenter, self.wwidth)
 
     def set_dummy_volume(self):
@@ -212,7 +212,7 @@ class DICOMVIEW(BoxLayout):
                 print("ERROR: Volume is None!")
                 return
             shift = self.wcenter - self.wwidth / 2.0
-            array = (self.volume[self.z_pos, :, :] - shift) / (self.wwidth / 255.0)
+            array = np.clip((self.volume[self.z_pos, :, :] - shift) / (self.wwidth / 255.0),0,255).astype(np.uint8)
             if array.shape[0] != array.shape[1]:
                 array = utils.padding_square(np.clip(array, 0, 255).astype(np.uint8))
 
@@ -392,6 +392,11 @@ class Pair(TaskScreen):
                 self.z_pos = int(poslist[selected_set] if selected_set < len(
                     poslist) else self.z_max // 2)
 
+            if type(hu_center_list) in (float,int):
+                hu_center_list=[hu_center_list,]
+            if type(hu_width_list) in (float,int):
+                hu_width_list=[hu_width_list,]
+
             if selected_set < len(hu_center_list):
                 self.wcenter = int(hu_center_list[selected_set])
             if selected_set < len(hu_width_list):
@@ -411,7 +416,7 @@ class Pair(TaskScreen):
                 self.volumedirs[next_selected_set].preload_volume(next_series1)
                 self.volumedirs[next_selected_set].preload_volume(next_series2)
 
-            self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
+            self.axial_pos.text = " %s / %s " % (int(self.z_pos), int(self.z_max))
             self.hu_center.text = str(int(self.wcenter))
             self.hu_width.text = str(int(self.wwidth))
             self.dcmview1.set_z(self.z_pos)
@@ -489,8 +494,19 @@ class Pair(TaskScreen):
         self.total_time += elapsed
         #~ question,set,left,right,answerselectedvolume
         selection = task[2][i]
-        self.loglines.append('        {:^8},{:^4},{:^5},{:^6},{:^14},{:^12},{:^16}, {:6.3f}, {:9}, {:^7}, {:^6}'.format(
-            task[0], task[1], task[2][0], task[2][1], i, self.choice_label[i], selection, elapsed, self.z_pos, self.wwidth, self.wcenter))
+        self.loglines.append(
+            '        {:^8},{:^4},{:^5},{:^6},{:^14},{:^12},{:^16}, {:6.3f}, {:9}, {:^7}, {:^6}'.format(
+                task[0],
+                task[1],
+                task[2][0],
+                task[2][1],
+                i,
+                self.choice_label[i],
+                selection,
+                elapsed,
+                self.z_pos,
+                self.wwidth,
+                self.wcenter))
         self.winner[selection] = self.winner[selection] + 1
         self.preselected_zpos[selected_set] = self.z_pos
         #~ self.manager.current = self.manager.next()
@@ -676,12 +692,10 @@ class Pair(TaskScreen):
 #                #~ self.hu_width.text = str(self.wwidth)
 #                #~ self.dcmview1.set_window(self.wcenter,self.wwidth)
 #                #~ self.dcmview2.set_window(self.wcenter,self.wwidth)
-            else:
-                self.z_pos = min(self.z_max, max(
-                    0, self.z_pos + direction * speed))
-                self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
-                self.dcmview1.set_z(self.z_pos)
-                self.dcmview2.set_z(self.z_pos)
+            self.z_pos = int(min(self.z_max, max(0, self.z_pos + direction * speed)))
+            self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
+            self.dcmview1.set_z(self.z_pos)
+            self.dcmview2.set_z(self.z_pos)
             self.display_image()
             return True
 
@@ -858,8 +872,23 @@ class Viewport(ScatterPlane):
 
 class InfoApp(App):
 
-    scancode_dict = {67: 'f1', 68: 'f2', 69: 'f3', 70: 'f4', 71: 'f5', 72: 'f6', 73: 'f7', 74: 'f8', 75: 'f9', 76: 'f10', 95: 'f11', 96: 'f12',
-                     278: 'home', 279: 'end', 277: 'ins', 127: 'del'}
+    scancode_dict = {
+        67: 'f1',
+        68: 'f2',
+        69: 'f3',
+        70: 'f4',
+        71: 'f5',
+        72: 'f6',
+        73: 'f7',
+        74: 'f8',
+        75: 'f9',
+        76: 'f10',
+        95: 'f11',
+        96: 'f12',
+        278: 'home',
+        279: 'end',
+        277: 'ins',
+        127: 'del'}
 
     def __init__(self, *args, **kwargs):
         super(InfoApp, self).__init__(*args, **kwargs)
