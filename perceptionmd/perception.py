@@ -1050,7 +1050,7 @@ def run(*argv):
                 print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")
                 print("Note: the file must exist and readable!")
                 sys.exit(1)
-            filename = argv[1]
+            filename = os.path.abspath(argv[1])
     else:
         filename = os.path.join(dir_path, "unittests/travis-example.pmd")
 
