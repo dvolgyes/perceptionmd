@@ -106,8 +106,7 @@ def detect_shape(inputdata, dtype=np.float32):
     for i in range(idx2min, idx2max):
         k = detect_shape(q[i, :]).shape
         acc[k] = acc.get(k, 0) + 1
-    acc = list([(value, key) for (key, value) in acc.items()])
-    acc.sort()
+    acc = sorted([(value, key) for (key, value) in acc.items()])
     b = acc[-1][1]
 
     shape = (-1,) + a + b
