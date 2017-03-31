@@ -1,0 +1,89 @@
+<General>
+logfile = "results.txt"
+
+<Timeline>
+- CHOICE: "terms and conditions"
+  text        = [term_and_conditions.md]
+  options     = "Agree", "Disagree"
+  IF "Disagree" THEN "thanks but"
+
+- QUESTION: "login"
+  text = [login.md]
+  username   <- STRING : "Name"
+  age        <- INT    : "Age"
+  profession <- STRING : "Profession"
+  experience <- FLOAT  : "Years of experience"
+  comment    <- STRING : "Comment/remark:"
+
+- CHOICE: "sharpness"
+  text        = [sharpness.md]
+  options     = "Left","I don't know", "Right"
+
+- PAIR: "raw_volumes"
+    question = [raw_vol_question.md]
+    random_pairs = [RAW::rawtest]
+    hu_center = 128
+    hu_width = 128
+    plane = "XY"
+    flipped_axes = 0,1,0
+    rotate = 0
+    options = "Left", "Right"
+
+- QUESTION: "thanks"
+  text = [thanks.md]
+  button = "Finish"
+  answer   <- STRING : "Comment or feedback"
+
+- END: "regular_end"
+
+- INFO: "thanks but"
+  text = [thanksbut.md]
+  button = "Finish"
+
+- END: "did_not_agree_end"
+
+
+Content: [term_and_conditions.md] {
+Participation in research
+-------------------------
+
+Your participation in this study is completely voluntary.
+If you don't want to take part in it, or you change your
+mind later, you can withdraw yourself anytime without any consequence,
+and you don't have to explain your decision.
+
+If you feel uncomfortable with any if the questions, then you
+don't have to answer them.
+
+}
+
+Content: [thanks.md] {
+Thank you for your time, that was all.
+
+If you have any final comment or feedback,
+then please this is the time to let us know.
+}
+
+Content: [thanksbut.md] {
+Thank you for your time, but unfortunatelly, if you do not accept the conditions,
+then you can't participate in the study.
+}
+
+Content: [login.md] {
+In order to perform the experiment, we need some information about you.
+
+Would you be kind to fill the fields below?
+}
+
+Content: [raw_vol_question.md] {
+Which volume is sharper?
+}
+
+
+Content: [sharpness.md] {
+Which images is the sharper? Hint: right button+move (or scroll button): scroll in the volume, left+ move up/down: window center, left+left/right: window width.
+Ctrl speeds up these with a factor of 5.
+----------------------------
+.. figure:: branches_combined.png
+}
+
