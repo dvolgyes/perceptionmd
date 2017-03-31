@@ -1,5 +1,6 @@
 <General>
 logfile = "results.txt"
+fullscreen = 0
 
 <Timeline>
 - CHOICE: "terms and conditions"

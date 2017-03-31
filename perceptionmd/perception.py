@@ -1088,7 +1088,7 @@ def run(*argv):
     Builder.load_file(os.path.join(dir_path, "widgets/infoscreen.kv"))
     Window.size = (int(settings['window_width']),
                    int(settings['window_height']))
-    Window.fullscreen = settings['full_screen'] != 0
+    Window.fullscreen = settings['fullscreen'] != 0
 
     os.chdir(os.path.dirname(filename))
     app = InfoApp()
