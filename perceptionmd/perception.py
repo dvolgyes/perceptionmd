@@ -212,7 +212,7 @@ class DICOMVIEW(BoxLayout):
                 print("ERROR: Volume is None!")
                 return
             shift = self.wcenter - self.wwidth / 2.0
-            array = np.clip((self.volume[self.z_pos, :, :] - shift) / (self.wwidth / 255.0),0,255).astype(np.uint8)
+            array = np.clip((self.volume[self.z_pos, :, :] - shift) / (self.wwidth / 255.0), 0, 255).astype(np.uint8)
             if array.shape[0] != array.shape[1]:
                 array = utils.padding_square(np.clip(array, 0, 255).astype(np.uint8))
 
@@ -392,10 +392,10 @@ class Pair(TaskScreen):
                 self.z_pos = int(poslist[selected_set] if selected_set < len(
                     poslist) else self.z_max // 2)
 
-            if type(hu_center_list) in (float,int):
-                hu_center_list=[hu_center_list,]
-            if type(hu_width_list) in (float,int):
-                hu_width_list=[hu_width_list,]
+            if type(hu_center_list) in (float, int):
+                hu_center_list = [hu_center_list, ]
+            if type(hu_width_list) in (float, int):
+                hu_width_list = [hu_width_list, ]
 
             if selected_set < len(hu_center_list):
                 self.wcenter = int(hu_center_list[selected_set])

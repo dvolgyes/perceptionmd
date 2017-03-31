@@ -29,6 +29,18 @@ logfile = "results.txt"
     rotate = 0
     options = "Left", "Right"
 
+- PAIR: "raw_volumes2"
+    question = [raw_vol_question2.md]
+    random_pairs = [RAW::rawtest]
+    colormap = "plasma"
+    hu_center = 128
+    hu_width = 128
+    plane = "XY"
+    flipped_axes = 0,1,0
+    rotate = 1
+    options = "Left", "Right"
+
+
 - QUESTION: "thanks"
   text = [thanks.md]
   button = "Finish"
@@ -75,15 +87,22 @@ In order to perform the experiment, we need some information about you.
 Would you be kind to fill the fields below?
 }
 
-Content: [raw_vol_question.md] {
-Which volume is sharper?
-}
-
-
 Content: [sharpness.md] {
-Which images is the sharper? Hint: right button+move (or scroll button): scroll in the volume, left+ move up/down: window center, left+left/right: window width.
-Ctrl speeds up these with a factor of 5.
+Which image is the sharper?
 ----------------------------
+
+You can use reStructuredText to describe your screen,
+including images with transparent regios, etc.
+
 .. figure:: branches_combined.png
 }
 
+
+Content: [raw_vol_question.md] {
+Which volume is sharper? Hint: right button+move (or scroll button):scroll, left+ move up/down: window center, left+left/right: window width.
+Ctrl speeds up these with a factor of 5.
+}
+
+Content: [raw_vol_question2.md] {
+You can rotate the volume, flip axes, add color map (or use the predefined matplotlib color maps).
+}
