@@ -840,7 +840,6 @@ class Choice(TaskScreen):
 class Viewport(ScatterPlane):
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('size', (1920, 1080))
         kwargs.setdefault('size_hint', (None, None))
         kwargs.setdefault('do_scale', False)
         kwargs.setdefault('do_translation', False)
@@ -929,7 +928,7 @@ class InfoApp(App):
         if key_match(scancode, set(modifiers), six.text_type(self.settings["fullscreen_hotkey"])):
             if not Window.fullscreen:
                 self.winsize = Window.size
-                Window.size = (1920, 1080)
+                Window.size = (int(self.settings['window_width']), int(self.settings['window_height']))
             else:
                 Window.size = self.winsize
             Window.fullscreen ^= True
@@ -1037,7 +1036,7 @@ class InfoApp(App):
         self.logger("<Timeline>")
         self.logger("")
 
-        self.viewport = Viewport(size=(1920, 1080))
+        self.viewport = Viewport(size=(int(self.settings['window_width']), int(self.settings['window_height'])))
         self.viewport.add_widget(self.sm)
         return self.viewport
 
