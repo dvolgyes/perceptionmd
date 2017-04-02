@@ -47,7 +47,6 @@ def KV(kvs, key):
             return kv.value
     return None
 
-
 class Logger():
 
     def __init__(self, filename):
@@ -847,6 +846,7 @@ class Viewport(ScatterPlane):
         super(Viewport, self).__init__(**kwargs)
         Window.bind(system_size=self.on_window_resize)
         Clock.schedule_once(self.fit_to_window, -1)
+        Clock.schedule_once(self.fit_to_window, 0.1)
 
     def on_window_resize(self, window, size):
         self.fit_to_window()
