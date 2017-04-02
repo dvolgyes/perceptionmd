@@ -16,7 +16,7 @@ default_settings.update({
     'button_size': 32,
     'button_font_color': 'None',
     'button_background_color': 'None',
-    'fullscreen': 1,
+    'fullscreen': 0,
     'window_height': 1080,
     'window_width': 1920,
     'screenshot_hotkey': 'shift+f12',

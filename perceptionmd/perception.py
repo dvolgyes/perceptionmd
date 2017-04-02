@@ -546,15 +546,15 @@ class Pair(TaskScreen):
             self.dcmview2.axis = 2
 
         if keycode[1] == 'f6':
-            self.dcmview1.flips[0] = not self.dcmview1.flips[0]
+            self.dcmview1.flips[0] ^= True
             self.dcmview2.flips[0] = self.dcmview1.flips[0]
 
         if keycode[1] == 'f7':
-            self.dcmview1.flips[1] = not self.dcmview1.flips[1]
+            self.dcmview1.flips[1] ^= True
             self.dcmview2.flips[1] = self.dcmview1.flips[1]
 
         if keycode[1] == 'f8':
-            self.dcmview1.flips[2] = not self.dcmview1.flips[2]
+            self.dcmview1.flips[2] ^= True
             self.dcmview2.flips[2] = self.dcmview1.flips[2]
 
         if keycode[1] == 'f9':
@@ -893,6 +893,7 @@ class InfoApp(App):
     def __init__(self, *args, **kwargs):
         super(InfoApp, self).__init__(*args, **kwargs)
         self.screen_dict = dict()
+        self.winsize = Window.size
 
     def callback(self, *args, **kwargs):
         pass
@@ -926,7 +927,13 @@ class InfoApp(App):
             return True
 
         if key_match(scancode, set(modifiers), six.text_type(self.settings["fullscreen_hotkey"])):
-            win.toggle_fullscreen()
+            if not Window.fullscreen:
+                self.winsize = Window.size
+                Window.size = (1920, 1080)
+            else:
+                Window.size = self.winsize
+            Window.fullscreen ^= True
+            self.viewport.fit_to_window()
             for s in self.screens:
                 s.canvas.ask_update()
             return True
@@ -1060,6 +1067,7 @@ def run(*argv):
     Config.set('kivy', 'loglevel', 'error')
     Config.set('kivy', 'exit_on_escape', '1')
     Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
+    Config.set('graphics', 'fullscreen', 'auto')
 
     langfile = os.path.join(dir_path, 'lang', 'perception.tx')
     explang_mm = textx.metamodel.metamodel_from_file(langfile)
