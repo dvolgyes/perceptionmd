@@ -2,13 +2,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import
 
-import sys
-import os
-import time
-import datetime
-import math
-import numpy as np
-import random
+import sys, os, time, datetime
+import math, random, numpy as np
 import cachetools
 import operator
 import threading
@@ -28,46 +23,21 @@ from kivy.uix.textinput import TextInput
 from kivy.config import Config
 from kivy.graphics.texture import Texture
 from kivy.clock import Clock
-from kivy.uix.scatter import ScatterPlane
+
 import textx
 import textx.metamodel
 
-import perceptionmd.volumes.DCM as DCM
-from perceptionmd.volumes import RAW
-import perceptionmd.volumes.colors as colors
-
+from perceptionmd.widgets import ViewPort
+from perceptionmd.volumes import RAW, DCM, colors
 from perceptionmd.defaults import default_settings
 import perceptionmd.utils as utils
-from perceptionmd.utils import gc_after
-
+from perceptionmd.utils import gc_after, Logger
 
 def KV(kvs, key):
     for kv in kvs:
         if kv.key == key:
             return kv.value
     return None
-
-class Logger():
-
-    def __init__(self, filename):
-        self.filename = filename
-        with open(self.filename, "a+"):
-            pass
-
-    def append(self, line):
-        with open(self.filename, "a") as f:
-            f.write(line.rstrip())
-            f.write("\n")
-
-    def append_list(self, lst):
-        for line in lst:
-            self.append(line)
-
-    def __call__(self, argument):
-        if isinstance(argument, list):
-            self.append_list(argument)
-        else:
-            self.append(argument)
 
 
 class TaskScreen(Screen):
@@ -596,11 +566,6 @@ class Pair(TaskScreen):
             btn.bind(on_press=lambda x: self.on_button(x))
             self.layout.add_widget(btn)
 
-    #~ on_touch_down:
-        #~ root.on_scroll(args[1])
-    #~ on_touch_move:
-        #~ root.on_move(args)
-
     def on_touch_down(self, touch):
         if not self.collide_point(touch.x, touch.y):
             return
@@ -836,39 +801,6 @@ class Choice(TaskScreen):
             self.layout.add_widget(btn)
 
 
-class Viewport(ScatterPlane):
-
-    def __init__(self, **kwargs):
-        kwargs.setdefault('size_hint', (None, None))
-        kwargs.setdefault('do_scale', False)
-        kwargs.setdefault('do_translation', False)
-        kwargs.setdefault('do_rotation', False)
-        super(Viewport, self).__init__(**kwargs)
-        Window.bind(system_size=self.on_window_resize)
-        Clock.schedule_once(self.fit_to_window, -1)
-        Clock.schedule_once(self.fit_to_window, 0.1)
-
-    def on_window_resize(self, window, size):
-        self.fit_to_window()
-
-    def fit_to_window(self, *args):
-        ratio = min(Window.width / float(self.width),
-                    Window.height / float(self.height))
-        self.scale = ratio
-        if (self.width < self.height) == (Window.width < Window.height):  # portrait
-            self.rotation = 0
-        else:
-            self.rotation = -90
-
-        self.center = Window.center
-        for c in self.children:
-            c.size = self.size
-
-    def add_widget(self, w, *args, **kwargs):
-        super(Viewport, self).add_widget(w, *args, **kwargs)
-        w.size = self.size
-
-
 class InfoApp(App):
 
     scancode_dict = {
@@ -1036,7 +968,9 @@ class InfoApp(App):
         self.logger("<Timeline>")
         self.logger("")
 
-        self.viewport = Viewport(size=(int(self.settings['window_width']), int(self.settings['window_height'])))
+        self.viewport = ViewPort.Viewport(
+            size=(int(self.settings['window_width']),
+                  int(self.settings['window_height'])))
         self.viewport.add_widget(self.sm)
         return self.viewport
 

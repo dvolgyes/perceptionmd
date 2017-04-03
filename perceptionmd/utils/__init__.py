@@ -4,6 +4,7 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 
 from . import utils
 from . import rev_eng
+from . import Log
 
 gc = utils.gc
 gc_after = utils.gc_after
@@ -18,5 +19,6 @@ scandir = utils.scandir
 random_combinations = utils.random_combinations
 padding = utils.padding
 padding_square = utils.padding_square
+Logger = Log.Logger
 
 __all__ = ["utils", "rev_eng"]

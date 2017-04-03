@@ -13,10 +13,11 @@ system = platform.system()
 reqs = ['cachetools', 'pydicom', 'textx', 'matplotlib',
         'pycontracts', 'docutils', 'pygame', 'numpy', 'wget', 'six']
 
+# In Anaconda/Miniconda, you are responsible to set up kivy and its dependencies.
+# See the windows installer
+
 if not conda:
     reqs += ["kivy"]
-    if system != 'Linux':
-        pass
 
 setup(
     include_data_files=True,
@@ -26,12 +27,11 @@ setup(
     author='David Volgyes',
     author_email='david.volgyes@ieee.org',
     url='https://github.com/dvolgyes/perceptionmd',
-    packages=['perceptionmd', 'perceptionmd/utils', 'perceptionmd/volumes'],
+    packages=['perceptionmd', 'perceptionmd/utils', 'perceptionmd/volumes', 'perceptionmd/widgets'],
     scripts=['PerceptionMD.py', 'PerceptionMD.bat'],
     data_files=[('perceptionmd', ['LICENSE.txt', 'README.md']),
                 ('perceptionmd/lang', ['perceptionmd/lang/perception.tx']),
-                ('perceptionmd/widgets',
-                 ['perceptionmd/widgets/infoscreen.kv']),
+                ('perceptionmd/widgets', ['perceptionmd/widgets/infoscreen.kv']),
                 ('perceptionmd/unittests', ['perceptionmd/unittests/travis-example.pmd'])],
     keywords=['radiology', 'experiments', 'observer study'],
     classifiers=[],
