@@ -32,15 +32,14 @@ setup(
     data_files=[('perceptionmd', ['LICENSE.txt', 'README.md']),
                 ('perceptionmd/lang', ['perceptionmd/lang/perception.tx']),
                 ('perceptionmd/widgets', ['perceptionmd/widgets/infoscreen.kv']),
-                ('perceptionmd/unittests', ['perceptionmd/unittests/travis-example.pmd'])
+                ('perceptionmd/unittests', ['perceptionmd/unittests/travis-example.pmd']),
                 ('perceptionmd/examples/simple',
                     ['perceptionmd/examples/simple/simple.pmd',
-                     'perceptionmd/examples/simple/branches_combined.png'])
+                     'perceptionmd/examples/simple/branches_combined.png']),
                 ('perceptionmd/examples/simple/rawtest',
                     ['perceptionmd/examples/simple/rawtest/A_9_512_512.raw',
-                     'perceptionmd/examples/simple/rawtest/B_9_512_512.raw'])
+                     'perceptionmd/examples/simple/rawtest/B_9_512_512.raw']),
                 ],
-
     keywords=['radiology', 'experiments', 'observer study'],
     classifiers=[],
     license='AGPL3',
