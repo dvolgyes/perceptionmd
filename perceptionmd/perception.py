@@ -2,8 +2,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import
 
-import sys, os, time, datetime
-import math, random, numpy as np
+import sys
+import os
+import time
+import datetime
+import math
+import random
+import numpy as np
 import cachetools
 import operator
 import threading
@@ -32,6 +37,7 @@ from perceptionmd.volumes import RAW, DCM, colors
 from perceptionmd.defaults import default_settings
 import perceptionmd.utils as utils
 from perceptionmd.utils import gc_after, Logger
+
 
 def KV(kvs, key):
     for kv in kvs:
@@ -984,7 +990,7 @@ def run(*argv):
             sys.exit(1)
 
         if argv[1] == "example":
-            filename = os.path.join(dir_path, "unittests/travis-example.pmd")
+            filename = os.path.join(dir_path, "examples/simple/simple.pmd")
         else:
             if not os.path.exists(argv[1]):
                 print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")
