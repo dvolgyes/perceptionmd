@@ -51,7 +51,7 @@ First install python, cython, and pygame or SDL and kivy.
 E.g. on Ubuntu:
 ```
 apt-get install python cython python-pygame python-kivy
-pip install git+https://github.com/dvolgyes/perceptionmd
+pip install https://github.com/dvolgyes/perceptionmd/zipball/master
 ```
 
 ### Windows install
