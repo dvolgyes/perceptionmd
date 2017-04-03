@@ -96,6 +96,9 @@ will start the demo application.
 Please read the Language_description.md file for the details.
 Examples will be placed in the "Examples" directory.
 
+A brief demonstration video is available at [https://www.youtube.com/watch?v=ApLbgmZEcT0](https://www.youtube.com/watch?v=ApLbgmZEcT0).
+This is more or less what is expected when the program is called with "example" as command line parameter.
+
 ## Feedback
 
 Any feedback is very appreciated. Patches and improvements are even more welcomed.
