@@ -32,5 +32,7 @@ default_settings.update({
     'hu_center': [],
     'hu_width': [],
     'colormap': None,
-    'raw_type': 'float32'
+    'raw_type': 'float32',
+    'reference': 'left',
+
 })

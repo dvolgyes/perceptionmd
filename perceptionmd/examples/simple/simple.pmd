@@ -30,7 +30,7 @@ fullscreen = 0
     rotate = 0
     options = "Left", "Right"
 
-- PAIR: "raw_volumes2"
+- REFERENCE: "raw_volumes2"
     question = [raw_vol_question2.md]
     random_pairs = [RAW::rawtest]
     colormap = "plasma"
@@ -39,7 +39,7 @@ fullscreen = 0
     plane = "XY"
     flipped_axes = 0,1,0
     rotate = 1
-    options = "Left", "Right"
+    options = "Reference image", "Right"
 
 
 - QUESTION: "thanks"

@@ -6,7 +6,7 @@ ExperimentModel:
 
 GeneralSettings:
     "<General>"
-    keyvalue+=KeyValue
+    keyvalue*=KeyValue
 ;
 
 Timeline:
@@ -23,7 +23,7 @@ WORD:
 ;
 
 Events:
-    CHOICE|VGA|QUESTION|INFO|PAIR|END|GOTO
+    CHOICE|VGA|QUESTION|INFO|PAIR|REFERENCE|END|GOTO
 ;
 
 CHOICE:
@@ -57,6 +57,10 @@ PAIR:
     keyvalue*=KeyValue
 ;
 
+REFERENCE:
+    "-" type="REFERENCE" ":" (name=STRING)?
+    keyvalue*=KeyValue
+;
 
 VGA:
     "-" type="VGA" ":" (name=STRING)?

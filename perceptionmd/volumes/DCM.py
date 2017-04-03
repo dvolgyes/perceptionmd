@@ -24,6 +24,7 @@ class DICOMDIR(VolumeReader.VolumeReader):
         self.filename_cache = collections.defaultdict(list)
 
     def volume_iterator(self, dirname):
+        volnames = []
         for root, dirnames, filenames in os.walk(dirname, followlinks=True):
             for f in filenames:
                 p = os.path.join(root, f)
@@ -32,9 +33,10 @@ class DICOMDIR(VolumeReader.VolumeReader):
                     series = ds.SeriesInstanceUID
                     self.filename_cache[series].append(p)
                     self.UID2dir_cache[series] = root
+                    volnames.append((series,root))
                 except:
                     continue
-        for volname in sorted(self.filename_cache.keys()):
+        for volname,root in sorted(list(set(volnames)),key=lambda x:x[1]):
             yield volname
 
     def volume(self, UID):

@@ -231,6 +231,7 @@ class Pair(TaskScreen):
         self.colormap = None
         self.next_refresh = time.time()
         self.preselected_zpos = defaultdict(int)
+        self.reference = kwargs.get('reference',False)
 
     def set_colormap(self, cmap):
         if cmap is None:
@@ -300,11 +301,26 @@ class Pair(TaskScreen):
         for qidx, question in enumerate(self.texts):
             taskl = []
             for vidx, series in enumerate(self.serieses):
-                for pair in utils.random_combinations(series):
-                    pair = list(pair)
-                    random.shuffle(pair)
-                    task = (qidx, vidx, pair)
-                    taskl.append(task)
+                if self.reference:
+                    it = sorted(list(series.keys()))
+                    if len(it) == 0: continue
+                    head,tail = it[0],it[1:]
+                    for item in tail:
+                        pair = [head,item] # left is the default
+                        if self.var['reference']=='right':
+                            pair = [item,head]
+                        elif self.var['reference']=='random':
+                            random.shuffle(pair)
+
+                        task = (qidx, vidx, pair)
+                        print(task)
+                        taskl.append(task)
+                else:
+                    for pair in utils.random_combinations(series):
+                        pair = list(pair)
+                        random.shuffle(pair)
+                        task = (qidx, vidx, pair)
+                        taskl.append(task)
             random.shuffle(taskl)
             result.extend(taskl)
         self.tasklist = result
@@ -444,8 +460,13 @@ class Pair(TaskScreen):
         self._keyboard.unbind(on_key_up=self._on_keyboard_up)
 
         leave_time = time.time()
-        self.log('- PAIR: "%s", @time: %.3f @effective_time: %.3f ' %
-                 (self.name, leave_time - self.wall_time, self.total_time))
+        if self.reference:
+            self.log('- REFERENCE: "%s", @time: %.3f @effective_time: %.3f ' %
+             (self.name, leave_time - self.wall_time, self.total_time))
+        else:
+            self.log('- PAIR: "%s", @time: %.3f @effective_time: %.3f ' %
+             (self.name, leave_time - self.wall_time, self.total_time))
+
         self.log(self.loglines)
         self.loglines = []
 
@@ -897,6 +918,9 @@ class InfoApp(App):
                 screen = VGA(name="%s" % event.name)
             elif event.type == "PAIR":
                 screen = Pair(name="%s" % event.name)
+            elif event.type == "REFERENCE":
+                screen = Pair(name="%s" % event.name)
+                screen.reference = True
 
             screen.automated_test = self.automated_test
             screen.var = dict()
@@ -934,7 +958,7 @@ class InfoApp(App):
             if event.type == "VGA":
                 pass
 
-            if event.type == "PAIR":
+            if event.type in ["PAIR", "REFERENCE"]:
                 screen.add_questions(KV(event.keyvalue, "question"))
                 screen.add_dirs(
                     KV(event.keyvalue, "random_pairs"), self.volumecache)
