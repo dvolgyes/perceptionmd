@@ -16,7 +16,6 @@ def at_least_3d(array):
         return array.reshape((-1,) + array.shape)
     return array
 
-
 class DICOMDIR(VolumeReader.VolumeReader):
 
     def __init__(self, *args, **kwargs):

@@ -6,6 +6,7 @@ from . import utils
 from . import rev_eng
 from . import Log
 
+KV = utils.KV
 gc = utils.gc
 gc_after = utils.gc_after
 gc_before = utils.gc_before

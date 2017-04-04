@@ -32,7 +32,8 @@ class RAWDIR(VolumeReader.VolumeReader):
     def volume_iterator(self, dirname=None):
         if dirname is None:
             dirname = self.directory
-        for fn in sorted(scandir(dirname)):
+
+        for fn in sorted(scandir(dirname),key=lambda x:x.name):
             if fn.name.lower().endswith("raw"):
                 root = os.path.split(fn.name)
                 self.UID2dir_cache[dirname] = root

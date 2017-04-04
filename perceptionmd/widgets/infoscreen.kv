@@ -7,7 +7,7 @@
         pos: root.pos
         size: root.size
 
-<DICOMVIEW>
+<DICOMView>:
     dcm_image: img
     rel: img.pos
 
@@ -27,7 +27,7 @@
                     pos: self.pos
                     texture: self.texture
 
-<Pair>:
+<Pairwise>:
     document: rst
     grid_layout: grid
     layout: button_line
@@ -55,9 +55,9 @@
             cols: 3
             spacing: 30
             padding: 15
-            DICOMVIEW:
+            DICOMView:
                 id: dcm1
-            DICOMVIEW:
+            DICOMView:
                 id: dcm2
         BoxLayout:
             id: button_line
