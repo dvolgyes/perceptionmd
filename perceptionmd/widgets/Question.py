@@ -7,6 +7,7 @@ import time
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 
+
 class Question(TaskScreen.TaskScreen):
 
     def __init__(self, *args, **kwargs):
@@ -58,4 +59,3 @@ class Question(TaskScreen.TaskScreen):
 
     def on_button_press(self, *args, **kwargs):
         self.manager.current = self.manager.next()
-

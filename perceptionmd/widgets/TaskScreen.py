@@ -7,6 +7,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock
 from perceptionmd.utils import gc_after
 
+
 class TaskScreen(Screen):
 
     def __init__(self, *args, **kwargs):

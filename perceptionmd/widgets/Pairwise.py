@@ -22,6 +22,7 @@ from perceptionmd.volumes import RAW, DCM, colors
 import perceptionmd.utils as utils
 from perceptionmd.widgets.DICOMView import DICOMView
 
+
 class Pairwise(TaskScreen.TaskScreen):
 
     def __init__(self, *args, **kwargs):
@@ -50,7 +51,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.colormap = None
         self.next_refresh = time.time()
         self.preselected_zpos = defaultdict(int)
-        self.reference = kwargs.get('reference',False)
+        self.reference = kwargs.get('reference', False)
 
     def set_colormap(self, cmap):
         if cmap is None:
@@ -122,13 +123,14 @@ class Pairwise(TaskScreen.TaskScreen):
             for vidx, series in enumerate(self.serieses):
                 if self.reference:
                     it = sorted(list(series.keys()))
-                    if len(it) == 0: continue
-                    head,tail = it[0],it[1:]
+                    if len(it) == 0:
+                        continue
+                    head, tail = it[0], it[1:]
                     for item in tail:
-                        pair = [head,item] # left is the default
-                        if self.var['reference']=='right':
-                            pair = [item,head]
-                        elif self.var['reference']=='random':
+                        pair = [head, item]  # left is the default
+                        if self.var['reference'] == 'right':
+                            pair = [item, head]
+                        elif self.var['reference'] == 'random':
                             random.shuffle(pair)
 
                         task = (qidx, vidx, pair)
@@ -281,15 +283,15 @@ class Pairwise(TaskScreen.TaskScreen):
         leave_time = time.time()
         if self.reference:
             self.log('- REFERENCE: "%s", @time: %.3f @effective_time: %.3f ' %
-             (self.name, leave_time - self.wall_time, self.total_time))
+                     (self.name, leave_time - self.wall_time, self.total_time))
         else:
             self.log('- PAIR: "%s", @time: %.3f @effective_time: %.3f ' %
-             (self.name, leave_time - self.wall_time, self.total_time))
+                     (self.name, leave_time - self.wall_time, self.total_time))
 
         self.log(self.loglines)
         self.loglines = []
 
-        sorted_winner = sorted(self.winner.items(),key=lambda x:x[0], reverse=True)
+        sorted_winner = sorted(self.winner.items(), key=lambda x: x[0], reverse=True)
         self.log("    winners:")
         for idx, wins in sorted_winner:
             if wins > 1:

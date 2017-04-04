@@ -5,6 +5,7 @@ from __future__ import print_function, division, absolute_import
 from . import TaskScreen
 import time
 
+
 class VGA(TaskScreen.TaskScreen):
 
     def __init__(self, *args, **kwargs):

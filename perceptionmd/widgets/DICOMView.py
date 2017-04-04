@@ -10,6 +10,7 @@ from kivy.graphics.texture import Texture
 from perceptionmd.utils import gc_after
 import perceptionmd.utils as utils
 
+
 class DICOMView(BoxLayout):
 
     def __init__(self, *args, **kwargs):
@@ -119,4 +120,3 @@ class DICOMView(BoxLayout):
 
         self.dcm_image.canvas.ask_update()
         self.canvas.ask_update()
-

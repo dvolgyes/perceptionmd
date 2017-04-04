@@ -13,11 +13,13 @@ import shutil
 import tempfile
 import os
 
+
 def KV(kvs, key):
     for kv in kvs:
         if kv.key == key:
             return kv.value
     return None
+
 
 def random_combinations(lst, count=2):
     result = []

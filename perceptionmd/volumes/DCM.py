@@ -16,6 +16,7 @@ def at_least_3d(array):
         return array.reshape((-1,) + array.shape)
     return array
 
+
 class DICOMDIR(VolumeReader.VolumeReader):
 
     def __init__(self, *args, **kwargs):
@@ -32,10 +33,10 @@ class DICOMDIR(VolumeReader.VolumeReader):
                     series = ds.SeriesInstanceUID
                     self.filename_cache[series].append(p)
                     self.UID2dir_cache[series] = root
-                    volnames.append((series,root))
+                    volnames.append((series, root))
                 except:
                     continue
-        for volname,root in sorted(list(set(volnames)),key=lambda x:x[1]):
+        for volname, root in sorted(list(set(volnames)), key=lambda x: x[1]):
             yield volname
 
     def volume(self, UID):

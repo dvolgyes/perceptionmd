@@ -7,6 +7,7 @@ import time
 import random
 from kivy.uix.button import Button
 
+
 class Choice(TaskScreen.TaskScreen):
 
     def __init__(self, *args, **kwargs):

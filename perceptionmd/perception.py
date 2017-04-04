@@ -23,6 +23,7 @@ from perceptionmd.widgets import ViewPort, Goto, End, Choice, Question, Pairwise
 from perceptionmd.defaults import default_settings
 from perceptionmd.utils import Logger, KV
 
+
 class PerceptionMDApp(App):
 
     scancode_dict = {
