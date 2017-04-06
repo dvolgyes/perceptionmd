@@ -105,5 +105,5 @@ Content:
 ;
 
 Comment:
-  /\/\/.*$/|/\/\*(.|\n)*?\*\//  // Non-greedy match of block component content
+  /\/\/.*$/|/#.*$/|/\/\*(.|\n)*?\*\//  // Non-greedy match of block component content
 ;
