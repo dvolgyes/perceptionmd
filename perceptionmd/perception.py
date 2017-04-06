@@ -9,6 +9,7 @@ import datetime
 import random
 import cachetools
 import six
+from collections import defaultdict
 
 from kivy.core.window import Window
 from kivy.lang import Builder
@@ -119,7 +120,7 @@ class PerceptionMDApp(App):
                 screen.reference = True
 
             screen.automated_test = self.automated_test
-            screen.var = dict()
+            screen.var = defaultdict(list)
             var = screen.var
             screen.global_settings = self.settings
             screen.contents = self.contents
@@ -127,13 +128,22 @@ class PerceptionMDApp(App):
             self.sm.add_widget(screen)
             self.screens.append(screen)
             var.update(self.settings)
+            repeated_keys = defaultdict(int)
             for kv in event.keyvalue:
+                repeated_keys[kv.key] += 1
+
+            for kv in event.keyvalue:
+                rep = repeated_keys[kv.key] > 1
                 if len(kv.value) == 1:
-                    var[kv.key] = kv.value[0]
+                    val = kv.value[0]
                 elif len(kv.value) == 0:
-                    var[kv.key] = None
+                    val = None
                 else:
-                    var[kv.key] = kv.value
+                    val = kv.value
+                if rep:
+                    var[kv.key].append(val)
+                else:
+                    var[kv.key] = val
 
             if event.type == "END":
                 continue
@@ -156,8 +166,9 @@ class PerceptionMDApp(App):
 
             if event.type in ["PAIR", "REFERENCE"]:
                 screen.add_questions(KV(event.keyvalue, "question"))
-                screen.add_dirs(
-                    KV(event.keyvalue, "random_pairs"), self.volumecache)
+                screen.add_dirs(KV(event.keyvalue, "random_pairs"), self.volumecache)
+                screen.add_dirs(KV(event.keyvalue, "base_layer"), self.volumecache, base_layer=True)
+
                 screen.add_options(screen.var['options'])
 
             if 'text' in var:

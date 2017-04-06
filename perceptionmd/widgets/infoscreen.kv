@@ -8,34 +8,57 @@
         size: root.size
 
 <DICOMView>:
+    base_image: img0
     dcm_image: img
-    rel: img.pos
+    rel: img0.pos
 
-    BoxLayout:
+    ScatterLayout:
         size_hint: None,None
-        size: img.size[0],1080
+        size: img0.size[0],1080
         orientation: 'vertical'
+        padding: 0
+        spacing: 0
         Image:
-            id: img
+            id: img0
+            opacity: 1.0
             size_hint: None,None
-            size: 930,930
+            size: 0,0
+            source: None
             canvas:
                 Color:
                     rgb: 1, 1, 1
                 Rectangle:
-                    size: img.size
+                    size: 930,930
                     pos: self.pos
                     texture: self.texture
+        Image:
+            id: img
+            opacity: 1.0
+            size_hint: None,None
+            size: 0,0
+            pos: img0.pos
+            source: None
+            canvas:
+                Color:
+                    rgb: 1, 1, 1
+                Rectangle:
+                    size: 930,930
+                    pos: self.pos
+                    texture: self.texture
+
 
 <Pairwise>:
     document: rst
     grid_layout: grid
+    status_bar: grid0
     layout: button_line
     dcmview1: dcm1
     dcmview2: dcm2
-    hu_width: grid1
-    hu_center: grid2
+    display_window_width: grid1
+    display_window_center: grid2
     axial_pos: grid3
+    alpha_text: grid4
+    alpha_value: grid5
     color_legend: colorimg
 
     BoxLayout:
@@ -66,8 +89,9 @@
             size: 60,30
     ScatterLayout:
         GridLayout:
+            id: grid0
             pos: 720,16
-            size: 480,60
+            size: 800,60
             size_hint: None,None
             rows: 1
             Label:
@@ -88,9 +112,18 @@
                 text: "Axial:"
                 font_size: 16
             Label:
+                id: grid3
                 text: ""
                 font_size: 16
-                id: grid3
+            Label:
+                id: grid4
+                text: "Alpha:"
+                font_size: 16
+            Label:
+                id: grid5
+                text: ""
+                font_size: 16
+
         Image:
             id: colorimg
             size: 10,930

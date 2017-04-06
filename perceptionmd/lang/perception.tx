@@ -49,22 +49,22 @@ QUESTION:
 
 INFO:
     "-" type="INFO" ":" (name=STRING)?
-    keyvalue*=KeyValue
+    keyvalue+=KeyValue
 ;
 
 PAIR:
     "-" type="PAIR" ":" (name=STRING)?
-    keyvalue*=KeyValue
+    keyvalue+=KeyValue
 ;
 
 REFERENCE:
     "-" type="REFERENCE" ":" (name=STRING)?
-    keyvalue*=KeyValue
+    keyvalue+=KeyValue
 ;
 
 VGA:
     "-" type="VGA" ":" (name=STRING)?
-    keyvalue*=KeyValue
+    keyvalue+=KeyValue
 ;
 
 InputField:
