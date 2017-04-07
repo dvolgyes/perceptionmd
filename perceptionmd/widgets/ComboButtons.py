@@ -4,6 +4,7 @@ from kivy.uix.widget import Widget
 from kivy.properties import StringProperty, NumericProperty, ListProperty, BooleanProperty
 from kivy.uix.togglebutton import ToggleButton
 
+
 class ComboButtons(Widget):
 
     labels = ListProperty()
@@ -15,17 +16,17 @@ class ComboButtons(Widget):
     group = StringProperty()
     allow_no_selection = BooleanProperty(False)
 
-    def __init__(self,*args,**kwargs):
+    def __init__(self, *args, **kwargs):
         super(ComboButtons, self).__init__(*args, **kwargs)
         if 'button_size' in kwargs:
             self.button_size = kwargs['button_size']
         self.callback = self.noop
 
     def on_button_size(self, *args, **kwargs):
-        self.layout.size = (self.layout.size[0],self.button_size)
+        self.layout.size = (self.layout.size[0], self.button_size)
         for child in self.layout.children:
-            child.size = child.size[0],self.button_size
-            child.size_hint = 1,None
+            child.size = child.size[0], self.button_size
+            child.size_hint = 1, None
 
     def on_font_size(self, *args, **kwargs):
         for child in self.layout.children:
@@ -33,13 +34,13 @@ class ComboButtons(Widget):
 
     def on_labels(self, *args, **kwargs):
         self.layout.clear_widgets()
-        self.layout.size = self.layout.size[0],self.button_size
+        self.layout.size = self.layout.size[0], self.button_size
         for i in range(len(self.labels)):
             widget = ToggleButton(
-                    text=self.labels[i],
-                    group=self.group,
-                    allow_no_selection=self.allow_no_selection,
-                    state='normal')
+                text=self.labels[i],
+                group=self.group,
+                allow_no_selection=self.allow_no_selection,
+                state='normal')
             widget.font_size = self.font_size
             self.layout.add_widget(widget)
 
@@ -48,7 +49,7 @@ class ComboButtons(Widget):
         if self.selected >= 0:
             self.layout.children[len(self.layout.children) - 1 - self.selected].state = 'down'
 
-    def noop(self,*args,**kwargs):
+    def noop(self, *args, **kwargs):
         pass
 
     def set_callback(self, f):

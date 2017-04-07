@@ -8,6 +8,7 @@ from perceptionmd.widgets import ComboButtons
 from kivy.properties import StringProperty, NumericProperty, DictProperty
 from . import TaskScreen
 
+
 class Choice(TaskScreen.TaskScreen):
 
     choice = NumericProperty(None)

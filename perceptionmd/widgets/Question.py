@@ -2,23 +2,30 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function, division, absolute_import
-from . import TaskScreen
 import time
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
+from kivy.properties import ListProperty, DictProperty, NumericProperty
+from . import TaskScreen
 
 
 class Question(TaskScreen.TaskScreen):
 
+    questions = ListProperty()
+    variables = DictProperty()
+    ratio = NumericProperty()
+
     def __init__(self, *args, **kwargs):
         super(Question, self).__init__(*args, **kwargs)
-        self.questions = []
-        self.variables = dict()
         self.start_time = None
-        self.focuses = []
+        self.ratio = 2
 
-    def add_questions(self, qs):
-        for q in qs:
+    def on_ratio(self, *args, **kwargs):
+        self.layout.size_hint = (1, 1)
+        self.document.size_hint = (self.layout.size_hint[0], self.ratio)
+
+    def on_questions(self, *args, **kwargs):
+        for q in self.questions:
             label = Label(text=q.message)
             input = TextInput()
             label.font_size = self.var['input_label_font_size']
@@ -26,19 +33,10 @@ class Question(TaskScreen.TaskScreen):
             self.variables[q.variable] = (input, q.type)
             self.layout.add_widget(label)
             self.layout.add_widget(input)
-            self.focuses.append(input)
             input.is_focusable = True
             input.write_tab = False
-        self.set_focuses()
         self.button.height = self.var['button_size']
         self.button.font_size = self.var['button_font_size']
-
-    def set_focuses(self):
-        if len(self.focuses) > 0:
-            self.focuses[0].focus = True
-            for i in range(len(self.focuses) - 1):
-                self.focuses[i].focus_next = self.focuses[i + 1]
-                self.focuses[i + 1].focus_previous = self.focuses[i]
 
     def on_pre_leave(self, *args, **kwargs):
         leave_time = time.time()

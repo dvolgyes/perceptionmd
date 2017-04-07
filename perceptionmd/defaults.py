@@ -41,6 +41,6 @@ default_settings.update({
     'reference': 'left',
     'base_layer': None,
     'base_colormap': None,
-    'alpha': 1.0
-
+    'alpha': 1.0,
+    'text_input_ratio': 2.0,
 })

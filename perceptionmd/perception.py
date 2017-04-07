@@ -159,8 +159,8 @@ class PerceptionMDApp(App):
                 screen.add_conditionals(event.branch)
 
             if event.type == "QUESTION":
-                screen.add_questions(event.question)
-
+                screen.questions = event.question
+                screen.ratio = var['text_input_ratio']
             if event.type == "VGA":
                 pass
 
