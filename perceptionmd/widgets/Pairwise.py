@@ -80,8 +80,10 @@ class Pairwise(TaskScreen.TaskScreen):
             self.colormap = colors.create_colormap(self.name + "_colormap", cmap)
 
     def on_colormap(self, *args, **kwargs):
+        self.initialized_cmap = False
         self.dcmview1.colormap = self.colormap
         self.dcmview2.colormap = self.colormap
+        self.initialized_cmap = True
 
     def on_base_colormap(self, *args, **kwargs):
         self.dcmview1.base_colormap = self.base_colormap
@@ -140,7 +142,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.z_pos = int(min(self.z_pos, self.z_max))
 
     def on_z_pos(self, *args, **kwargs):
-        self.z_pos = int(self.z_pos)
+        self.z_pos = max(0,int(self.z_pos))
         self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
         self.dcmview1.z_pos = self.z_pos
         self.dcmview2.z_pos = self.z_pos
@@ -364,6 +366,8 @@ class Pairwise(TaskScreen.TaskScreen):
             self.dcmview1.orient_volume()
             self.dcmview2.orient_volume()
 
+            self.property('z_pos').dispatch(self)
+
             if len(self.tasklist) > 1 + self.current_task_idx:
                 nexttask = self.tasklist[self.current_task_idx + 1]
                 (next_question, next_selected_set,
@@ -375,8 +379,9 @@ class Pairwise(TaskScreen.TaskScreen):
 
             self.document.text = self.texts[question]
             self.enable_buttons()
-            Clock.schedule_once(self.display_image)
-            Clock.schedule_once(self.display_image, self.min_refresh)
+            self.initialized_cmap = True
+            Clock.schedule_once(self.display_image,0)
+            Clock.schedule_once(self.display_image, self.min_refresh*3)
             self.start_time = time.time()
 
     def disable_buttons(self):
@@ -389,23 +394,22 @@ class Pairwise(TaskScreen.TaskScreen):
             button.disabled = False
             button.canvas.ask_update()
 
+    def on_initialized_cmap(self,*args,**kwargs):
+        self.color_legend.texture = Texture.create(size=(self.color_legend.size))
+        x = np.linspace(1, 1, self.color_legend.size[0])
+        y = np.linspace(0, 255, self.color_legend.size[1])
+        xv, yv = np.meshgrid(x, y)
+        self.color_legend_gradient = yv.astype(np.uint8)
+        if self.colormap is None:
+            self.color_legend.texture.blit_buffer(self.color_legend_gradient.tostring(), colorfmt='luminance', bufferfmt='ubyte')
+        else:
+            cmap_str = (self.colormap(self.color_legend_gradient) * 255).astype(np.uint8).tostring()
+            self.color_legend.texture.blit_buffer(cmap_str, colorfmt='rgba', bufferfmt='ubyte')
+
     def display_image(self, show=True):
         self.dcmview1.display_image(show)
         self.dcmview2.display_image(show)
-        if show:
-            if not self.initialized_cmap:
-                self.color_legend.texture = Texture.create(
-                    size=(self.color_legend.size))
-                x = np.linspace(1, 1, self.color_legend.size[0])
-                y = np.linspace(0, 255, self.color_legend.size[1])
-                xv, yv = np.meshgrid(x, y)
-                self.color_legend_gradient = yv.astype(np.uint8)
-            if self.colormap is None:
-                self.color_legend.texture.blit_buffer(
-                    self.color_legend_gradient.tostring(), colorfmt='luminance', bufferfmt='ubyte')
-            else:
-                cmap_str = (self.colormap(self.color_legend_gradient) * 255).astype(np.uint8).tostring()
-                self.color_legend.texture.blit_buffer(cmap_str, colorfmt='rgba', bufferfmt='ubyte')
+        self.initialized_cmap=show
 
     def on_enter(self, *args, **kwargs):
         self.generate()
@@ -642,7 +646,7 @@ class Pairwise(TaskScreen.TaskScreen):
 #                #~ self.display_window_width.text = str(self.wwidth)
 #                #~ self.dcmview1.set_window(self.wcenter,self.wwidth)
 #                #~ self.dcmview2.set_window(self.wcenter,self.wwidth)
-            self.z_pos = int(self.z_pos + direction * speed)
+            self.z_pos = max(0,int(self.z_pos + direction * speed))
             self.display_image()
             return True
 

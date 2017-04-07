@@ -9,7 +9,8 @@ from kivy.properties import ObjectProperty, BooleanProperty, ListProperty, Bound
 from kivy.graphics.texture import Texture
 from perceptionmd.utils import gc_after
 import perceptionmd.utils as utils
-
+from kivy.clock import Clock
+from functools import partial
 
 class DICOMView(BoxLayout):
     axis = NumericProperty(0)
@@ -46,6 +47,8 @@ class DICOMView(BoxLayout):
         self.base_img_texture = Texture.create(size=(512, 512))
         self.volume = np.zeros(shape=(1, 512, 512), dtype=np.uint8)
         self.core_volume = self.volume
+        self.display_on_trigger = Clock.create_trigger(partial(self.display_image_trigger, True))
+        self.display_off_trigger = Clock.create_trigger(partial(self.display_image_trigger, False))
 
     @gc_after
     def clear(self):
@@ -68,6 +71,12 @@ class DICOMView(BoxLayout):
 
     def on_alpha(self, *args):
         self.dcm_image.opacity = self.alpha
+
+    def on_initialized(self,*args,**kwargs):
+        self.dcm_image.texture = self.img_texture
+        self.base_image.texture = self.base_img_texture
+        self.blit(self.empty, colorfmt='luminance', bufferfmt='ubyte')
+        self.blit(self.empty, colorfmt='luminance', bufferfmt='ubyte', base_layer=True)
 
     def orient_volume(self):
         self.volume = self.core_volume
@@ -118,12 +127,13 @@ class DICOMView(BoxLayout):
             self.dcm_image.texture.blit_buffer(image.ravel(), colorfmt=colorfmt, bufferfmt=bufferfmt)
 
     def display_image(self, show=True):
-        if not self.initialized:
-            self.dcm_image.texture = self.img_texture
-            self.base_image.texture = self.base_img_texture
-            self.initialized = True
-            self.blit(self.empty, colorfmt='luminance', bufferfmt='ubyte')
-            self.blit(self.empty, colorfmt='luminance', bufferfmt='ubyte', base_layer=True)
+        if show:
+            self.display_on_trigger()
+        else:
+            self.display_off_trigger()
+
+    def display_image_trigger(self, show=True, *args):
+        self.initialized = True
         if show:
             while self.volume is None:
                 self.log("ERROR: Volume is None!")
