@@ -12,6 +12,7 @@ import perceptionmd.utils as utils
 from kivy.clock import Clock
 from functools import partial
 
+
 class DICOMView(BoxLayout):
     axis = NumericProperty(0)
     base_axis = NumericProperty(0)
@@ -72,7 +73,7 @@ class DICOMView(BoxLayout):
     def on_alpha(self, *args):
         self.dcm_image.opacity = self.alpha
 
-    def on_initialized(self,*args,**kwargs):
+    def on_initialized(self, *args, **kwargs):
         self.dcm_image.texture = self.img_texture
         self.base_image.texture = self.base_img_texture
         self.blit(self.empty, colorfmt='luminance', bufferfmt='ubyte')

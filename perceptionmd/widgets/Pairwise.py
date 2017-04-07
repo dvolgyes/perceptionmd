@@ -142,7 +142,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.z_pos = int(min(self.z_pos, self.z_max))
 
     def on_z_pos(self, *args, **kwargs):
-        self.z_pos = max(0,int(self.z_pos))
+        self.z_pos = max(0, int(self.z_pos))
         self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
         self.dcmview1.z_pos = self.z_pos
         self.dcmview2.z_pos = self.z_pos
@@ -380,8 +380,8 @@ class Pairwise(TaskScreen.TaskScreen):
             self.document.text = self.texts[question]
             self.enable_buttons()
             self.initialized_cmap = True
-            Clock.schedule_once(self.display_image,0)
-            Clock.schedule_once(self.display_image, self.min_refresh*3)
+            Clock.schedule_once(self.display_image, 0)
+            Clock.schedule_once(self.display_image, self.min_refresh * 3)
             self.start_time = time.time()
 
     def disable_buttons(self):
@@ -394,14 +394,16 @@ class Pairwise(TaskScreen.TaskScreen):
             button.disabled = False
             button.canvas.ask_update()
 
-    def on_initialized_cmap(self,*args,**kwargs):
+    def on_initialized_cmap(self, *args, **kwargs):
         self.color_legend.texture = Texture.create(size=(self.color_legend.size))
         x = np.linspace(1, 1, self.color_legend.size[0])
         y = np.linspace(0, 255, self.color_legend.size[1])
         xv, yv = np.meshgrid(x, y)
         self.color_legend_gradient = yv.astype(np.uint8)
         if self.colormap is None:
-            self.color_legend.texture.blit_buffer(self.color_legend_gradient.tostring(), colorfmt='luminance', bufferfmt='ubyte')
+            self.color_legend.texture.blit_buffer(
+                self.color_legend_gradient.tostring(),
+                colorfmt='luminance', bufferfmt='ubyte')
         else:
             cmap_str = (self.colormap(self.color_legend_gradient) * 255).astype(np.uint8).tostring()
             self.color_legend.texture.blit_buffer(cmap_str, colorfmt='rgba', bufferfmt='ubyte')
@@ -409,7 +411,7 @@ class Pairwise(TaskScreen.TaskScreen):
     def display_image(self, show=True):
         self.dcmview1.display_image(show)
         self.dcmview2.display_image(show)
-        self.initialized_cmap=show
+        self.initialized_cmap = show
 
     def on_enter(self, *args, **kwargs):
         self.generate()
@@ -646,7 +648,7 @@ class Pairwise(TaskScreen.TaskScreen):
 #                #~ self.display_window_width.text = str(self.wwidth)
 #                #~ self.dcmview1.set_window(self.wcenter,self.wwidth)
 #                #~ self.dcmview2.set_window(self.wcenter,self.wwidth)
-            self.z_pos = max(0,int(self.z_pos + direction * speed))
+            self.z_pos = max(0, int(self.z_pos + direction * speed))
             self.display_image()
             return True
 
