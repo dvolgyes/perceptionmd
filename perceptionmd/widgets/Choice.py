@@ -2,21 +2,20 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function, division, absolute_import
-from . import TaskScreen
 import time
 import random
-from kivy.uix.button import Button
 from perceptionmd.widgets import ComboButtons
-
+from kivy.properties import StringProperty, NumericProperty, DictProperty
+from . import TaskScreen
 
 class Choice(TaskScreen.TaskScreen):
 
+    choice = NumericProperty(None)
+    type = StringProperty(None)
+    conditions = DictProperty()
+
     def __init__(self, *args, **kwargs):
         super(Choice, self).__init__(*args, **kwargs)
-        self.type = None
-        self.conditions = dict()
-        self.choice_label = dict()
-        self.names_to_screen = dict()
         self.start_time = None
 
     def on_pre_leave(self, *args, **kwargs):
@@ -25,22 +24,23 @@ class Choice(TaskScreen.TaskScreen):
             self.log('- INFO: "%s", @time: %.3f' %
                      (self.name, (leave_time - self.start_time)))
         elif self.type == 'CHOICE':
-            self.log('- CHOICE: "%s", @time: %.3f' %
-                     (self.name, (leave_time - self.start_time)))
+            self.log('- CHOICE: "%s", @time: %.3f' % (self.name, (leave_time - self.start_time)))
+            self.log('    options    = "%s"' % ('", "'.join(self.buttons.labels)))
             self.log('    {:<10} = {}' .format("selection", self.choice))
-            self.log('    {:<10} = {}' .format(
-                "label", self.choice_label[self.choice]))
+            self.log('    {:<10} = "{}"' .format(
+                "label", self.text))
         else:
             assert(False)
         self.log("")
 
     def move_on(self, *args, **kwargs):
-        self.on_button(random.choice(list(self.buttons.keys())))
+        self.on_button(random.randrange(len(self.buttons.labels)))
 
     def on_button(self, button):
-        self.choice, key = self.buttons[button]
-        if key in self.conditions:
-            self.manager.current = self.conditions[key]
+        self.choice = button
+        self.text = self.buttons.labels[self.choice]
+        if self.text in self.conditions:
+            self.manager.current = self.conditions[self.text]
         else:
             self.manager.current = self.manager.next()
 
@@ -48,19 +48,10 @@ class Choice(TaskScreen.TaskScreen):
         for item in lst:
             self.conditions[item.condition] = item.consequence
 
-    def set(self, *args, **kwargs):
-        pass
-
     def add_options(self, button_labels):
-        self.buttons = dict()
-        for idx, label in enumerate(button_labels):
-            self.choice_label[idx] = label
-            btn = Button(text=label)
-            btn.size_hint = self.layout.size_hint
-            btn.size = self.layout.size
-            btn.height = self.var['button_size']
-            btn.font_size = self.var['button_font_size']
-
-            self.buttons[btn] = (idx, btn.text)
-            btn.bind(on_press=lambda x: self.on_button(x))
-            self.layout.add_widget(btn)
+        self.buttons = ComboButtons.ComboButtons()
+        self.buttons.labels = button_labels
+        self.buttons.button_size = self.var['button_size']
+        self.buttons.font_size = self.var['button_font_size']
+        self.buttons.set_callback(self.on_button)
+        self.layout.add_widget(self.buttons)

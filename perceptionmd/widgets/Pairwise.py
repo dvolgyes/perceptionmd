@@ -269,7 +269,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.tasklist = result
         self.loglines.append("    results:")
         self.loglines.append(
-            "        question, set, left, right, answer button, answer text, selected volume,  @time, axial pos, wwidth, wcenter")
+            "        question, set, left, right, answer button,   answer text  , selected volume,  @time, axial pos, wwidth, wcenter")
 
         self.plane = {'XY': 0, 'XZ': 1, 'YZ': 2}[self.var['plane']]
         self.flips = list(map(bool, self.var['flipped_axes']))
@@ -457,7 +457,7 @@ class Pairwise(TaskScreen.TaskScreen):
         #~ question,set,left,right,answerselectedvolume
         selection = task[2][i]
         self.loglines.append(
-            '        {:^8},{:^4},{:^5},{:^6},{:^14},{:^12},{:^16}, {:6.3f}, {:9}, {:^7}, {:^6}'.format(
+            '        {:^8},{:^4},{:^5},{:^6},{:^14},{:^16},{:^16}, {:6.3f}, {:9}, {:^7}, {:^6}'.format(
                 task[0],
                 task[1],
                 task[2][0],

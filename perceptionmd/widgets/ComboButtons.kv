@@ -1,0 +1,17 @@
+#: import Button kivy.uix.button.Button
+
+<ComboButtons>:
+    layout: layout
+    orientation: layout.orientation
+    labels: []
+    allow_no_selection: False
+
+    on_orientation:
+        layout.orientation = self.orientation
+
+    BoxLayout:
+        orientation: "vertical"
+        pos: root.pos
+        size: root.size
+        id:layout
+
