@@ -14,6 +14,14 @@ import tempfile
 import os
 
 
+def listify(arg):
+    if arg is None:
+        return list()
+    if hasattr(arg, '__iter__'):
+        return arg
+    return list((arg,))
+
+
 def KV(kvs, key):
     for kv in kvs:
         if kv.key == key:

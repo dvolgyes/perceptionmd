@@ -6,6 +6,7 @@ from . import TaskScreen
 import time
 import random
 from kivy.uix.button import Button
+from perceptionmd.widgets import ComboButtons
 
 
 class Choice(TaskScreen.TaskScreen):

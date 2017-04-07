@@ -22,39 +22,51 @@ from perceptionmd.utils import gc_after
 from perceptionmd.volumes import RAW, DCM, colors
 import perceptionmd.utils as utils
 
+from kivy.properties import ObjectProperty, DictProperty, NumericProperty, ListProperty, BooleanProperty
+
 
 class Pairwise(TaskScreen.TaskScreen):
+
+    alpha = NumericProperty(1.0)
+    colormap = ObjectProperty(None)
+    base_colormap = ObjectProperty(None)
+    wwidth = NumericProperty(-1)
+    wcenter = NumericProperty(0)
+    base_wwidth = NumericProperty(-1)
+    base_wcenter = NumericProperty(0)
+    z_pos = NumericProperty(0)
+    z_max = NumericProperty(-1)
+    volumedirs = ListProperty()
+    serieses = ListProperty()
+    loglines = ListProperty()
+    texts = ListProperty()
+    sources = ListProperty()
+    base_layer_dirs = ListProperty()
+    base_layer_serieses = ListProperty()
+    choice_label = DictProperty()
+    choice_idx = DictProperty()
+    base = BooleanProperty(False)
+    initialized_cmap = BooleanProperty(False)
+    reference = BooleanProperty(False)
+
+    rotate = NumericProperty(0)
+    base_rotate = NumericProperty(0)
+    plane = NumericProperty(0)
+    base_plane = NumericProperty(0)
+    flips = ListProperty()
+    base_flips = ListProperty()
 
     def __init__(self, *args, **kwargs):
         super(Pairwise, self).__init__(**kwargs)
         self.start_time = None
         self.total_time = 0
         self.wall_time = None
-        self.base_layer_dirs = []
-        self.base_layer_serieses = []
-        self.volumedirs = []
-        self.serieses = []
-        self.loglines = []
-        self.texts = []
-        self.sources = []
-        self.choice_label = dict()
-        self.choice_idx = dict()
         self.current_task_idx = -1
         self.lock = threading.Lock()
         self.black = None
-        self.z_pos = 0
-        self.z_max = 0
-        self.wwidth = 400
-        self.wcenter = 20
-        self.base_wwidth = 400
-        self.base_wcenter = 20
-        self.base = False
-        self.alpha = 1.0
         self.keypresses = defaultdict(lambda: False)
         self.min_refresh = 0.4
         self.winner = defaultdict(int)
-        self.initialized_cmap = False
-        self.colormap = None
         self.next_refresh = time.time()
         self.preselected_zpos = defaultdict(int)
         self.reference = kwargs.get('reference', False)
@@ -64,15 +76,19 @@ class Pairwise(TaskScreen.TaskScreen):
             return
         if base_layer:
             self.base_colormap = colors.create_colormap(self.name + "_colormap", cmap)
-            self.dcmview1.set_colormap(self.base_colormap, base_layer)
-            self.dcmview2.set_colormap(self.base_colormap, base_layer)
         else:
             self.colormap = colors.create_colormap(self.name + "_colormap", cmap)
-            self.dcmview1.set_colormap(self.colormap, base_layer)
-            self.dcmview2.set_colormap(self.colormap, base_layer)
 
-    def set_alpha(self, alpha):
-        self.alpha = np.clip(alpha, 0.0, 1.0).item()
+    def on_colormap(self, *args, **kwargs):
+        self.dcmview1.colormap = self.colormap
+        self.dcmview2.colormap = self.colormap
+
+    def on_base_colormap(self, *args, **kwargs):
+        self.dcmview1.base_colormap = self.base_colormap
+        self.dcmview2.base_colormap = self.base_colormap
+
+    def on_alpha(self, *args):
+        self.alpha = np.clip(self.alpha, 0.0, 1.0).item()
         if self.base:
             self.alpha_text.text = "Alpha:"
             self.alpha_value.text = "%.2f" % self.alpha
@@ -81,9 +97,79 @@ class Pairwise(TaskScreen.TaskScreen):
             self.status_bar.size = (600, self.status_bar.size[1])
             self.alpha_text.text = ""
             self.alpha_value.text = ""
+        self.dcmview1.alpha = self.alpha
+        self.dcmview2.alpha = self.alpha
 
-        self.dcmview1.set_alpha(self.alpha)
-        self.dcmview2.set_alpha(self.alpha)
+    def on_wcenter(self, *args, **kwargs):
+        self.wcenter = int(self.wcenter)
+        self.dcmview1.wcenter = self.wcenter
+        self.dcmview2.wcenter = self.wcenter
+        if self.base:
+            self.display_window_center.text = "%s (%s)" % (self.wcenter, self.base_wcenter)
+        else:
+            self.display_window_center.text = str(self.wcenter)
+
+    def on_wwidth(self, *args, **kwargs):
+        self.wwidth = int(self.wwidth)
+        self.dcmview1.wwidth = self.wwidth
+        self.dcmview2.wwidth = self.wwidth
+        if self.base:
+            self.display_window_width.text = "%s (%s)" % (self.wwidth, self.base_wwidth)
+        else:
+            self.display_window_width.text = str(self.wwidth)
+
+    def on_base_wcenter(self, *args, **kwargs):
+        self.base_wcenter = int(self.base_wcenter)
+        self.dcmview1.base_wcenter = self.base_wcenter
+        self.dcmview2.base_wcenter = self.base_wcenter
+        if self.base:
+            self.display_window_center.text = "%s (%s)" % (self.wcenter, self.base_wcenter)
+        else:
+            self.display_window_center.text = str(self.wcenter)
+
+    def on_base_wwidth(self, *args, **kwargs):
+        self.base_wwidth = int(self.base_wwidth)
+        self.dcmview1.base_wwidth = self.base_wwidth
+        self.dcmview2.base_wwidth = self.base_wwidth
+        if self.base:
+            self.display_window_width.text = "%s (%s)" % (self.wwidth, self.base_wwidth)
+        else:
+            self.display_window_width.text = str(self.wwidth)
+
+    def on_z_max(self, *args, **kwargs):
+        self.z_pos = int(min(self.z_pos, self.z_max))
+
+    def on_z_pos(self, *args, **kwargs):
+        self.z_pos = int(self.z_pos)
+        self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
+        self.dcmview1.z_pos = self.z_pos
+        self.dcmview2.z_pos = self.z_pos
+
+    def on_rotate(self, *args, **kwargs):
+        self.rotate = int(self.rotate) % 4
+        self.dcmview1.rotate = self.rotate
+        self.dcmview2.rotate = self.rotate
+
+    def on_flips(self, *args, **kwargs):
+        self.dcmview1.flips = self.flips
+        self.dcmview2.flips = self.flips
+
+    def on_plane(self, *args, **kwargs):
+        self.dcmview1.axis = self.plane
+        self.dcmview2.axis = self.plane
+
+    def on_base_rotate(self, *args, **kwargs):
+        self.rotate = int(self.rotate) % 4
+        self.dcmview1.base_rotate = self.base_rotate
+        self.dcmview2.base_rotate = self.base_rotate
+
+    def on_base_flips(self, *args, **kwargs):
+        self.dcmview1.base_flips = self.base_flips
+        self.dcmview2.base_flips = self.base_flips
+
+    def on_base_plane(self, *args, **kwargs):
+        self.dcmview1.base_axis = self.base_plane
+        self.dcmview2.base_axis = self.base_plane
 
     def add_dirs(self, dirs, cache, base_layer=False):
         if dirs is not None:
@@ -186,8 +272,9 @@ class Pairwise(TaskScreen.TaskScreen):
         self.plane = {'XY': 0, 'XZ': 1, 'YZ': 2}[self.var['plane']]
         self.flips = list(map(bool, self.var['flipped_axes']))
         self.rotate = int(self.var['rotate'])
-
         self.base_plane = {'XY': 0, 'XZ': 1, 'YZ': 2, None: self.plane}[self.var['plane']]
+        self.alpha = self.var['alpha']
+        self.property('alpha').dispatch(self)
 
         if self.var['base_flipped_axes'] is not None:
             self.base_flips = list(map(bool, self.var['base_flipped_axes']))
@@ -226,19 +313,6 @@ class Pairwise(TaskScreen.TaskScreen):
             (question, selected_set, (volID1, volID2)) = task
             series1 = self.serieses[selected_set][volID1][0]
             series2 = self.serieses[selected_set][volID2][0]
-            self.dcmview1.rotate = self.rotate
-            self.dcmview1.flips = self.flips
-            self.dcmview1.axis = self.plane
-            self.dcmview2.rotate = self.rotate
-            self.dcmview2.flips = self.flips
-            self.dcmview2.axis = self.plane
-
-            self.dcmview1.base_rotate = self.base_rotate
-            self.dcmview1.base_flips = self.base_flips
-            self.dcmview1.base_axis = self.base_plane
-            self.dcmview2.base_rotate = self.base_rotate
-            self.dcmview2.base_flips = self.base_flips
-            self.dcmview2.base_axis = self.base_plane
 
             self.dcmview1.set_volume(self.volumedirs[selected_set].volume(series1))
             self.dcmview2.set_volume(self.volumedirs[selected_set].volume(series2))
@@ -255,14 +329,12 @@ class Pairwise(TaskScreen.TaskScreen):
             base_display_window_center_list = self.var['base_display_window_center']
             base_display_window_width_list = self.var['base_display_window_width']
             self.set_colormap(self.var['colormap'])
-            self.set_alpha(self.var['alpha'])
             self.set_colormap(self.var['base_colormap'], True)
 
             if selected_set in self.preselected_zpos:
                 self.z_pos = self.preselected_zpos[selected_set]
             else:
-                self.z_pos = int(poslist[selected_set] if selected_set < len(
-                    poslist) else self.z_max // 2)
+                self.z_pos = int(poslist[selected_set] if selected_set < len(poslist) else self.z_max // 2)
 
             if type(display_window_center_list) in (float, int):
                 display_window_center_list = [display_window_center_list, ]
@@ -281,13 +353,14 @@ class Pairwise(TaskScreen.TaskScreen):
 
             if selected_set < len(base_display_window_center_list):
                 self.base_wcenter = int(base_display_window_center_list[selected_set])
+            else:
+                self.base_wcenter = self.wcenter
             if selected_set < len(base_display_window_width_list):
                 self.base_wwidth = int(base_display_window_width_list[selected_set])
+            else:
+                self.base_wwidth = self.wwidth
+            self.alpha = self.var['alpha']
 
-            self.dcmview1.set_window(self.wcenter, self.wwidth)
-            self.dcmview2.set_window(self.wcenter, self.wwidth)
-            self.dcmview1.set_window(self.base_wcenter, self.base_wwidth, True)
-            self.dcmview2.set_window(self.base_wcenter, self.base_wwidth, True)
             self.dcmview1.orient_volume()
             self.dcmview2.orient_volume()
 
@@ -300,17 +373,6 @@ class Pairwise(TaskScreen.TaskScreen):
                 self.volumedirs[next_selected_set].preload_volume(next_series1)
                 self.volumedirs[next_selected_set].preload_volume(next_series2)
 
-            self.axial_pos.text = " %s / %s " % (int(self.z_pos), int(self.z_max))
-
-            if self.base:
-                self.display_window_center.text = "%s (%s)" % (int(self.wcenter), int(self.base_wcenter))
-                self.display_window_width.text = "%s (%s)" % (int(self.wwidth), int(self.base_wwidth))
-            else:
-                self.display_window_center.text = str(int(self.wcenter))
-                self.display_window_width.text = str(int(self.wwidth))
-
-            self.dcmview1.set_z(self.z_pos)
-            self.dcmview2.set_z(self.z_pos)
             self.document.text = self.texts[question]
             self.enable_buttons()
             Clock.schedule_once(self.display_image)
@@ -346,7 +408,7 @@ class Pairwise(TaskScreen.TaskScreen):
                 self.color_legend.texture.blit_buffer(cmap_str, colorfmt='rgba', bufferfmt='ubyte')
 
     def on_enter(self, *args, **kwargs):
-        self.set()
+        self.generate()
         self.wall_time = time.time()
         self.start_time = time.time()
         self._keyboard = Window.request_keyboard(
@@ -413,9 +475,6 @@ class Pairwise(TaskScreen.TaskScreen):
             #~ # set up new scene
             #~ pass
 
-    def set(self, *args, **kwargs):
-        self.generate()
-
     def _keyboard_closed(self):
         pass
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
@@ -428,54 +487,36 @@ class Pairwise(TaskScreen.TaskScreen):
             keyboard.release()
 
         if keycode[1] == 'f3':
-            self.dcmview1.axis = 0
-            self.dcmview2.axis = 0
-            self.dcmview1.base_axis = 0
-            self.dcmview2.base_axis = 0
+            self.plane = 0
+            self.base_plane = 0
 
         if keycode[1] == 'f4':
-            self.dcmview1.axis = 1
-            self.dcmview2.axis = 1
-            self.dcmview1.base_axis = 1
-            self.dcmview2.base_axis = 1
+            self.plane = 1
+            self.base_plane = 1
 
         if keycode[1] == 'f5':
-            self.dcmview1.axis = 2
-            self.dcmview2.axis = 2
-            self.dcmview1.base_axis = 2
-            self.dcmview2.base_axis = 2
+            self.plane = 2
+            self.base_plane = 2
 
         if keycode[1] == 'f6':
-            self.dcmview1.flips[0] ^= True
-            self.dcmview2.flips[0] = self.dcmview1.flips[0]
-            self.dcmview1.base_flips[0] ^= True
-            self.dcmview2.base_flips[0] = self.dcmview1.base_flips[0]
+            self.flips[0] ^= True
+            self.base_flips[0] ^= True
 
         if keycode[1] == 'f7':
-            self.dcmview1.flips[1] ^= True
-            self.dcmview2.flips[1] = self.dcmview1.flips[1]
-            self.dcmview1.base_flips[1] ^= True
-            self.dcmview2.base_flips[1] = self.dcmview1.base_flips[1]
+            self.flips[1] ^= True
+            self.base_flips[1] ^= True
 
         if keycode[1] == 'f8':
-            self.dcmview1.flips[2] ^= True
-            self.dcmview2.flips[2] = self.dcmview1.flips[2]
-            self.dcmview1.base_flips[2] ^= True
-            self.dcmview2.base_flips[2] = self.dcmview1.base_flips[2]
+            self.flips[2] ^= True
+            self.base_flips[2] ^= True
 
         if keycode[1] == 'f9':
-            self.dcmview1.rotate = (self.dcmview1.rotate + 1) % 4
-            self.dcmview1.base_rotate = (self.dcmview1.base_rotate + 1) % 4
-
-            self.dcmview2.rotate = self.dcmview1.rotate
-            self.dcmview2.base_rotate = self.dcmview1.base_rotate
+            self.rotate = (self.rotate + 1) % 4
+            self.base_rotate = (self.base_rotate + 1) % 4
 
         if keycode[1] == 'f10':
-            self.dcmview1.rotate = (self.dcmview1.rotate + 3) % 4
-            self.dcmview2.rotate = self.dcmview1.rotate
-
-            self.dcmview1.base_rotate = (self.dcmview1.base_rotate + 3) % 4
-            self.dcmview2.base_rotate = self.dcmview1.base_rotate
+            self.rotate = (self.rotate + 3) % 4
+            self.base_rotate = (self.base_rotate + 3) % 4
 
         if keycode[1] in ['f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10']:
             self.dcmview1.orient_volume()
@@ -515,9 +556,9 @@ class Pairwise(TaskScreen.TaskScreen):
         if 'button' in touch.profile:
             if self.keypresses['shift']:
                 if touch.button == 'scrolldown':
-                    self.set_alpha(self.alpha + 0.05)
+                    self.alpha += 0.05
                 if touch.button == 'scrollup':
-                    self.set_alpha(self.alpha - 0.05)
+                    self.alpha -= 0.05
             else:
                 if touch.button == 'scrolldown':
                     self.on_scroll(1)
@@ -550,21 +591,20 @@ class Pairwise(TaskScreen.TaskScreen):
                 if base:
                     if (angle % 2 == 0):
                         if direction == (int(self.var['display_window_center_vertical_mouse']) == 0):
-                            delta = int(dx) * speed
+                            delta = int(dx * speed)
                             self.base_wwidth = max(10, self.base_wwidth + delta)
                         else:
-                            delta = int(dy) * speed
+                            delta = int(dy * speed)
                             self.base_wcenter = self.base_wcenter + delta
                 else:
                     if (angle % 2 == 0):
                         if direction == (int(self.var['display_window_center_vertical_mouse']) == 0):
-                            delta = int(dx) * speed
+                            delta = int(dx * speed)
                             self.wwidth = max(10, self.wwidth + delta)
                         else:
-                            delta = int(dy) * speed
+                            delta = int(dy * speed)
                             self.wcenter = self.wcenter + delta
 
-                self.set_window()
                 self.display_image()
             elif touch.button == self.var['mouse_window_scroll_button']:
                 dx, dy = touch.dpos
@@ -573,35 +613,10 @@ class Pairwise(TaskScreen.TaskScreen):
                 angle = int(math.atan2(dy, dx) / math.pi * 4) + 4
                 if (angle % 2 == 0):
                     dz = (touch.pos[1] - self.touch_pos[1])
-                    self.z_pos = min(self.z_max, max(
-                        0, self.tzpos + dz * 1.0))
-                    self.axial_pos.text = " %s / %s " % (
-                        self.z_pos, self.z_max)
-                    self.dcmview1.set_z(self.z_pos)
-                    self.dcmview2.set_z(self.z_pos)
+                    self.z_pos = self.tzpos + dz * 1.0
                     self.display_image()
             else:
                 pass
-
-    def set_window(self):
-        self.wcenter = int(self.wcenter)
-        self.wwidth = int(self.wwidth)
-        self.base_wcenter = int(self.base_wcenter)
-        self.base_wwidth = int(self.base_wwidth)
-
-        self.dcmview1.set_window(self.wcenter, self.wwidth)
-        self.dcmview2.set_window(self.wcenter, self.wwidth)
-        self.dcmview1.set_window(self.base_wcenter, self.base_wwidth, True)
-        self.dcmview2.set_window(self.base_wcenter, self.base_wwidth, True)
-
-        if self.base:
-            self.display_window_center.text = "%s (%s)" % (int(self.wcenter), int(self.base_wcenter))
-            self.display_window_width.text = "%s (%s)" % (int(self.wwidth), int(self.base_wwidth))
-        else:
-            self.display_window_center.text = str(int(self.wcenter))
-            self.display_window_width.text = str(int(self.wwidth))
-
-        self.display_image()
 
     def on_touch_up(self, touch):
         if touch.grab_current is self:
@@ -627,10 +642,7 @@ class Pairwise(TaskScreen.TaskScreen):
 #                #~ self.display_window_width.text = str(self.wwidth)
 #                #~ self.dcmview1.set_window(self.wcenter,self.wwidth)
 #                #~ self.dcmview2.set_window(self.wcenter,self.wwidth)
-            self.z_pos = int(min(self.z_max, max(0, self.z_pos + direction * speed)))
-            self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
-            self.dcmview1.set_z(self.z_pos)
-            self.dcmview2.set_z(self.z_pos)
+            self.z_pos = int(self.z_pos + direction * speed)
             self.display_image()
             return True
 

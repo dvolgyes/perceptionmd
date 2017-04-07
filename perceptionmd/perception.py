@@ -22,7 +22,7 @@ import textx.metamodel
 
 from perceptionmd.widgets import ViewPort, Goto, End, Choice, Question, Pairwise, VGA
 from perceptionmd.defaults import default_settings
-from perceptionmd.utils import Logger, KV
+from perceptionmd.utils import Logger, KV, listify
 
 
 class PerceptionMDApp(App):
@@ -165,11 +165,15 @@ class PerceptionMDApp(App):
                 pass
 
             if event.type in ["PAIR", "REFERENCE"]:
-                screen.add_questions(KV(event.keyvalue, "question"))
-                screen.add_dirs(KV(event.keyvalue, "random_pairs"), self.volumecache)
-                screen.add_dirs(KV(event.keyvalue, "base_layer"), self.volumecache, base_layer=True)
-
+                screen.add_questions(listify(screen.var['question']))
+                screen.add_dirs(listify(screen.var['random_pairs']), self.volumecache)
+                screen.add_dirs(listify(screen.var['base_layer']), self.volumecache, base_layer=True)
                 screen.add_options(screen.var['options'])
+
+            if event.type in ["VGA"]:
+                screen.add_dirs(listify(screen.var['random_volumes']), self.volumecache)
+                screen.add_dirs(listify(screen.var['base_layer']), self.volumecache, base_layer=True)
+                screen.add_questions(listify(screen.var['question']), screen.var['options'])
 
             if 'text' in var:
                 src = var['text'][1:-1]
@@ -263,6 +267,7 @@ def run(*argv):
             settings[k] = v
 
     # Building application and its window
+    Builder.load_file(os.path.join(dir_path, "widgets/ComboButtons.kv"))
     Builder.load_file(os.path.join(dir_path, "widgets/infoscreen.kv"))
     Window.size = (int(settings['window_width']),
                    int(settings['window_height']))

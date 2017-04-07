@@ -1,11 +1,23 @@
 #:kivy 1.8
 
-<ImageButton@Button>:
-    source: None
-    Image:
-        source: root.source
+#: import Button kivy.uix.button.Button
+
+<ComboButtons>:
+    layout: layout
+    orientation: layout.orientation
+    labels: []
+    allow_no_selection: True
+
+    on_orientation:
+        layout.orientation = self.orientation
+
+    BoxLayout:
+        id:layout
+        orientation: "horizontal"
         pos: root.pos
         size: root.size
+
+
 
 <DICOMView>:
     base_image: img0
@@ -47,7 +59,7 @@
                     texture: self.texture
 
 
-<Pairwise>:
+<Pairwise,VGA>:
     document: rst
     grid_layout: grid
     status_bar: grid0
@@ -75,7 +87,7 @@
             background_color: 0.5, 0.5, 0.5, 1
         GridLayout:
             id: grid
-            cols: 3
+            cols: 2
             spacing: 30
             padding: 15
             DICOMView:
@@ -126,9 +138,9 @@
 
         Image:
             id: colorimg
-            size: 10,930
+            size: 18,930
             size_hint: None,None
-            pos: 947,55
+            pos: 951,55
 
 <Choice>:
     document: rst
@@ -184,58 +196,94 @@
             on_press:
                 root.on_button_press(args)
 
-<VGA>:
-    button: btn
+<VGAX>:
     dcmview: dcm
-    hu_width: grid1
-    hu_center: grid2
-    axial_pos: grid3
     vga_box: vgaarray
+
+    document: rst
+    button: btn
+
+    grid_layout: grid
+    status_bar: grid0
+    layout: button_line
+
+    display_window_width: grid1
+    display_window_center: grid2
+    axial_pos: grid3
+    alpha_text: grid4
+    alpha_value: grid5
+    color_legend: colorimg
 
     BoxLayout:
         orientation: 'vertical'
-        spacing: 20
+        spacing: 10
         canvas:
             Color:
                 rgba: 0.5, 0.5, 0.5, 1
             Rectangle:
                 size: self.size
-        BoxLayout:
-            orientation: 'horizontal'
-            spacing: 20
-            DICOMVIEW:
+        RstDocument:
+            id: rst
+            base_font_size: 64
+            background_color: 0.5, 0.5, 0.5, 1
+
+        GridLayout:
+            id: grid
+            cols: 2
+            DICOMView:
                 id: dcm1
             BoxLayout:
-                id: vgaarray
-                orientation: 'vertical'
+                id: vga_box
+                size_hint: None,None
+
+        BoxLayout:
+            id: button_line
+            font_size: 32
+            size_hint: 1,None
+            size: 60,30
 
     ScatterLayout:
         GridLayout:
+            id: grid0
             pos: 720,16
-            size: 480,60
+            size: 800,60
             size_hint: None,None
             rows: 1
             Label:
-                text: "HU width:"
+                text: "d.w. width:"
                 font_size: 16
             Label:
-                text: "600"
+                text: ""
                 font_size: 16
                 id: grid1
             Label:
-                text: "HU center:"
+                text: "d.w. center:"
                 font_size: 16
             Label:
-                text: "200"
+                text: ""
                 font_size: 16
                 id: grid2
             Label:
                 text: "Axial:"
                 font_size: 16
             Label:
-                text: "0"
-                font_size: 16
                 id: grid3
+                text: ""
+                font_size: 16
+            Label:
+                id: grid4
+                text: "Alpha:"
+                font_size: 16
+            Label:
+                id: grid5
+                text: ""
+                font_size: 16
+
+        Image:
+            id: colorimg
+            size: 10,930
+            size_hint: None,None
+            pos: 947,55
         Button:
             id: btn
             text: "Next"
