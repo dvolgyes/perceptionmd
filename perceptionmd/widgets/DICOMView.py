@@ -55,8 +55,8 @@ class DICOMView(BoxLayout):
     def clear(self):
         self.set_dummy_volume()
 
-    def set_volume(self, (volume, meta), base_layer=False):
-
+    def set_volume(self, volmeta, base_layer=False):
+        (volume, meta) = volmeta
         if base_layer:
             self.base_core_volume = volume
             self.base_volume = volume
