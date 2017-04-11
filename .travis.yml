@@ -29,6 +29,7 @@ install:
     - sudo apt-get install cython graphviz python${TOKEN}-dev
     - sudo apt-get -y install xvfb pulseaudio xclip libmtdev1
     - pip${TOKEN} install cython
+    - pip${TOKEN} install coveralls codecov
     - pip${TOKEN} install git+https://github.com/dvolgyes/perceptionmd
 
 before_script:
@@ -38,3 +39,7 @@ before_script:
 
 script:
   - make test
+
+after_success:
+  - coveralls
+  - codecov
