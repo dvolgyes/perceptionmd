@@ -6,7 +6,7 @@ import numpy as np
 import os
 import dicom
 from . import VolumeReader
-import collections
+from collections import defaultdict
 
 
 def at_least_3d(array):
@@ -21,7 +21,7 @@ class DICOMDIR(VolumeReader.VolumeReader):
 
     def __init__(self, *args, **kwargs):
         super(DICOMDIR, self).__init__(*args, **kwargs)
-        self.filename_cache = collections.defaultdict(list)
+        self.filename_cache = defaultdict(list)
 
     def volume_iterator(self, dirname):
         volnames = []
@@ -40,6 +40,7 @@ class DICOMDIR(VolumeReader.VolumeReader):
             yield volname
 
     def volume(self, UID):
+        meta = defaultdict(lambda: None)
         with self.lock:
             if UID in self.cache and self.cache[UID] is not None:
                 return self.cache[UID]
@@ -66,5 +67,6 @@ class DICOMDIR(VolumeReader.VolumeReader):
                 zpos = sorted(zpos, key=lambda x: x[0])
                 _, volumes = zip(*zpos)
                 volume = np.stack(volumes)
-            self.cache[UID] = volume
-        return at_least_3d(volume)
+            self.cache[UID] = volume,meta
+
+        return at_least_3d(volume),meta

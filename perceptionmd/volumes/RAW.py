@@ -8,7 +8,7 @@ import numpy as np
 
 from . import VolumeReader
 from perceptionmd.utils import detect_shape, detect_filetype, scandir
-
+from collections import defaultdict
 
 class RAWDIR(VolumeReader.VolumeReader):
 
@@ -53,4 +53,5 @@ class RAWDIR(VolumeReader.VolumeReader):
         if shape == 'auto':
             shape = self.infer_shape(filename, dtype)
             self.volume_shapes[filename] = shape
-        return np.memmap(filename, mode="r", offset=0, dtype=dtype).reshape(shape)
+        meta = defaultdict(lambda: None)
+        return np.memmap(filename, mode="r", offset=0, dtype=dtype).reshape(shape), meta

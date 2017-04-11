@@ -60,8 +60,8 @@ class VolumeReader(object):
 
     @abstractmethod
     def volume_iterator(self, directory):
-        pass
+        yield None
 
     @abstractmethod
     def volume(self, UID):
-        pass
+        return None, defaultdict(lambda: None)

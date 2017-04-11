@@ -11,7 +11,7 @@ from perceptionmd.utils import gc_after
 import perceptionmd.utils as utils
 from kivy.clock import Clock
 from functools import partial
-
+from collections import defaultdict
 
 class DICOMView(BoxLayout):
     axis = NumericProperty(0)
@@ -55,7 +55,8 @@ class DICOMView(BoxLayout):
     def clear(self):
         self.set_dummy_volume()
 
-    def set_volume(self, volume, base_layer=False):
+    def set_volume(self, (volume, meta), base_layer=False):
+
         if base_layer:
             self.base_core_volume = volume
             self.base_volume = volume
@@ -110,7 +111,7 @@ class DICOMView(BoxLayout):
         self.z_max = self.volume.shape[0] - 1
 
     def set_dummy_volume(self, base_volume=False):
-        self.set_volume(self.black.reshape(1, 512, 512), base_volume)
+        self.set_volume( (self.black.reshape(1, 512, 512),defaultdict(lambda: None)), base_volume)
 
     def on_scroll(self, touch, rel):
         return None

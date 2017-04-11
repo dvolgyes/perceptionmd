@@ -3,7 +3,7 @@
 default:
 	echo "There is nothing to do."
 test:
-	coverage --source perceptionmd @./PerceptionMD.py perceptionmd/unittests/travis-example.md
+	coverage run --source perceptionmd ./PerceptionMD.py perceptionmd/unittests/travis-example.md
 
 graph:
 	@textx check perceptionmd/lang/perception.tx perceptionmd/unittests/travis-example.md
