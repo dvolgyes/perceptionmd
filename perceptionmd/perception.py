@@ -233,7 +233,10 @@ def run(*argv):
                 sys.exit(1)
             filename = os.path.abspath(argv[1])
     else:
-        filename = os.path.join(dir_path, "unittests/travis-example.pmd")
+        if len(argv) != 2:
+            filename = os.path.join(dir_path, "unittests/travis-example.pmd")
+        else:
+            filename = sys.argv[1]
 
     import kivy
     kivy.require('1.8.0')

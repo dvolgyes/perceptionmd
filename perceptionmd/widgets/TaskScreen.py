@@ -6,7 +6,7 @@ import time
 from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock
 from perceptionmd.utils import gc_after
-
+from abc import abstractmethod
 
 class TaskScreen(Screen):
 
@@ -14,9 +14,11 @@ class TaskScreen(Screen):
         super(TaskScreen, self).__init__(*args, **kwargs)
         self.start_time = 0
 
+    @abstractmethod
     def on_button_press(self, *args, **kwargs):
-        self.manager.current = self.manager.next()
+        pass
 
+    @abstractmethod
     def move_on(self, *args, **kwargs):
         self.manager.current = self.manager.next()
 
@@ -25,6 +27,7 @@ class TaskScreen(Screen):
         if self.automated_test:
             Clock.schedule_once(self.move_on, 3)
 
+    @abstractmethod
     def on_key_down(self, win, key, scancode, string, modifiers):
         pass
 
