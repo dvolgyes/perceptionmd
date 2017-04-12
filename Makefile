@@ -4,7 +4,7 @@ default:
 	echo "There is nothing to do."
 test:
 	coverage run --concurrency=thread --append --source perceptionmd ./PerceptionMD.py perceptionmd/unittests/travis-example.pmd
-	coverage run --concurrency=thread --append --source perceptionmd ./PerceptionMD.py perceptionmd/example/simple/simple.pmd
+	coverage run --concurrency=thread --append --source perceptionmd ./PerceptionMD.py perceptionmd/examples/simple/simple.pmd
 	coverage run --append --source perceptionmd perceptionmd/utils/utils.py
 	coverage run --append --source perceptionmd perceptionmd/utils/rev_eng.py
 	coverage run --append --source perceptionmd perceptionmd/utils/Log.py
