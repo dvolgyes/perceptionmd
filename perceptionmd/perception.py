@@ -2,6 +2,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import
 
+try:
+    import gi
+    gi.require_version('Gtk', '3.0')
+except:
+    pass # no GTK is installed
+
 import sys
 import os
 import time
@@ -219,6 +225,7 @@ class PerceptionMDApp(App):
 def run(*argv):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     travis = 'TRAVIS' in os.environ
+    print('TRAVIS environment detected: %s' % travis)
     if not travis:
         if len(argv) != 2:
             print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")
