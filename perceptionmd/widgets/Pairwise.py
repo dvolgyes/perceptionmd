@@ -235,7 +235,7 @@ class Pairwise(TaskScreen.TaskScreen):
                     with open(src, "rt") as f:
                         text = f.read()
                 else:
-                    text = "File not found: %s " % src
+                    text = "File not found: '%s' " % src
             self.texts.append(text)
 
     def generate(self):

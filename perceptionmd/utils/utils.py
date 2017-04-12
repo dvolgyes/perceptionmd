@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import print_function, division, absolute_import
 
 import gc as garbage_collector
 from contextlib import contextmanager
@@ -12,17 +12,63 @@ import numpy as np
 import shutil
 import tempfile
 import os
+import six
+
+"""
+This is a utility module with various, small functions and contexes
+which did not fit elsewhere at this time. Any function here
+might be relocated soon.
+"""
 
 
-def listify(arg):
-    if arg is None:
+def listify(*arg):
+    """
+    Return the argument as a list, if it wasn't already a list.
+
+    >>> listify()
+    []
+    >>> listify(1)
+    [1]
+    >>> listify(1,2,3)
+    [1, 2, 3]
+    >>> listify([1,2,3])
+    [1, 2, 3]
+    >>> listify((1,2,3))
+    [1, 2, 3]
+    >>> listify('test')
+    ['test']
+    """
+    if len(arg) == 0:
         return list()
-    if hasattr(arg, '__iter__'):
-        return arg
-    return list((arg,))
+    if len(arg) > 1:
+        return list(arg)
+    if isinstance(arg[0], six.string_types):
+        return list((arg[0],))
+    if hasattr(arg[0], '__iter__'):
+        return list(arg[0])
+    return list((arg[0],))
 
 
 def KV(kvs, key):
+    """
+    This is a test function
+
+    >>> if True:
+    ...    import collections
+    ...    keyvalue=collections.namedtuple("keyvalue",["key","value"])
+    ...    kvlist=[keyvalue(1,2),keyvalue(2,3)]
+    ...    print(KV(kvlist,1))
+    2
+
+    >>> if True:
+    ...    import collections
+    ...    keyvalue=collections.namedtuple("keyvalue",["key","value"])
+    ...    kvlist=[keyvalue(1,2),keyvalue(2,3)]
+    ...    print(KV(kvlist,3))
+    None
+
+    """
+    "Extracting value from a obj list with key and value parameters."
     for kv in kvs:
         if kv.key == key:
             return kv.value
@@ -30,6 +76,22 @@ def KV(kvs, key):
 
 
 def random_combinations(lst, count=2):
+    """
+    This is a test function
+
+    >>> if True:
+    ...    import random
+    ...    random.seed(3)
+    ...    print(random_combinations( [1,2,3] ))
+    [(2, 3), (3, 1), (2, 1)]
+
+    >>> if True:
+    ...    import random
+    ...    random.seed(2)
+    ...    print(random_combinations( [1,2,3],3 ))
+    [(3, 2, 1)]
+    """
+
     result = []
     comb = list(itertools.combinations(lst, count))
     random.shuffle(comb)
@@ -40,6 +102,28 @@ def random_combinations(lst, count=2):
 
 
 def padding(array, shape):
+    """
+    Padding a numpy array with zeros to fit a given shape.
+    If the padding isn't symmetric, then the bottom-right area
+    should be larger.
+
+    >>> if True:
+    ...    import numpy as np
+    ...    a = np.ones(shape=(1,1),dtype=np.uint8)
+    ...    print(padding(a,(2,2)))
+    [[1 0]
+     [0 0]]
+
+    >>> if True:
+    ...    import numpy as np
+    ...    a = np.ones(shape=(1,1),dtype=np.uint8)
+    ...    print(padding(a,(3,3)))
+    [[0 0 0]
+     [0 1 0]
+     [0 0 0]]
+
+
+    """
     result = []
     for i in range(len(shape)):
         d = shape[i] - array.shape[i]
@@ -48,6 +132,19 @@ def padding(array, shape):
 
 
 def padding_square(array):
+    """Padding a numpy array with zeros to get square shaped arrangement.
+    Always the smaller dimension is padded.
+
+    >>> if True:
+    ...    import numpy as np
+    ...    a = np.arange(6).reshape(2,3)
+    ...    print(padding_square(a))
+    [[0 1 2]
+     [3 4 5]
+     [0 0 0]]
+
+    """
+
     largest_dimsize = max(array.shape)
     return padding(array, (largest_dimsize,) * len(array.shape))
 
@@ -55,6 +152,12 @@ def padding_square(array):
 def test_module(name):
     """
     Test if module is importable.
+
+    >>> test_module('os')
+    True
+
+    >>> test_module('non_existing_module')
+    False
     """
     try:
         importlib.import_module(name)
@@ -64,9 +167,18 @@ def test_module(name):
 
 
 def test_feature(module, name):
+    """Test if module has a specific function or not
+    >>> test_feature('os','walk')
+    True
+    >>> test_feature('os','non_existinging_function')
+    False
+    >>> test_feature('nonexisting_module','non_existinging_function')
+    False
+
+    """
     try:
-        importlib.import_module(name)
-        return True
+        x = importlib.import_module(module, 'test_feature_dummy_import_module')
+        return name in x.__dict__
     except:
         return False
 
@@ -89,7 +201,15 @@ def gc(func):
     Unconditional garbage collection decorator,
     which perform garbage collection before and after
     the execution of the function.
+
+    >>> if True:
+    ...     @gc
+    ...     def test_function(x):
+    ...         return x
+    ...     test_function(123)
+    123
     """
+
     @wraps(func)
     def func_wrapper(*args, **kwargs):
         garbage_collector.collect()
@@ -103,7 +223,15 @@ def gc_before(func):
     """
     Unconditional garbage collector decorator,
     executing garbage collection before the function call.
+
+    >>> if True:
+    ...     @gc_before
+    ...     def test_function(x):
+    ...         return x
+    ...     test_function(123)
+    123
     """
+
     @wraps(func)
     def func_wrapper(*args, **kwargs):
         garbage_collector.collect()
@@ -115,6 +243,14 @@ def gc_after(func):
     """
     Unconditional garbage collector decorator,
     executing garbage collection after the function call.
+
+    >>> if True:
+    ...     @gc_after
+    ...     def test_function(x):
+    ...         return x
+    ...     test_function(123)
+    123
+
     """
     @wraps(func)
     def func_wrapper(*args, **kwargs):
@@ -129,6 +265,10 @@ def gc_ctx():
     """
     Garbage collection context manager:
     executing garbage collection before and after the function call.
+
+    >>> with gc_ctx():
+    ...     print(123)
+    123
     """
     garbage_collector.collect()
     yield
@@ -140,6 +280,11 @@ def gc_ctx_before():
     """
     Garbage collection context manager:
     executing garbage collection before and after the function call.
+
+    >>> with gc_ctx_before():
+    ...     print(123)
+    123
+
     """
     garbage_collector.collect()
     yield
@@ -150,13 +295,25 @@ def gc_ctx_after():
     """
     Garbage collection context manager:
     executing garbage collection before and after the function call.
+
+    >>> with gc_ctx_after():
+    ...     print(123)
+    123
     """
+
     yield
     garbage_collector.collect()
 
 
 @contextmanager
 def tmpdir_ctx():
+    """
+    >>> with tmpdir_ctx() as tmp:
+    ...     import os
+    ...     print(os.path.exists(tmp))
+    True
+    """
+
     tmpdir = tempfile.mkdtemp()
     yield tmpdir
     shutil.rmtree(tmpdir)
@@ -164,6 +321,42 @@ def tmpdir_ctx():
 
 @contextmanager
 def delete_file_ctx(f):
+    """
+    Delete a given file after the context.
+    For temporary files, you should rather consider to use tmpfile_ctx.
+
+    >>> if True:
+    ...     import tempfile
+    ...     fn = tempfile.mkstemp()[1]
+    ...     with delete_file_ctx(fn):
+    ...         print(os.path.exists(fn))
+    ...     print(os.path.exists(fn))
+    True
+    False
+
+    >>> if True:
+    ...     import tempfile
+    ...     fn = tempfile.mkstemp()[1]
+    ...     f = open(fn)
+    ...     with delete_file_ctx(f):
+    ...         print(os.path.exists(f.name))
+    ...     print(os.path.exists(f.name))
+    True
+    False
+
+    >>> if True:
+    ...     import tempfile
+    ...     fn = tempfile.mkstemp()[1]
+    ...     f = open(fn)
+    ...     with delete_file_ctx(f):
+    ...         f.close()
+    ...         print(os.path.exists(f.name))
+    ...     print(os.path.exists(f.name))
+    True
+    False
+
+
+    """
     yield
     if isinstance(f, file):
         name = f.name
@@ -176,6 +369,19 @@ def delete_file_ctx(f):
 
 @contextmanager
 def tmpfile_ctx():
+    """
+    Open an empty binary temporary file for writing.
+
+    >>> if True:
+    ...     import os
+    ...     with tmpfile_ctx() as tmp:
+    ...         fn = tmp.name
+    ...         print(os.path.exists(fn))
+    ...     print(os.path.exists(fn))
+    True
+    False
+    """
+
     tmpfile = tempfile.mkstemp()
     with open(tmpfile[1], "wb+") as f:
         yield f
@@ -202,3 +408,6 @@ if __name__ == "__main__":
     test_gc_before()
     test_gc_after()
     test_gc()
+
+    import doctest
+    doctest.testmod()

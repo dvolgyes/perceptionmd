@@ -195,6 +195,7 @@ def detect_filetype(filename, offset=0, types='all', endian='all', count=-1):
     The most important assumptions are:
       - NaN,inf,-inf are not present in the data
       - extreme values are unlikely
+
     """
     dbuffer = np.memmap(filename, mode="r", offset=offset, dtype=np.int8)
 
@@ -243,3 +244,7 @@ def detect_filetype(filename, offset=0, types='all', endian='all', count=-1):
 
     candidates = sorted([(v, k) for k, v in mean.items()])
     return np.dtype(candidates[0][1])
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
