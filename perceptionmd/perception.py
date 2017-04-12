@@ -6,7 +6,7 @@ try:
     import gi
     gi.require_version('Gtk', '3.0')
 except:
-    pass # no GTK is installed
+    pass  # no GTK is installed
 
 import sys
 import os

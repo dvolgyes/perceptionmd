@@ -67,6 +67,6 @@ class DICOMDIR(VolumeReader.VolumeReader):
                 zpos = sorted(zpos, key=lambda x: x[0])
                 _, volumes = zip(*zpos)
                 volume = np.stack(volumes)
-            self.cache[UID] = volume,meta
+            self.cache[UID] = volume, meta
 
-        return at_least_3d(volume),meta
+        return at_least_3d(volume), meta

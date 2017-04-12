@@ -13,6 +13,7 @@ from kivy.clock import Clock
 from functools import partial
 from collections import defaultdict
 
+
 class DICOMView(BoxLayout):
     axis = NumericProperty(0)
     base_axis = NumericProperty(0)
@@ -111,7 +112,7 @@ class DICOMView(BoxLayout):
         self.z_max = self.volume.shape[0] - 1
 
     def set_dummy_volume(self, base_volume=False):
-        self.set_volume( (self.black.reshape(1, 512, 512),defaultdict(lambda: None)), base_volume)
+        self.set_volume((self.black.reshape(1, 512, 512), defaultdict(lambda: None)), base_volume)
 
     def on_scroll(self, touch, rel):
         return None

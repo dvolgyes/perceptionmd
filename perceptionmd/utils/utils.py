@@ -45,7 +45,7 @@ def listify(*arg):
         return list()
     if len(arg) > 1:
         return list(arg)
-    arg=arg[0]
+    arg = arg[0]
     if arg is None:
         return list()
     if isinstance(arg, six.string_types):
@@ -87,13 +87,13 @@ def random_combinations(lst, count=2):
 
     >>> if True:
     ...    import random
-    ...    random.seed(3)
+    ...    random.seed(4)
     ...    print(random_combinations( [1,2,3] ))
     [(2, 3), (3, 1), (2, 1)]
 
     >>> if True:
     ...    import random
-    ...    random.seed(2)
+    ...    random.seed(9)
     ...    print(random_combinations( [1,2,3],3 ))
     [(3, 2, 1)]
     """
@@ -199,8 +199,8 @@ except AttributeError:
         def scandir(dirname="."):
             for root, dirs, files in os.walk(dirname):
                 for f in files:
-                    p = namedtuple("path",['name'])
-                    p.name=os.path.join(root, f)
+                    p = namedtuple("path", ['name'])
+                    p.name = os.path.join(root, f)
                     yield p
 
 
@@ -366,13 +366,13 @@ def delete_file_ctx(f):
 
     """
     yield
-    if isinstance(f, file):
+    if isinstance(f, six.string_types):
+        os.remove(f)
+    else:
         name = f.name
         if not f.closed:
             f.close()
         os.remove(name)
-    else:
-        os.remove(f)
 
 
 @contextmanager

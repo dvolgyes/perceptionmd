@@ -8,6 +8,7 @@ from kivy.clock import Clock
 from perceptionmd.utils import gc_after
 from abc import abstractmethod
 
+
 class TaskScreen(Screen):
 
     def __init__(self, *args, **kwargs):
@@ -28,10 +29,6 @@ class TaskScreen(Screen):
             print('screen has been loaded: %s' % self.name)
             Clock.schedule_once(self.move_on, 10)
 
-    def on_leave(self, *args, **kwargs):
-        self.automated_test = False
-
-
     @abstractmethod
     def on_key_down(self, win, key, scancode, string, modifiers):  # pragma: no cover
         pass
@@ -41,4 +38,5 @@ class TaskScreen(Screen):
 
     @gc_after
     def on_leave(self, *args, **kwargs):
+        self.automated_test = False
         self.clear()

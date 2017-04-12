@@ -10,6 +10,7 @@ from . import VolumeReader
 from perceptionmd.utils import detect_shape, detect_filetype, scandir
 from collections import defaultdict
 
+
 class RAWDIR(VolumeReader.VolumeReader):
 
     def __init__(self, dirname, shape='auto', *args, **kwargs):
