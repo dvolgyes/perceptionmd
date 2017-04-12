@@ -25,6 +25,8 @@ def listify(*arg):
     """
     Return the argument as a list, if it wasn't already a list.
 
+    >>> listify(None)
+    []
     >>> listify()
     []
     >>> listify(1)
@@ -42,11 +44,14 @@ def listify(*arg):
         return list()
     if len(arg) > 1:
         return list(arg)
-    if isinstance(arg[0], six.string_types):
-        return list((arg[0],))
-    if hasattr(arg[0], '__iter__'):
-        return list(arg[0])
-    return list((arg[0],))
+    arg=arg[0]
+    if arg is None:
+        return list()
+    if isinstance(arg, six.string_types):
+        return list((arg,))
+    if hasattr(arg, '__iter__'):
+        return list(arg)
+    return list((arg,))
 
 
 def KV(kvs, key):
@@ -404,7 +409,7 @@ if __name__ == "__main__":
             return None
 
     with gc_ctx_after():
-        print("test")
+        pass
     test_gc_before()
     test_gc_after()
     test_gc()

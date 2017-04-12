@@ -18,6 +18,8 @@ logfile = "results.txt"
   options     = "Agree", "Disagree"
   IF "Disagree" THEN "thanks but"
 
+- GOTO: "login"
+
 - QUESTION: "login"
   text = [login.md]
   username   <- STRING : "Name"

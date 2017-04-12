@@ -47,6 +47,8 @@ fullscreen = 0
   button = "Finish"
   answer   <- STRING : "Comment or feedback"
 
+
+
 - END: "regular_end"
 
 - INFO: "thanks but"

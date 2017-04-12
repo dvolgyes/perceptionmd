@@ -3,13 +3,17 @@
 default:
 	echo "There is nothing to do."
 test:
-	coverage run --source perceptionmd ./PerceptionMD.py perceptionmd/unittests/travis-example.md
+#	coverage run --source perceptionmd ./PerceptionMD.py perceptionmd/unittests/travis-example.pmd
+	coverage run --source perceptionmd perceptionmd/utils/utils.py
+	coverage run --source perceptionmd perceptionmd/utils/rev_eng.py
+	coverage run --source perceptionmd perceptionmd/utils/Log.py
+
 
 graph:
-	@textx check perceptionmd/lang/perception.tx perceptionmd/unittests/travis-example.md
-	@textx visualize perceptionmd/lang/perception.tx perceptionmd/unittests/travis-example.md >/dev/null
+	@textx check perceptionmd/lang/perception.tx perceptionmd/unittests/travis-example.pmd
+	@textx visualize perceptionmd/lang/perception.tx perceptionmd/unittests/travis-example.pmd >/dev/null
 	@dot -Tpng -O perceptionmd/lang/perception.tx.dot
-	@dot -Tpng -O perceptionmd/unittests/travis-example.md.dot
+	@dot -Tpng -O perceptionmd/unittests/travis-example.pmd.dot
 
 ico:
 	@inkscape -z perceptionmd.svg -w 128 -h 128 -e perceptionmd.png

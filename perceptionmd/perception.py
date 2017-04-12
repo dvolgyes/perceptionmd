@@ -167,6 +167,7 @@ class PerceptionMDApp(App):
             if event.type in ["PAIR", "REFERENCE"]:
                 screen.add_questions(listify(screen.var['question']))
                 screen.add_dirs(listify(screen.var['random_pairs']), self.volumecache)
+                print(listify(screen.var['base_layer']))
                 screen.add_dirs(listify(screen.var['base_layer']), self.volumecache, base_layer=True)
                 screen.add_options(screen.var['options'])
 
