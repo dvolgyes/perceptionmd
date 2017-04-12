@@ -13,10 +13,12 @@ button_size = 32
 logfile = "results.txt"
 
 <Timeline>
+- GOTO: "terms and conditions"
+
 - CHOICE: "terms and conditions"
   text        = [term_and_conditions.md]
   options     = "Agree", "Disagree"
-  IF "Disagree" THEN "thanks but"
+  IF "Disagree" THEN "login"
 
 - GOTO: "login"
 
@@ -30,8 +32,12 @@ logfile = "results.txt"
 
 - QUESTION: "thanks"
   text = [thanks.md]
-  button = "Finish"
+  button = "Almost finished"
   answer   <- STRING : "Comment or feedback"
+
+- INFO: "thanks2"
+  text = [thanks.md]
+  button = "Finish"
 
 - END: "regular_end"
 

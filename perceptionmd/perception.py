@@ -225,7 +225,6 @@ class PerceptionMDApp(App):
 def run(*argv):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     travis = 'TRAVIS' in os.environ
-    print('TRAVIS environment detected: %s' % travis)
     if not travis:
         if len(argv) != 2:
             print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")

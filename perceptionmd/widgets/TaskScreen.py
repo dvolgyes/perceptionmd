@@ -23,10 +23,14 @@ class TaskScreen(Screen):
         self.manager.current = self.manager.next()
 
     def on_enter(self, *args, **kwargs):
-        print('screen has been loaded: %s' % self.name)
         self.start_time = time.time()
         if self.automated_test:
+            print('screen has been loaded: %s' % self.name)
             Clock.schedule_once(self.move_on, 10)
+
+    def on_leave(self, *args, **kwargs):
+        self.automated_test = False
+
 
     @abstractmethod
     def on_key_down(self, win, key, scancode, string, modifiers):

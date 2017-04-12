@@ -3,12 +3,13 @@
 default:
 	echo "There is nothing to do."
 test:
-	coverage run --concurrency=thread --append --source perceptionmd ./PerceptionMD.py perceptionmd/unittests/travis-example.pmd
-	coverage run --concurrency=thread --append --source perceptionmd ./PerceptionMD.py perceptionmd/examples/simple/simple.pmd
-	coverage run --append --source perceptionmd perceptionmd/utils/utils.py
-	coverage run --append --source perceptionmd perceptionmd/utils/rev_eng.py
-	coverage run --append --source perceptionmd perceptionmd/utils/Log.py
-
+	coverage erase
+	coverage run --parallel-mode --concurrency=thread --source perceptionmd ./PerceptionMD.py perceptionmd/unittests/travis-example.pmd
+	coverage run --parallel-mode --concurrency=thread --source perceptionmd ./PerceptionMD.py perceptionmd/examples/simple/simple.pmd
+	coverage run --parallel-mode --source perceptionmd perceptionmd/utils/utils.py
+	coverage run --parallel-mode --source perceptionmd perceptionmd/utils/rev_eng.py
+	coverage run --parallel-mode --source perceptionmd perceptionmd/utils/Log.py
+	coverage combine
 
 graph:
 	@textx check perceptionmd/lang/perception.tx perceptionmd/unittests/travis-example.pmd
