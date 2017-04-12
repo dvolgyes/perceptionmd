@@ -12,7 +12,7 @@ class TaskScreen(Screen):
 
     def __init__(self, *args, **kwargs):
         super(TaskScreen, self).__init__(*args, **kwargs)
-        self.start_time = None
+        self.start_time = 0
 
     def on_button_press(self, *args, **kwargs):
         self.manager.current = self.manager.next()
