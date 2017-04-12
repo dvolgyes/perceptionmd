@@ -16,7 +16,7 @@ class TaskScreen(Screen):
         self.automated_test = False
 
     @abstractmethod
-    def on_button_press(self, *args, **kwargs):
+    def on_button_press(self, *args, **kwargs):  # pragma: no cover
         pass
 
     def move_on(self, *args, **kwargs):
@@ -33,10 +33,10 @@ class TaskScreen(Screen):
 
 
     @abstractmethod
-    def on_key_down(self, win, key, scancode, string, modifiers):
+    def on_key_down(self, win, key, scancode, string, modifiers):  # pragma: no cover
         pass
 
-    def clear(self, *args, **kwargs):
+    def clear(self, *args, **kwargs):  # pragma: no cover
         pass
 
     @gc_after

@@ -59,9 +59,9 @@ class VolumeReader(object):
         caching_thread.start()
 
     @abstractmethod
-    def volume_iterator(self, directory):
+    def volume_iterator(self, directory):   # pragma: no cover
         yield None
 
     @abstractmethod
-    def volume(self, UID):
+    def volume(self, UID):   # pragma: no cover
         return None, defaultdict(lambda: None)

@@ -24,7 +24,7 @@ from perceptionmd.widgets import DICOMView
 import perceptionmd.utils as utils
 
 
-class VGA(TaskScreen.TaskScreen):
+class VGA(TaskScreen.TaskScreen):   # pragma: no cover
 
     def __init__(self, *args, **kwargs):
         super(VGA, self).__init__(**kwargs)
