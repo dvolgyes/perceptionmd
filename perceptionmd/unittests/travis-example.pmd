@@ -13,7 +13,6 @@ button_size = 32
 logfile = "results.txt"
 
 <Timeline>
-- GOTO: "terms and conditions"
 
 - CHOICE: "terms and conditions"
   text        = [term_and_conditions.md]
@@ -29,6 +28,8 @@ logfile = "results.txt"
   profession <- STRING : "Profession"
   experience <- FLOAT  : "Years of experience"
   comment    <- STRING : "Comment/remark:"
+
+- GOTO: "thanks"
 
 - QUESTION: "thanks"
   text = [thanks.md]
