@@ -3,10 +3,10 @@
 default:
 	echo "There is nothing to do."
 test:
-#	coverage run --source perceptionmd ./PerceptionMD.py perceptionmd/unittests/travis-example.pmd
-	coverage run --source perceptionmd perceptionmd/utils/utils.py
-	coverage run --source perceptionmd perceptionmd/utils/rev_eng.py
-	coverage run --source perceptionmd perceptionmd/utils/Log.py
+	coverage run --concurrency=thread --append --source perceptionmd ./PerceptionMD.py perceptionmd/unittests/travis-example.pmd
+	coverage run --append --source perceptionmd perceptionmd/utils/utils.py
+	coverage run --append --source perceptionmd perceptionmd/utils/rev_eng.py
+	coverage run --append --source perceptionmd perceptionmd/utils/Log.py
 
 
 graph:
