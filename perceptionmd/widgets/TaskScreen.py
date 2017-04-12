@@ -18,7 +18,6 @@ class TaskScreen(Screen):
     def on_button_press(self, *args, **kwargs):
         pass
 
-    @abstractmethod
     def move_on(self, *args, **kwargs):
         self.manager.current = self.manager.next()
 
