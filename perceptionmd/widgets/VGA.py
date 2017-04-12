@@ -28,9 +28,8 @@ class VGA(TaskScreen.TaskScreen):
 
     def __init__(self, *args, **kwargs):
         super(VGA, self).__init__(**kwargs)
-        self.start_time = None
         self.total_time = 0
-        self.wall_time = None
+        self.wall_time = 0
         self.base_layer_dirs = []
         self.base_layer_serieses = []
         self.volumedirs = []

@@ -12,7 +12,7 @@ class TaskScreen(Screen):
 
     def __init__(self, *args, **kwargs):
         super(TaskScreen, self).__init__(*args, **kwargs)
-        self.start_time = 0
+        self.start_time = time.time()
         self.automated_test = False
 
     @abstractmethod

@@ -58,9 +58,8 @@ class Pairwise(TaskScreen.TaskScreen):
 
     def __init__(self, *args, **kwargs):
         super(Pairwise, self).__init__(**kwargs)
-        self.start_time = None
         self.total_time = 0
-        self.wall_time = None
+        self.wall_time = 0
         self.current_task_idx = -1
         self.lock = threading.Lock()
         self.black = None

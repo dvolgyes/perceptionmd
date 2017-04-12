@@ -17,7 +17,6 @@ class Choice(TaskScreen.TaskScreen):
 
     def __init__(self, *args, **kwargs):
         super(Choice, self).__init__(*args, **kwargs)
-        self.start_time = None
 
     def on_pre_leave(self, *args, **kwargs):
         leave_time = time.time()
