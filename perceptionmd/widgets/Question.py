@@ -16,7 +16,7 @@ class Question(TaskScreen.TaskScreen):
     ratio = NumericProperty()
 
     def __init__(self, *args, **kwargs):
-        super(Question, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.start_time = None
         self.ratio = 2
 
