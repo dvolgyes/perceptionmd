@@ -13,6 +13,7 @@ import shutil
 import tempfile
 import os
 import six
+from collections import namedtuple
 
 """
 This is a utility module with various, small functions and contexes
@@ -198,7 +199,9 @@ except AttributeError:
         def scandir(dirname="."):
             for root, dirs, files in os.walk(dirname):
                 for f in files:
-                    yield os.path.join(root, f)
+                    p = namedtuple("path",['name'])
+                    p.name=os.path.join(root, f)
+                    yield p
 
 
 def gc(func):
