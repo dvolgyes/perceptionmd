@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 for i in `seq 120`; do
   xdotool click 1
   xdotool key F3

@@ -24,7 +24,6 @@ class TaskScreen(Screen):
 
     def move_on(self, *args, **kwargs):
         if self.manager.current == self.name:
-            self.root.screenshot()
             self.manager.current = self.manager.next()
 
     def on_enter(self, *args, **kwargs):
@@ -34,7 +33,6 @@ class TaskScreen(Screen):
         if self.automated_test:
             Clock.schedule_once(self.move_on, 5)
             Clock.schedule_once(self.move_on, 95)
-
 
     @abstractmethod
     def on_key_down(self, win, key, scancode, string, modifiers):  # pragma: no cover

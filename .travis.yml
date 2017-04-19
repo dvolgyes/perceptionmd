@@ -26,7 +26,7 @@ matrix:
 
 install:
     - sudo apt-get update
-    - sudo apt-get install cython graphviz python${PYVERSION}-dev
+    - sudo apt-get install cython graphviz python${PYVERSION}-dev xdotool
     - sudo apt-get -y install xvfb pulseaudio xclip libmtdev1
     - pip${PYVERSION} install cython
     - pip${PYVERSION} install coveralls codecov
