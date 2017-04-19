@@ -30,7 +30,7 @@ class Choice(TaskScreen.TaskScreen):
             self.log('    {:<10} = "{}"' .format(
                 "label", self.text))
         else:
-            assert(False)
+            assert(False)  # pragma: no cover
         self.log("")
 
     def move_on(self, *args, **kwargs):

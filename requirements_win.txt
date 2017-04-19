@@ -7,7 +7,6 @@ textx
 matplotlib
 pycontracts
 pydicom
-matplotlib
 pygame
 kivy.deps.angle
 kivy.deps.gstreamer
@@ -16,3 +15,4 @@ kivy.deps.glew
 kivy
 wget
 six
+coverage

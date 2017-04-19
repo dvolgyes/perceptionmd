@@ -4,7 +4,6 @@ matplotlib
 cachetools
 textx
 kivy
-matplotlib
 pycontracts
 docutils
 pygame
@@ -12,3 +11,4 @@ scipy
 numpy
 wget
 six
+coverage

@@ -28,7 +28,7 @@ import textx.metamodel
 
 from perceptionmd.widgets import ViewPort, Goto, End, Choice, Question, Pairwise, VGA
 from perceptionmd.defaults import default_settings
-from perceptionmd.utils import Logger, KV, listify
+from perceptionmd.utils import Logger, listify
 
 
 class PerceptionMDApp(App):

@@ -1,15 +1,19 @@
 #!/usr/bin/make
 
+ifndef COVERAGE
+COVERAGE=python ~/.local/bin/coverage
+endif
+
 default:
 	echo "There is nothing to do."
 test:
-	coverage erase
-	coverage run --parallel-mode --concurrency=thread --source perceptionmd ./PerceptionMD.py perceptionmd/unittests/travis-example.pmd
-	coverage run --parallel-mode --concurrency=thread --source perceptionmd ./PerceptionMD.py perceptionmd/examples/simple/simple.pmd
-	coverage run --parallel-mode --source perceptionmd perceptionmd/utils/utils.py
-	coverage run --parallel-mode --source perceptionmd perceptionmd/utils/rev_eng.py
-	coverage run --parallel-mode --source perceptionmd perceptionmd/utils/Log.py
-	coverage combine
+	$COVERAGE erase
+	$COVERAGE run --parallel-mode --concurrency=thread --source perceptionmd ./PerceptionMD.py perceptionmd/unittests/travis-example.pmd
+	$COVERAGE run --parallel-mode --concurrency=thread --source perceptionmd ./PerceptionMD.py perceptionmd/examples/simple/simple.pmd
+	$COVERAGE run --parallel-mode --source perceptionmd perceptionmd/utils/utils.py
+	$COVERAGE run --parallel-mode --source perceptionmd perceptionmd/utils/rev_eng.py
+	$COVERAGE run --parallel-mode --source perceptionmd perceptionmd/utils/Log.py
+	$COVERAGE combine
 
 graph:
 	@textx check perceptionmd/lang/perception.tx perceptionmd/unittests/travis-example.pmd
