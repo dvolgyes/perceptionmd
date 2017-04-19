@@ -11,18 +11,49 @@ for i in `seq 120`; do
   xdotool key F10
   xdotool key F11
   xdotool key F12
-  xdotool key a
-  xdotool key b
-  xdotool key c
-  xdotool key d
-  xdotool key e
-  xdotool key f
-  xdotool key g
-  xdotool key h
-  xdotool key Enter
+  xdotool type a
+  xdotool type b
+  xdotool type c
+  xdotool type d
+  xdotool type e
+  xdotool type f
+  xdotool type g
+  xdotool type h
+  xdotool type Enter
   xdotool mousemove 300 300 click 1
   xdotool click --clearmodifiers 5
-  sleep 1
+  sleep 0.2
   xdotool click --clearmodifiers 4
-  sleep 1
+  sleep 0.2
+
+  xdotool mousedown 1
+  sleep 0.2
+  xdotool mousemove_relative  50 0
+  sleep 0.2
+  xdotool mousemove_relative  -50 0
+  sleep 0.2
+  xdotool mouseup 1
+  sleep 0.2
+  xdotool mousedown 1
+  xdotool mousemove_relative  0 50
+  sleep 0.2
+  xdotool mousemove_relative  0 -50
+  sleep 0.2
+  xdotool mouseup 1
+
+  xdotool mousedown 2
+  sleep 0.2
+  xdotool mousemove_relative  50 0
+  sleep 0.2
+  xdotool mousemove_relative  -50 0
+  sleep 0.2
+  xdotool mouseup 2
+  sleep 0.2
+  xdotool mousedown 2
+  xdotool mousemove_relative  0 50
+  sleep 0.2
+  xdotool mousemove_relative  0 -50
+  sleep 0.2
+  xdotool mouseup 2
+
 done

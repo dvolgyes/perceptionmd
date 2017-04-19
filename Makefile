@@ -7,6 +7,7 @@ endif
 default:
 	echo "There is nothing to do."
 test:
+	(./input.sh &)
 	$(COVERAGE) erase
 	$(COVERAGE) run --parallel-mode --source perceptionmd perceptionmd/utils/utils.py
 	$(COVERAGE) run --parallel-mode --source perceptionmd perceptionmd/utils/rev_eng.py
