@@ -291,9 +291,9 @@ class Pairwise(TaskScreen.TaskScreen):
         return result
 
     def next(self):
-        self.current_task_idx += 1
-        if self.current_task_idx >= len(self.tasklist):
+        if self.current_task_idx + 1 >= len(self.tasklist):
             return False
+        self.current_task_idx += 1
         return True
 
     def update_scene(self, *args, **kwargs):
@@ -458,7 +458,6 @@ class Pairwise(TaskScreen.TaskScreen):
 
         elapsed = (now - self.start_time)
         self.total_time += elapsed
-        #~ question,set,left,right,answerselectedvolume
         selection = task[2][i]
         self.loglines.append(
             '        {:^8},{:^4},{:^5},{:^6},{:^14},{:^16},{:^16}, {:6.3f}, {:9}, {:^7}, {:^6}'.format(
@@ -475,18 +474,12 @@ class Pairwise(TaskScreen.TaskScreen):
                 self.wcenter))
         self.winner[selection] = self.winner[selection] + 1
         self.preselected_zpos[selected_set] = self.z_pos
-        #~ self.manager.current = self.manager.next()
-        # save current selection
         if not self.next():
             self.manager.current = self.manager.next()
         else:
             self.update_scene()
-        #~ else:
-            #~ # set up new scene
-            #~ pass
 
     def _keyboard_closed(self):
-        pass
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         self._keyboard = None
 

@@ -31,9 +31,9 @@ class TaskScreen(Screen):
         self.start_time = time.time()
         if self.automated_test:
             print('screen has been loaded: %s' % self.name)
-            Clock.schedule_once(self.move_on, 3)
             Clock.schedule_once(self.move_on, 10)
-            Clock.schedule_once(self.move_on, 60)
+            Clock.schedule_once(self.move_on, 40)
+            Clock.schedule_once(self.move_on, 90)
 
     @abstractmethod
     def on_key_down(self, win, key, scancode, string, modifiers):  # pragma: no cover

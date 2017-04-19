@@ -8,11 +8,11 @@ default:
 	echo "There is nothing to do."
 test:
 	$(COVERAGE) erase
-	$(COVERAGE) run --parallel-mode --concurrency=thread --source perceptionmd ./PerceptionMD.py perceptionmd/unittests/travis-example.pmd
-	$(COVERAGE) run --parallel-mode --concurrency=thread --source perceptionmd ./PerceptionMD.py perceptionmd/examples/simple/simple.pmd
 	$(COVERAGE) run --parallel-mode --source perceptionmd perceptionmd/utils/utils.py
 	$(COVERAGE) run --parallel-mode --source perceptionmd perceptionmd/utils/rev_eng.py
 	$(COVERAGE) run --parallel-mode --source perceptionmd perceptionmd/utils/Log.py
+	$(COVERAGE) run --parallel-mode --concurrency=thread --source perceptionmd ./PerceptionMD.py perceptionmd/unittests/travis-example.pmd
+	$(COVERAGE) run --parallel-mode --concurrency=thread --source perceptionmd ./PerceptionMD.py perceptionmd/examples/simple/simple.pmd
 	$(COVERAGE) combine
 
 graph:
