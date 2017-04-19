@@ -5,9 +5,8 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 import os
 import re
 import numpy as np
-
 from . import VolumeReader
-from perceptionmd.utils import detect_shape, detect_filetype, scandir
+from perceptionmd.utils import detect_shape, detect_filetype
 from collections import defaultdict
 
 
@@ -34,11 +33,13 @@ class RAWDIR(VolumeReader.VolumeReader):
         if dirname is None:
             dirname = self.directory
 
-        for fn in sorted(scandir(dirname), key=lambda x: x.name):
-            if fn.name.lower().endswith("raw"):
-                root = os.path.split(fn.name)
-                self.UID2dir_cache[dirname] = root
-                yield os.path.join(dirname, fn.name)
+        for root, dirs, files in os.walk(dirname, topdown=True):
+            #~ for fn in sorted(scandir(dirname), key=lambda x: x.name):
+            for fn in files:
+                if fn.lower().endswith("raw"):
+                    path = os.path.join(root, fn)
+                    self.UID2dir_cache[dirname] = path
+                    yield path
 
     def volume(self, filename, dtype=None, shape='auto'):
         if filename not in self.volume_types:

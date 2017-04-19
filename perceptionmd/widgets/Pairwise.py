@@ -416,14 +416,19 @@ class Pairwise(TaskScreen.TaskScreen):
         self.generate()
         self.wall_time = time.time()
         self.start_time = time.time()
-        self._keyboard = Window.request_keyboard(
-            self._keyboard_closed, self, 'text')
+        self._keyboard = Window.request_keyboard(self._keyboard_closed, self, 'text')
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
         self._keyboard.bind(on_key_up=self._on_keyboard_up)
 
     def on_pre_leave(self, *args, **kwargs):
-        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
-        self._keyboard.unbind(on_key_up=self._on_keyboard_up)
+        try:
+            self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+        except:
+            pass
+        try:
+            self._keyboard.unbind(on_key_up=self._on_keyboard_up)
+        except:
+            pass
 
         leave_time = time.time()
         if self.reference:

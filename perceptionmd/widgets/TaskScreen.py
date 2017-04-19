@@ -35,7 +35,6 @@ class TaskScreen(Screen):
             Clock.schedule_once(self.move_on, 10)
             Clock.schedule_once(self.move_on, 60)
 
-
     @abstractmethod
     def on_key_down(self, win, key, scancode, string, modifiers):  # pragma: no cover
         pass
