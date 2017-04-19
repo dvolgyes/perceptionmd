@@ -33,6 +33,17 @@ fullscreen = 0
 - REFERENCE: "raw_volumes2"
     question = [raw_vol_question2.md]
     random_pairs = [RAW::rawtest]
+    colormap = "reverse_cm.txt"
+    hu_center = 128
+    hu_width = 128
+    plane = "XY"
+    flipped_axes = 0,1,0
+    rotate = 1
+    options = "Reference image", "Right"
+
+- REFERENCE: "raw_volumes2"
+    question = [raw_vol_question2.md]
+    random_pairs = [RAW::rawtest]
     colormap = "plasma"
     hu_center = 128
     hu_width = 128
@@ -40,6 +51,7 @@ fullscreen = 0
     flipped_axes = 0,1,0
     rotate = 1
     options = "Reference image", "Right"
+
 
 - QUESTION: "thanks"
   text = [thanks.md]
