@@ -7,7 +7,6 @@ from contextlib import contextmanager
 from functools import wraps
 import importlib
 import itertools
-import random
 import numpy as np
 import shutil
 import tempfile
@@ -86,23 +85,23 @@ def random_combinations(lst, count=2):
     This is a test function
 
     >>> if True:
-    ...    import random
-    ...    random.seed(4)
+    ...    import numpy as np
+    ...    np.random.seed(5)
     ...    print(random_combinations( [1,2,3] ))
-    [(2, 3), (3, 1), (2, 1)]
+    [(2, 1), (1, 3), (2, 3)]
 
     >>> if True:
-    ...    import random
-    ...    random.seed(9)
+    ...    import numpy as np
+    ...    np.random.seed(5)
     ...    print(random_combinations( [1,2,3],3 ))
     [(3, 2, 1)]
     """
 
     result = []
     comb = list(itertools.combinations(lst, count))
-    random.shuffle(comb)
+    np.random.shuffle(comb)
     for c in comb:
-        v = c if random.randint(0, 1) == 0 else c[::-1]
+        v = c if np.random.randint(2) == 0 else c[::-1]
         result.append(v)
     return result
 

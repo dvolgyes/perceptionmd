@@ -211,6 +211,7 @@ class PerceptionMDApp(App):
             seed = int(var['random_seed'])
         self.logger('  random_seed = %s' % seed)
         random.seed(seed)
+        np.random.seed(seed)
         self.logger("")
         self.logger("<Timeline>")
         self.logger("")
