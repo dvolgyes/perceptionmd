@@ -108,24 +108,25 @@ class PerceptionMDApp(App):
 
         for idx, event in enumerate(self.events):
             if event.type == "END":
-                screen = End.End(name="%s" % event.name, automated_test=self.automated_test)
+                screen = End.End(name="%s" % event.name)
             if event.type == "GOTO":
-                screen = Goto.Goto(name="goto_%s" % idx, automated_test=self.automated_test)
+                screen = Goto.Goto(name="goto_%s" % idx)
                 screen.label = event.name
             elif event.type == "INFO":
-                screen = Choice.Choice(name="%s" % event.name, automated_test=self.automated_test)
+                screen = Choice.Choice(name="%s" % event.name)
             elif event.type == "CHOICE":
-                screen = Choice.Choice(name="%s" % event.name, automated_test=self.automated_test)
+                screen = Choice.Choice(name="%s" % event.name)
             elif event.type == "QUESTION":
-                screen = Question.Question(name="%s" % event.name, automated_test=self.automated_test)
+                screen = Question.Question(name="%s" % event.name)
             elif event.type == "VGA":
-                screen = VGA.VGA(name="%s" % event.name, automated_test=self.automated_test)
+                screen = VGA.VGA(name="%s" % event.name)
             elif event.type == "PAIR":
-                screen = Pairwise.Pairwise(name="%s" % event.name, automated_test=self.automated_test)
+                screen = Pairwise.Pairwise(name="%s" % event.name)
             elif event.type == "REFERENCE":
-                screen = Pairwise.Pairwise(name="%s" % event.name, automated_test=self.automated_test)
+                screen = Pairwise.Pairwise(name="%s" % event.name)
                 screen.reference = True
 
+            screen.automated_test = self.automated_test
             screen.var = defaultdict(list)
             var = screen.var
             screen.global_settings = self.settings
@@ -225,8 +226,8 @@ class PerceptionMDApp(App):
 
 def run(*argv):
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    travis = os.environ.get('CI', False)
-    if not travis:
+    continuous_integration = os.environ.get('CI', 'false') != 'false'
+    if not continuous_integration:
         if len(argv) != 2:
             print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")
             sys.exit(1)
@@ -289,9 +290,9 @@ def run(*argv):
     app.settings = settings
     app.logger = Logger(settings['logfile'])
     app.events = model.timeline.events
-    app.automated_test = travis
-    if travis:
-        print("Travis test run")
+    app.automated_test = continuous_integration
+    if continuous_integration:
+        print("Continuous integration: test run")
     app.run()
 
 if __name__ == '__main__':

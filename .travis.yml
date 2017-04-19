@@ -7,30 +7,30 @@ matrix:
           dist: trusty
           sudo: required
           python: 3.5
-          env: TOKEN="3"
+          env: PYVERSION="3"
         - os: linux
           dist: trusty
           sudo: required
           python: 2.7
-          env: TOKEN=""
+          env: PYVERSION=""
         - os: linux
           dist: precise
           sudo: required
           python: 3.5
-          env: TOKEN="3"
+          env: PYVERSION="3"
         - os: linux
           dist: precise
           sudo: required
           python: 2.7
-          env: TOKEN=""
+          env: PYVERSION=""
 
 install:
     - sudo apt-get update
-    - sudo apt-get install cython graphviz python${TOKEN}-dev
+    - sudo apt-get install cython graphviz python${PYVERSION}-dev
     - sudo apt-get -y install xvfb pulseaudio xclip libmtdev1
-    - pip${TOKEN} install cython
-    - pip${TOKEN} install coveralls codecov
-    - pip${TOKEN} install git+https://github.com/dvolgyes/perceptionmd
+    - pip${PYVERSION} install cython
+    - pip${PYVERSION} install coveralls codecov
+    - pip${PYVERSION} install git+https://github.com/dvolgyes/perceptionmd
 
 before_script:
     - export DISPLAY=:99.0;
