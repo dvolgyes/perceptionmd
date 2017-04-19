@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import
 
-try:
+try:   # pragma: no cover
     import gi
     gi.require_version('Gtk', '3.0')
 except:
@@ -56,9 +56,6 @@ class PerceptionMDApp(App):
         super(PerceptionMDApp, self).__init__(*args, **kwargs)
         self.screen_dict = dict()
         self.winsize = Window.size
-
-    def callback(self, *args, **kwargs):
-        pass
 
     def on_start(self, *args, **kwargs):
         Window.bind(on_key_down=self.on_key_down)

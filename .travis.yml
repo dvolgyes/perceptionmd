@@ -38,7 +38,11 @@ before_script:
     - export PYTHONPATH=$PYTHONPATH:$(pwd);
 
 script:
+  - |
+    bash input.sh &
+    SERVER_PID=$!
   - make test
+  - kill -9 $SERVER_PID
 
 after_success:
   - coveralls

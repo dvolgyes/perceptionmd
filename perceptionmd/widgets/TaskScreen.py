@@ -24,6 +24,7 @@ class TaskScreen(Screen):
 
     def move_on(self, *args, **kwargs):
         if self.manager.current == self.name:
+            self.root.screenshot()
             self.manager.current = self.manager.next()
 
     def on_enter(self, *args, **kwargs):
