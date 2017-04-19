@@ -35,8 +35,7 @@ class Choice(TaskScreen.TaskScreen):
         self.log("")
 
     def move_on(self, *args, **kwargs):
-        if self.is_active():
-            self.on_button(random.randrange(len(self.buttons.labels)))
+        self.on_button(random.randrange(len(self.buttons.labels)))
 
     def on_button(self, button):
         self.choice = button

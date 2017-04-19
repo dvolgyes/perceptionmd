@@ -413,6 +413,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.initialized_cmap = show
 
     def on_enter(self, *args, **kwargs):
+        super(Pairwise, self).on_enter(**kwargs)
         self.generate()
         self.wall_time = time.time()
         self.start_time = time.time()

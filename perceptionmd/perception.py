@@ -108,25 +108,24 @@ class PerceptionMDApp(App):
 
         for idx, event in enumerate(self.events):
             if event.type == "END":
-                screen = End.End(name="%s" % event.name)
+                screen = End.End(name="%s" % event.name, automated_test=self.automated_test)
             if event.type == "GOTO":
-                screen = Goto.Goto(name="goto_%s" % idx)
+                screen = Goto.Goto(name="goto_%s" % idx, automated_test=self.automated_test)
                 screen.label = event.name
             elif event.type == "INFO":
-                screen = Choice.Choice(name="%s" % event.name)
+                screen = Choice.Choice(name="%s" % event.name, automated_test=self.automated_test)
             elif event.type == "CHOICE":
-                screen = Choice.Choice(name="%s" % event.name)
+                screen = Choice.Choice(name="%s" % event.name, automated_test=self.automated_test)
             elif event.type == "QUESTION":
-                screen = Question.Question(name="%s" % event.name)
+                screen = Question.Question(name="%s" % event.name, automated_test=self.automated_test)
             elif event.type == "VGA":
-                screen = VGA.VGA(name="%s" % event.name)
+                screen = VGA.VGA(name="%s" % event.name, automated_test=self.automated_test)
             elif event.type == "PAIR":
-                screen = Pairwise.Pairwise(name="%s" % event.name)
+                screen = Pairwise.Pairwise(name="%s" % event.name, automated_test=self.automated_test)
             elif event.type == "REFERENCE":
-                screen = Pairwise.Pairwise(name="%s" % event.name)
+                screen = Pairwise.Pairwise(name="%s" % event.name, automated_test=self.automated_test)
                 screen.reference = True
 
-            screen.automated_test = self.automated_test
             screen.var = defaultdict(list)
             var = screen.var
             screen.global_settings = self.settings
@@ -226,7 +225,7 @@ class PerceptionMDApp(App):
 
 def run(*argv):
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    travis = 'TRAVIS' in os.environ
+    travis = os.environ.get('CI', False)
     if not travis:
         if len(argv) != 2:
             print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")

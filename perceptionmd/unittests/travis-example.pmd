@@ -2,8 +2,8 @@
 //full_screen = 1
 //window_width = 1920
 //window_height = 1080
-//random_seed = "time"
 //background_color = 1,1,1,1
+random_seed = "time"
 input_label_font_size = 32
 input_field_font_size = 32
 title_font_size = 64
