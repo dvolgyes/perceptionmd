@@ -1,7 +1,7 @@
 #!/usr/bin/make
 
 ifndef COVERAGE
-COVERAGE=python ~/.local/bin/coverage
+COVERAGE=python -m coverage
 endif
 
 default:
