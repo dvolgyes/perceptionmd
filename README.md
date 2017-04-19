@@ -1,7 +1,8 @@
 PerceptionMD
 ============
 
-[![Build Status](https://travis-ci.org/dvolgyes/perceptionmd.svg?branch=master)](https://travis-ci.org/dvolgyes/perceptionmd)
+[![Build Status at Travis CI](https://travis-ci.org/dvolgyes/perceptionmd.svg?branch=master)](https://travis-ci.org/dvolgyes/perceptionmd)
+[![Build Status at Semaphore CI](https://semaphoreci.com/api/v1/dvolgyes/perceptionmd/branches/master/badge.svg)](https://semaphoreci.com/dvolgyes/perceptionmd)
 [![Coverage Status](https://coveralls.io/repos/github/dvolgyes/perceptionmd/badge.svg?branch=master)](https://coveralls.io/github/dvolgyes/perceptionmd?branch=master)
 
 Table of Contents
