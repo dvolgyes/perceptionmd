@@ -14,6 +14,7 @@ class Choice(TaskScreen.TaskScreen):
     choice = NumericProperty(None)
     type = StringProperty(None)
     conditions = DictProperty()
+    text = StringProperty()
 
     def __init__(self, *args, **kwargs):
         super(Choice, self).__init__(*args, **kwargs)
@@ -34,7 +35,8 @@ class Choice(TaskScreen.TaskScreen):
         self.log("")
 
     def move_on(self, *args, **kwargs):
-        self.on_button(random.randrange(len(self.buttons.labels)))
+        if self.is_active():
+            self.on_button(random.randrange(len(self.buttons.labels)))
 
     def on_button(self, button):
         self.choice = button
