@@ -14,12 +14,17 @@ logfile = "results.txt"
 
 <Timeline>
 
-- CHOICE: "terms and conditions"
+- CHOICE: "terms1"
   text        = [term_and_conditions.md]
   options     = "Agree", "Disagree"
-  IF "Disagree" THEN "login"
 
-- GOTO: "login"
+- GOTO: "terms2"
+
+- CHOICE: "terms2"
+  text        = [term_and_conditions.md]
+  options     = "Agree", "Disagree"
+  IF "Agree" THEN "login"
+  IF "Disagree" THEN "login"
 
 - QUESTION: "login"
   text = [login.md]

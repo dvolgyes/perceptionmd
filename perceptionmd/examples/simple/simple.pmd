@@ -6,7 +6,7 @@ fullscreen = 0
 - CHOICE: "terms and conditions"
   text        = [term_and_conditions.md]
   options     = "Agree", "Disagree"
-  IF "Disagree" THEN "thanks but"
+  IF "Disagree" THEN "login"
 
 - QUESTION: "login"
   text = [login.md]
@@ -41,12 +41,10 @@ fullscreen = 0
     rotate = 1
     options = "Reference image", "Right"
 
-
 - QUESTION: "thanks"
   text = [thanks.md]
   button = "Finish"
   answer   <- STRING : "Comment or feedback"
-
 
 
 - END: "regular_end"
