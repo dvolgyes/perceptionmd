@@ -13,7 +13,7 @@ if six.PY3:
     imap = map
 
 
-def detect_shape(inputdata, dtype=np.float32):
+def detect_shape(inputdata, dtype=np.float32, threeD=True):
     """
     This function tries to detect the shape of the array based on correlations.
     If the data is correlated, then there is a good chance for proper detection.
@@ -42,7 +42,7 @@ def detect_shape(inputdata, dtype=np.float32):
                         large.append(int(n / i))
         return small + large[::-1]
 
-    def getOffset(array, minium_data=100):
+    def getOffset(array, minium_data=3):
         if array.size < minium_data:
             return 1
 
@@ -67,7 +67,7 @@ def detect_shape(inputdata, dtype=np.float32):
         data = np.fromfile(inputdata, dtype=dtype)
     else:
         data = inputdata
-    print(inputdata)
+
     if data.size <= 1:
         return data
 
@@ -111,7 +111,8 @@ def detect_shape(inputdata, dtype=np.float32):
 
     shape = (-1,) + a + b
     data = np.squeeze(data.reshape(shape))
-    print(data.shape)
+    if len(data.shape) == 2 and threeD:
+        return data.reshape(-1, data.shape[1], data.shape[1])
     return data
 
 
