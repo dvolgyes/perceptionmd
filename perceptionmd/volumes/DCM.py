@@ -41,16 +41,24 @@ class DICOMDIR(VolumeReader.VolumeReader):
             zpos = []
             for f in self.filename_cache[UID]:
                 slope, intercept = 1, 0
+                pixel_size = [1., 1., 1.]
                 ds = dicom.read_file(f)
                 z = ds.SliceLocation if 'SliceLocation' in ds else 0
                 if 'RescaleIntercept' in ds:
                     intercept = ds.RescaleIntercept
                 if  'RescaleSlope' in ds:
                     slope = ds.RescaleSlope
+                if 'SliceThickness' in ds:
+                    pixel_size[0] = float(ds.SliceThickness)
+                if 'PixelSpacing' in ds:
+                    y, x = ds.PixelSpacing
+                    pixel_size[1], pixel_size[2] = float(y), float(x)
+
                 vol = ds.pixel_array.copy().astype(self.dtype) * slope + intercept
                 zpos.append((z, vol))
             zpos = sorted(zpos, key=lambda x: x[0])
             _, volumes = zip(*zpos)
             volume = np.stack(volumes)
+            meta['pixel_size'] = pixel_size
             self.cache[UID] = volume, meta
         return at_least_3d(volume), meta

@@ -20,11 +20,7 @@ class VolumeReader(object):
         self.cache = cache
         self.lock = lock
         self.threads = list()
-        self.pixelsize = (1., 1., 1.)
         self.UID2dir_cache = defaultdict(str)
-
-    def get_pixelsize(self):
-        return self.pixelsize
 
     def UID2dir(self, UID):
         return self.UID2dir_cache[UID]

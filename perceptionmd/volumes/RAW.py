@@ -47,6 +47,7 @@ class RAWDIR(VolumeReader.VolumeReader):
                         yield path
     @gc_after
     def volume(self, filename, dtype=None, shape='auto'):
+        pixel_size = [1., 1., 1.]
         if filename not in self.volume_types:
             dtype = detect_filetype(filename) if self.dtype is None else self.dtype
         else:
@@ -59,4 +60,6 @@ class RAWDIR(VolumeReader.VolumeReader):
         self.volume_shapes[filename] = shape
 
         meta = defaultdict(lambda: None)
+        meta['pixel_size'] = pixel_size
+
         return np.memmap(filename, mode="r", offset=0, dtype=dtype).reshape(shape), meta
