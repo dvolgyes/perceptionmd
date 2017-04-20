@@ -53,7 +53,7 @@ fullscreen = 0
 
 - REFERENCE: "raw_volumes2"
     question = [raw_vol_question2.md]
-    random_pairs = [dcm]
+    random_pairs = [dcm2]
     colormap = "plasma"
     hu_center = 128
     hu_width = 128
