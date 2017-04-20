@@ -51,7 +51,27 @@ fullscreen = 0
     base_rotate = 1
     alpha = 0.5
 
+
 - REFERENCE: "raw_volumes2"
+    question = [raw_vol_question2.md]
+    random_pairs = [RAW::rawtest]
+    colormap = "reverse_cm.txt"
+    hu_center = 128
+    hu_width = 128
+    plane = "XZ"
+    flipped_axes = 1,1,1
+    rotate = 0
+    options = "Reference image", "Right"
+
+    base_layer = [RAW::rawtest/A_9_512_512.raw]
+    base_display_window_center = 20
+    base_display_window_width = 400
+    base_plane = "XZ"
+    base_flipped_axes = 1,1,1
+    base_rotate = 0
+    alpha = 0.5
+
+- REFERENCE: "raw_volumes3"
     question = [raw_vol_question2.md]
     random_pairs = [dcm2]
     colormap = "plasma"
