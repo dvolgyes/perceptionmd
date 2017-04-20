@@ -38,6 +38,7 @@ class Choice(TaskScreen.TaskScreen):
         self.on_button(random.randrange(len(self.buttons.labels)))
 
     def on_button(self, button):
+        self.buttons.selected = button
         self.choice = button
         self.text = self.buttons.labels[self.choice]
         if self.text in self.conditions:
