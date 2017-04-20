@@ -449,7 +449,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.log("")
 
     def move_on(self,*args,**kwargs):
-        self.on_button(random.choice(self.choice_idx.keys()))
+        self.on_button(random.choice(list(self.choice_idx.keys())))
 
     def on_button(self, button, *args, **kwargs):
         now = time.time()
