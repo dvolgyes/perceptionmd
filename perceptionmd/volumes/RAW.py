@@ -33,8 +33,14 @@ class RAWDIR(VolumeReader.VolumeReader):
         if dirname is None:
             dirname = self.directory
 
+        if not os.path.exists(dirname):
+            return
+        if os.path.isfile(dirname):
+            self.UID2dir_cache[dirname] = dirname
+            yield dirname
+            return
+
         for root, dirs, files in os.walk(dirname, topdown=True):
-            #~ for fn in sorted(scandir(dirname), key=lambda x: x.name):
             for fn in files:
                 if fn.lower().endswith("raw"):
                     path = os.path.join(root, fn)
