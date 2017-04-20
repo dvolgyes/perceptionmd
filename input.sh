@@ -119,5 +119,5 @@ for i in `seq 120`; do
   sleep 0.1
   xdotool mouseup 3
   xdotool keyup shift
-
+  xdotool key shift+F12
 done
