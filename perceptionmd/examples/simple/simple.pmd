@@ -41,7 +41,7 @@ fullscreen = 0
     rotate = 1
     options = "Reference image", "Right"
 
-    base_layer = [RAW::rawtest/A.raw]
+    base_layer = [RAW::rawtest/A_9_512_512.raw]
     base_colormap = "Oranges"
     base_display_window_center = 20
     base_display_window_width = 400
