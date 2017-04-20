@@ -1,11 +1,11 @@
 PerceptionMD
 ============
 
-Travis CI: [![Build Status at Travis CI](https://travis-ci.org/dvolgyes/perceptionmd.svg?branch=master)](https://travis-ci.org/dvolgyes/perceptionmd)
-Coveralls.io: [![Coverage Status](https://coveralls.io/repos/github/dvolgyes/perceptionmd/badge.svg?branch=master)](https://coveralls.io/github/dvolgyes/perceptionmd?branch=master)
+Build status at Travis CI: [![Build Status at Travis CI](https://travis-ci.org/dvolgyes/perceptionmd.svg?branch=master)](https://travis-ci.org/dvolgyes/perceptionmd)
+Code coverage at Coveralls.io: [![Coverage Status](https://coveralls.io/repos/github/dvolgyes/perceptionmd/badge.png?branch=master)](https://coveralls.io/github/dvolgyes/perceptionmd?branch=master)
 
-Semaphore CI: [![Build Status at Semaphore CI](https://semaphoreci.com/api/v1/dvolgyes/perceptionmd/branches/master/badge.svg)](https://semaphoreci.com/dvolgyes/perceptionmd)
-Codecov.io: [![codecov](https://codecov.io/gh/dvolgyes/perceptionmd/branch/master/graph/badge.svg)](https://codecov.io/gh/dvolgyes/perceptionmd)
+Build status at Semaphore CI: [![Build Status at Semaphore CI](https://semaphoreci.com/api/v1/dvolgyes/perceptionmd/branches/master/badge.svg)](https://semaphoreci.com/dvolgyes/perceptionmd)
+Code coverage at Codecov.io: [![codecov](https://codecov.io/gh/dvolgyes/perceptionmd/branch/master/graph/badge.svg)](https://codecov.io/gh/dvolgyes/perceptionmd)
 
 Table of Contents
 -----------------
