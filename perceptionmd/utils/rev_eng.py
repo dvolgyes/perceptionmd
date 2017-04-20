@@ -29,27 +29,20 @@ def detect_shape(inputdata, dtype=np.float32, threeD=True):
     def divisors(n, trivial=False):
         large = []
         small = []
-        if trivial:
-            for i in xrange(1, int(np.sqrt(n) + 1)):
-                if n % i == 0:
-                    small.append(i)
-                    if i * i != n:
-                        large.append(n / i)
-        else:
-            for i in xrange(2, int(np.sqrt(n) + 1)):
-                if n % i == 0:
-                    small.append(i)
-                    if i * i != n:
-                        large.append(int(n / i))
+        for i in xrange(2, int(np.sqrt(n) + 1)):
+            if n % i == 0:
+                small.append(i)
+                if i * i != n:
+                    large.append(int(n / i))
         return small + large[::-1]
 
     def getOffset(array, minium_data=3):
         if array.size < minium_data:
             return 1
 
-        divs = divisors(array.size, trivial=False)
+        divs = divisors(array.size)
 
-        if len(divs) == 2:
+        if len(divs) == 0:
             return 1
 
         a = array.ravel()
@@ -113,7 +106,10 @@ def detect_shape(inputdata, dtype=np.float32, threeD=True):
     shape = (-1,) + a + b
     data = np.squeeze(data.reshape(shape))
     if len(data.shape) == 2 and threeD:
-        return data.reshape(-1, data.shape[1], data.shape[1])
+        try:
+            return data.reshape(-1, data.shape[1], data.shape[1])
+        except:
+            return data.reshape(1, data.shape[0], data.shape[1])
     return data
 
 
