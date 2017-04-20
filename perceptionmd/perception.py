@@ -91,7 +91,8 @@ class PerceptionMDApp(App):
                 Window.size = (int(self.settings['window_width']), int(self.settings['window_height']))
             else:
                 Window.size = self.winsize
-            Window.fullscreen ^= True
+            if not self.automated_test:
+                Window.fullscreen ^= True
             self.viewport.fit_to_window()
             for s in self.screens:
                 s.canvas.ask_update()
@@ -186,8 +187,6 @@ class PerceptionMDApp(App):
                 else:
                     if os.path.exists(src):
                         screen.document.source = src
-                    else:
-                        screen.document.text = "File not found: %s " % src
 
         screen = End.End(name="automatic exit point")
         self.sm.add_widget(screen)

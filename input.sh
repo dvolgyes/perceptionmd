@@ -9,6 +9,7 @@ for i in `seq 120`; do
   xdotool key F8
   xdotool key F9
   xdotool key F10
+  xdotool key F11
   xdotool type a
   xdotool type b
   xdotool type c

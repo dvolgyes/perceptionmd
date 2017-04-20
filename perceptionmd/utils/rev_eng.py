@@ -103,7 +103,7 @@ def detect_shape(inputdata, dtype=np.float32, threeD=True):
     if len(data.shape) == 2 and threeD:
         try:
             return data.reshape(-1, data.shape[1], data.shape[1])
-        except:
+        except: # pragma: no cover
             return data.reshape(1, data.shape[0], data.shape[1])
     return data
 
