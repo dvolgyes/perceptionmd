@@ -37,23 +37,23 @@ class DICOMDIR(VolumeReader.VolumeReader):
             if UID in self.cache and self.cache[UID] is not None:
                 return self.cache[UID]
             if len(self.filename_cache[UID]) == 1:
+                slope, intercept = 1, 0
                 ds = dicom.read_file(self.filename_cache[UID][0])
-                if ('RescaleIntercept' in ds) and ('RescaleSlope' in ds):
+                if 'RescaleIntercept' in ds:
                     intercept = ds.RescaleIntercept
+                if  'RescaleSlope' in ds:
                     slope = ds.RescaleSlope
-                else:
-                    slope, intercept = 1, 0
                 volume = ds.pixel_array.copy().astype(self.dtype) * slope + intercept
             else:
                 zpos = []
                 for f in self.filename_cache[UID]:
+                    slope, intercept = 1, 0
                     ds = dicom.read_file(f)
                     z = ds.SliceLocation
-                    if ('RescaleIntercept' in ds) and ('RescaleSlope' in ds):
+                    if 'RescaleIntercept' in ds:
                         intercept = ds.RescaleIntercept
+                    if  'RescaleSlope' in ds:
                         slope = ds.RescaleSlope
-                    else:
-                        slope, intercept = 1, 0
                     vol = ds.pixel_array.copy().astype(self.dtype) * slope + intercept
                     zpos.append((z, vol))
                 zpos = sorted(zpos, key=lambda x: x[0])
