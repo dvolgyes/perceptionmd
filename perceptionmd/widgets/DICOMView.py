@@ -78,8 +78,8 @@ class DICOMView(BoxLayout):
     def on_initialized(self, *args, **kwargs):
         self.dcm_image.texture = self.img_texture
         self.base_image.texture = self.base_img_texture
-        self.blit(self.empty, colorfmt='luminance', bufferfmt='ubyte')
-        self.blit(self.empty, colorfmt='luminance', bufferfmt='ubyte', base_layer=True)
+        self.blit(self.empty, colorfmt='luminance', base_layer=True)
+        self.blit(self.empty, colorfmt='luminance')
 
     def orient_volume(self):
         self.volume = self.core_volume
@@ -117,7 +117,7 @@ class DICOMView(BoxLayout):
     def on_scroll(self, touch, rel):
         return None
 
-    def blit(self, image, colorfmt, bufferfmt, base_layer=False):
+    def blit(self, image, colorfmt='rgba', bufferfmt='ubyte', base_layer=False):
         if base_layer:
             if self.base_image.texture.size != image.shape[0:2]:
                 self.base_image.texture = Texture.create(image.shape[0:2])
@@ -148,25 +148,22 @@ class DICOMView(BoxLayout):
                 array = utils.padding_square(np.clip(array, 0, 255).astype(np.uint8))
             if self.colormap is not None:
                 slice_str = (self.colormap(array) * 255).astype(np.uint8)
-                self.blit(slice_str.reshape(array.shape + (-1,)), colorfmt='rgba', bufferfmt='ubyte')
+                self.blit(slice_str.reshape(array.shape + (-1,)))
             else:
-                self.blit(array, 'luminance', 'ubyte')
+                self.blit(array, colorfmt='luminance')
             if self.base_volume is not None:
                 shift = self.base_wcenter - self.base_wwidth / 2.0
                 array = np.clip(
-                    (self.base_volume[self.z_pos, ...] - shift) / (self.base_wwidth / 255.0),
-                    0, 255).astype(
-                    np.uint8)
+                    (self.base_volume[self.z_pos, ...] - shift) / (self.base_wwidth / 255.0), 0, 255).astype(np.uint8)
                 if array.shape[0] != array.shape[1]:
                     array = utils.padding_square(np.clip(array, 0, 255).astype(np.uint8))
                 if self.base_colormap is not None:
-                    slice_str = (self.base_colormap(array) * 255).astype(np.uint8)
-                    self.blit(slice_str.reshape(array.shape + (-1,)),
-                              colorfmt='rgba', bufferfmt='ubyte', base_layer=True)
+                    slice_str = (self.base_colormap(array) * 255).astype(np.uint8).reshape(array.shape + (-1,))
+                    self.blit(slice_str, base_layer=True)
                 else:
-                    self.blit(array, 'luminance', 'ubyte', base_layer=True)
+                    self.blit(array, colorfmt='luminance', base_layer=True)
         else:
-            self.blit(self.empty, 'luminance', 'ubyte')
-            self.blit(self.empty, 'luminance', 'ubyte', True)
+            self.blit(self.empty, colorfmt='luminance', base_layer=True)
+            self.blit(self.empty, colorfmt='luminance')
         self.dcm_image.canvas.ask_update()
         self.canvas.ask_update()
