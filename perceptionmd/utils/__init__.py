@@ -9,6 +9,7 @@ from . import Log
 __all__ = ["utils", "rev_eng", "Log"]
 
 KV = utils.KV
+at_least_3d = utils.at_least_3d
 listify = utils.listify
 gc = utils.gc
 gc_after = utils.gc_after

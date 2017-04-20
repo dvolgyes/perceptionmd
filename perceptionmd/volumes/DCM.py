@@ -7,15 +7,7 @@ import os
 import dicom
 from . import VolumeReader
 from collections import defaultdict
-
-
-def at_least_3d(array):
-    if len(array.shape) == 1:
-        return array.reshape(1, 1, -1)
-    if len(array.shape) == 2:
-        return array.reshape((-1,) + array.shape)
-    return array
-
+from perceptionmd.utils import at_least_3d
 
 class DICOMDIR(VolumeReader.VolumeReader):
 

@@ -21,6 +21,33 @@ might be relocated soon.
 """
 
 
+def at_least_3d(array):
+    """
+    Returns the numpy array and reshapes it to have at least 3 dimensions.
+    Extra dimensions are introduced at the front.
+
+    >>> if True:
+    ...     import numpy as np
+    ...     print(at_least_3d(np.arange(6)).shape)
+    (1, 1, 6)
+
+    >>> if True:
+    ...     import numpy as np
+    ...     print(at_least_3d(np.arange(6).reshape(2,3)).shape)
+    (1, 2, 3)
+
+    >>> if True:
+    ...     import numpy as np
+    ...     print(at_least_3d(np.arange(6).reshape(3,1,2)).shape)
+    (3, 1, 2)
+    """
+    if len(array.shape) == 1:
+        return array.reshape(1, 1, -1)
+    if len(array.shape) == 2:
+        return array.reshape((-1,) + array.shape)
+    return array
+
+
 def listify(*arg):
     """
     Return the argument as a list, if it wasn't already a list.
