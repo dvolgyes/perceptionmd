@@ -3,6 +3,7 @@
 from __future__ import print_function, division, absolute_import, unicode_literals
 import numpy as np
 import six
+import sys
 
 if six.PY2:
     import itertools
@@ -249,3 +250,5 @@ def detect_filetype(filename, offset=0, types='all', endian='all', count=-1):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+    detect_filetype(sys.argv[1])
+    recognize_filetype(sys.argv[1])

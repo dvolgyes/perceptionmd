@@ -18,8 +18,6 @@ class ComboButtons(Widget):
 
     def __init__(self, *args, **kwargs):
         super(ComboButtons, self).__init__(*args, **kwargs)
-        if 'button_size' in kwargs:
-            self.button_size = kwargs['button_size']
         self.callback = self.noop
 
     def on_button_size(self, *args, **kwargs):
@@ -49,7 +47,7 @@ class ComboButtons(Widget):
         if self.selected >= 0:
             self.layout.children[len(self.layout.children) - 1 - self.selected].state = 'down'
 
-    def noop(self, *args, **kwargs):
+    def noop(self, *args, **kwargs): # pragma: no cover
         pass
 
     def set_callback(self, f):
@@ -68,7 +66,7 @@ class ComboButtons(Widget):
     def on_text(self, obj, value):
         try:
             self.selected = (self.labels).index(value)
-        except:
+        except: # pragma: no cover
             pass
 
     def on_touch_down(self, touch):

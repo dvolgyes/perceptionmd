@@ -10,7 +10,8 @@ test:
 	(./input.sh &)
 	$(COVERAGE) erase
 	$(COVERAGE) run --parallel-mode --source perceptionmd perceptionmd/utils/utils.py
-	$(COVERAGE) run --parallel-mode --source perceptionmd perceptionmd/utils/rev_eng.py
+	$(COVERAGE) run --parallel-mode --source perceptionmd perceptionmd/utils/rev_eng.py perceptionmd/examples/simple/rawtest/A.raw
+	$(COVERAGE) run --parallel-mode --source perceptionmd perceptionmd/utils/rev_eng.py perceptionmd/examples/simple/rawtest/A_9_512_512.raw
 	$(COVERAGE) run --parallel-mode --source perceptionmd perceptionmd/utils/Log.py
 	$(COVERAGE) run --parallel-mode --concurrency=thread --source perceptionmd ./PerceptionMD.py
 	$(COVERAGE) run --parallel-mode --concurrency=thread --source perceptionmd ./PerceptionMD.py perceptionmd/unittests/travis-example.pmd
