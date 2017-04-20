@@ -74,6 +74,7 @@ fullscreen = 0
 - REFERENCE: "raw_volumes3"
     question = [raw_vol_question2.md]
     random_pairs = [dcm2]
+    base_layer = [dcm2/1]
     colormap = "plasma"
     hu_center = 128
     hu_width = 128

@@ -45,21 +45,18 @@ class RAWDIR(VolumeReader.VolumeReader):
                         path = os.path.join(root, fn)
                         self.UID2dir_cache[dirname] = path
                         yield path
-
     @gc_after
     def volume(self, filename, dtype=None, shape='auto'):
         if filename not in self.volume_types:
-            if self.dtype is None and self.dtype is None:
-                dtype = detect_filetype(filename)
-            else:
-                dtype = self.dtype
+            dtype = detect_filetype(filename) if self.dtype is None else self.dtype
         else:
-            dtype = self.volumes_types[filename]
-            self.volume_types[filename] = dtype
-
+            dtype = self.volume_types[filename]
         shape = self.volume_shapes.get(filename, 'auto')
         if shape == 'auto':
             shape = self.infer_shape(filename, dtype)
-            self.volume_shapes[filename] = shape
+
+        self.volume_types[filename] = dtype
+        self.volume_shapes[filename] = shape
+
         meta = defaultdict(lambda: None)
         return np.memmap(filename, mode="r", offset=0, dtype=dtype).reshape(shape), meta

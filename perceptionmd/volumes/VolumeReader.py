@@ -10,7 +10,6 @@ from abc import abstractmethod
 import cachetools
 from collections import defaultdict
 
-
 class VolumeReader(object):
 
     def __init__(self, lock=threading.Lock(), cache=cachetools.LRUCache(
