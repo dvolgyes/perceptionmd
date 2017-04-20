@@ -32,7 +32,7 @@ fullscreen = 0
 
 - REFERENCE: "raw_volumes1"
     question = [raw_vol_question2.md]
-    random_pairs = [RAW::rawtest]
+    random_volumes = [RAW::rawtest]
     colormap = "reverse_cm.txt"
     hu_center = 128
     hu_width = 128
@@ -52,7 +52,7 @@ fullscreen = 0
 
 - REFERENCE: "raw_volumes2"
     question = [raw_vol_question2.md]
-    random_pairs = [RAW::rawtest]
+    random_pairs = [dcm]
     colormap = "plasma"
     hu_center = 128
     hu_width = 128
