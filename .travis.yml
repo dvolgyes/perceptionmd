@@ -31,7 +31,7 @@ install:
     - pip${PYVERSION} install --upgrade pip setuptools wheel
     - pip${PYVERSION} install cython
     - pip${PYVERSION} install coveralls codecov
-    - pip${PYVERSION} install --only-binary=numpy,scipy
+    - pip${PYVERSION} install --only-binary=numpy,scipy scipy
     - pip${PYVERSION} install git+https://github.com/dvolgyes/perceptionmd
 
 before_script:
