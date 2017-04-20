@@ -116,7 +116,7 @@ class PerceptionMDApp(App):
             elif event.type == "QUESTION":
                 screen = Question.Question(name="%s" % event.name)
             elif event.type == "VGA":
-                screen = VGA.VGA(name="%s" % event.name)
+                screen = VGA.VGA(name="%s" % event.name) # pragma: no cover
             elif event.type == "PAIR":
                 screen = Pairwise.Pairwise(name="%s" % event.name)
             elif event.type == "REFERENCE":
@@ -165,7 +165,7 @@ class PerceptionMDApp(App):
             if event.type == "QUESTION":
                 screen.questions = event.question
                 screen.ratio = var['text_input_ratio']
-            if event.type == "VGA":
+            if event.type == "VGA": # pragma: no cover
                 pass
 
             if event.type in ["PAIR", "REFERENCE"]:
@@ -174,7 +174,7 @@ class PerceptionMDApp(App):
                 screen.add_dirs(listify(screen.var['base_layer']), self.volumecache, base_layer=True)
                 screen.add_options(screen.var['options'])
 
-            if event.type in ["VGA"]:
+            if event.type in ["VGA"]: # pragma: no cover
                 screen.add_dirs(listify(screen.var['random_volumes']), self.volumecache)
                 screen.add_dirs(listify(screen.var['base_layer']), self.volumecache, base_layer=True)
                 screen.add_questions(listify(screen.var['question']), screen.var['options'])
@@ -224,7 +224,7 @@ class PerceptionMDApp(App):
 def run(*argv):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     continuous_integration = os.environ.get('CI', 'false') != 'false'
-    if not continuous_integration:
+    if not continuous_integration: # pragma: no cover
         if len(argv) != 2:
             print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")
             sys.exit(1)
@@ -292,7 +292,7 @@ def run(*argv):
         print("Continuous integration: test run")
     app.run()
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     if six.PY2:
         run(*[unicode(x, 'utf-8') for x in sys.argv])
     else:

@@ -34,8 +34,8 @@ class DICOMDIR(VolumeReader.VolumeReader):
                     self.filename_cache[series].append(p)
                     self.UID2dir_cache[series] = root
                     volnames.append((series, root))
-                except:
-                    continue
+                except: # pragma: no cover
+                    pass
         for volname, root in sorted(list(set(volnames)), key=lambda x: x[1]):
             yield volname
 

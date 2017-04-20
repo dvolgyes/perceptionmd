@@ -114,7 +114,7 @@ class DICOMView(BoxLayout):
     def set_dummy_volume(self, base_volume=False):
         self.set_volume((self.black.reshape(1, 512, 512), defaultdict(lambda: None)), base_volume)
 
-    def on_scroll(self, touch, rel):
+    def on_scroll(self, touch, rel): # pragma: no cover
         return None
 
     def blit(self, image, colorfmt='rgba', bufferfmt='ubyte', base_layer=False):
@@ -138,10 +138,6 @@ class DICOMView(BoxLayout):
     def display_image_trigger(self, show=True, *args):
         self.initialized = True
         if show:
-            while self.volume is None:
-                self.log("ERROR: Volume is None!")
-                print("ERROR: Volume is None!")
-                return
             shift = self.wcenter - self.wwidth / 2.0
             array = np.clip((self.volume[self.z_pos, ...] - shift) / (self.wwidth / 255.0), 0, 255).astype(np.uint8)
             if array.shape[0] != array.shape[1]:
