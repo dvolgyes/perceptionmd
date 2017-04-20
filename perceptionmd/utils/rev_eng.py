@@ -37,12 +37,9 @@ def detect_shape(inputdata, dtype=np.float32, threeD=True):
         return small + large[::-1]
 
     def getOffset(array, minium_data=3):
-        if array.size < minium_data:
-            return 1
-
         divs = divisors(array.size)
 
-        if len(divs) == 0:
+        if array.size < minium_data or len(divs) == 0:
             return 1
 
         a = array.ravel()
@@ -51,8 +48,6 @@ def detect_shape(inputdata, dtype=np.float32, threeD=True):
         linv = scipy.fftpack.irfft(lf2)
         n = 1
         for i in divs:
-            if i == 0 or i == 1:
-                continue
             if linv[i] > linv[n]:
                 n = i
         return n
@@ -210,7 +205,8 @@ def detect_filetype(filename, offset=0, types='all', endian='all', count=-1):
             with np.errstate(invalid='ignore'):
                 if not all(imap(np.isfinite, array.flat)):
                     continue
-            m = np.abs(np.mean(array))
+            with np.errstate(invalid='ignore'):
+                m = np.abs(np.mean(array))
 
             if np.isnan(m) or not np.isfinite(m):
                 continue
