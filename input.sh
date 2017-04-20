@@ -28,14 +28,14 @@ for i in `seq 120`; do
   sleep 0.1
   xdotool mousemove_relative  50 0
   sleep 0.1
-  xdotool mousemove_relative  -50 0
+  xdotool mousemove_relative -- -50 0
   sleep 0.1
   xdotool mouseup 1
   sleep 0.1
   xdotool mousedown 1
   xdotool mousemove_relative  0 50
   sleep 0.1
-  xdotool mousemove_relative  0 -50
+  xdotool mousemove_relative -- 0 -50
   sleep 0.1
   xdotool mouseup 1
 
@@ -43,14 +43,14 @@ for i in `seq 120`; do
   sleep 0.1
   xdotool mousemove_relative  50 0
   sleep 0.1
-  xdotool mousemove_relative  -50 0
+  xdotool mousemove_relative -- -50 0
   sleep 0.1
   xdotool mouseup 2
   sleep 0.1
   xdotool mousedown 2
   xdotool mousemove_relative  0 50
   sleep 0.1
-  xdotool mousemove_relative  0 -50
+  xdotool mousemove_relative -- 0 -50
   sleep 0.1
   xdotool mouseup 2
 
@@ -58,14 +58,14 @@ for i in `seq 120`; do
   sleep 0.1
   xdotool mousemove_relative  50 0
   sleep 0.1
-  xdotool mousemove_relative  -50 0
+  xdotool mousemove_relative -- -50 0
   sleep 0.1
   xdotool mouseup 3
   sleep 0.1
   xdotool mousedown 3
   xdotool mousemove_relative  0 50
   sleep 0.1
-  xdotool mousemove_relative  0 -50
+  xdotool mousemove_relative -- 0 -50
   sleep 0.1
   xdotool mouseup 3
 
@@ -78,14 +78,14 @@ for i in `seq 120`; do
   sleep 0.1
   xdotool mousemove_relative  50 0
   sleep 0.1
-  xdotool mousemove_relative  -50 0
+  xdotool mousemove_relative -- -50 0
   sleep 0.1
   xdotool mouseup 1
   sleep 0.1
   xdotool mousedown 1
   xdotool mousemove_relative  0 50
   sleep 0.1
-  xdotool mousemove_relative  0 -50
+  xdotool mousemove_relative -- 0 -50
   sleep 0.1
   xdotool mouseup 1
 
@@ -93,14 +93,14 @@ for i in `seq 120`; do
   sleep 0.1
   xdotool mousemove_relative  50 0
   sleep 0.1
-  xdotool mousemove_relative  -50 0
+  xdotool mousemove_relative -- -50 0
   sleep 0.1
   xdotool mouseup 2
   sleep 0.1
   xdotool mousedown 2
   xdotool mousemove_relative  0 50
   sleep 0.1
-  xdotool mousemove_relative  0 -50
+  xdotool mousemove_relative -- 0 -50
   sleep 0.1
   xdotool mouseup 2
 
@@ -108,14 +108,14 @@ for i in `seq 120`; do
   sleep 0.1
   xdotool mousemove_relative  50 0
   sleep 0.1
-  xdotool mousemove_relative  -50 0
+  xdotool mousemove_relative -- -50 0
   sleep 0.1
   xdotool mouseup 3
   sleep 0.1
   xdotool mousedown 3
   xdotool mousemove_relative  0 50
   sleep 0.1
-  xdotool mousemove_relative  0 -50
+  xdotool mousemove_relative -- 0 -50
   sleep 0.1
   xdotool mouseup 3
   xdotool keyup shift
