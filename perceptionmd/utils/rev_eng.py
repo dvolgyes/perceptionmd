@@ -122,14 +122,14 @@ def recognize_filetype(fn, default_type = np.float32, default_little_endian=True
     Recognize endianness and number format on raw file on the filename.
     Return value: (numpy.dtype, number==Little Endian?)
 
-    >>> recognize_filetype("test_float_le.raw")
-    (<type 'numpy.float32'>, True)
+    >>> recognize_filetype("test_float_le.raw")[0].__name__
+    'float32'
 
-    >>> recognize_filetype("test_uint8_big_endian.raw")
-    (<type 'numpy.uint8'>, False)
+    >>> recognize_filetype("test_uint8_big_endian.raw")[1]
+    False
 
-    >>> recognize_filetype("test.raw")
-    (<type 'numpy.float32'>, True)
+    >>> recognize_filetype("test.raw")[0].__name__
+    'float32'
 
     """
     filename = fn.lower()
