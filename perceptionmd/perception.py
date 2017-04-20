@@ -64,7 +64,7 @@ class PerceptionMDApp(App):
         pattern = "screenshot_{:03d}.png"
         directory = self.settings['screenshot_directory']
         i = 0
-        if not os.path_exists(directory):
+        if not os.path.exists(directory):
             return
         while os.path.exists(os.path.join(directory, pattern.format(i))):
             i += 1

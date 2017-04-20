@@ -43,4 +43,5 @@ default_settings.update({
     'base_colormap': None,
     'alpha': 1.0,
     'text_input_ratio': 2.0,
+    'screenshot_directory': '.'
 })
