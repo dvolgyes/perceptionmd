@@ -54,5 +54,8 @@ class Question(TaskScreen.TaskScreen):
 
         self.log("")
 
+    def move_on(self, *args, **kwargs):
+        self.on_button_press()
+
     def on_button_press(self, *args, **kwargs):
         self.manager.current = self.manager.next()

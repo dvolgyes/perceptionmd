@@ -35,7 +35,7 @@ class DICOMView(BoxLayout):
     base_layer = BooleanProperty(False)
 
     def __init__(self, *args, **kwargs):
-        super(DICOMView, self).__init__(**kwargs)
+        super(DICOMView, self).__init__(*args,**kwargs)
         self.mainw = None
         self.dcm_image = None
         self.core_volume = None
@@ -55,6 +55,7 @@ class DICOMView(BoxLayout):
     @gc_after
     def clear(self):
         self.set_dummy_volume()
+        self.set_dummy_volume(base_volume=True)
 
     def set_volume(self, volmeta, base_layer=False):
         (volume, meta) = volmeta

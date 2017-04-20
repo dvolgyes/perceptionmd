@@ -92,8 +92,8 @@ class PerceptionMDApp(App):
             else:
                 Window.size = self.winsize
             if not self.automated_test:
-                Window.fullscreen ^= True
-            self.viewport.fit_to_window()
+                Window.fullscreen ^= True # pragma: no cover
+            self.viewport.on_window_resize()
             for s in self.screens:
                 s.canvas.ask_update()
             return True

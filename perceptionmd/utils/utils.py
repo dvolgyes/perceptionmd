@@ -214,22 +214,6 @@ def test_feature(module, name):
     except:
         return False
 
-try:
-    scandir = os.scandir
-
-except AttributeError:
-    try:
-        import scandir
-        scandir = scandir.scandir
-    except ImportError:
-        def scandir(dirname="."):
-            for root, dirs, files in os.walk(dirname):
-                for f in files:
-                    p = namedtuple("path", ['name'])
-                    p.name = os.path.join(root, f)
-                    yield p
-
-
 def gc(func):
     """
     Unconditional garbage collection decorator,

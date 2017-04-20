@@ -653,8 +653,8 @@ class Pairwise(TaskScreen.TaskScreen):
 
     @gc_after
     def clear(self):
-        self.dcmview1.clear()
-        self.dcmview2.clear()
         for dirs in self.volumedirs:
             dirs.clear()
         del self.volumedirs[:]
+        self.dcmview1.clear()
+        self.dcmview2.clear()
