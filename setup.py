@@ -37,6 +37,7 @@ setup(
                 ('perceptionmd/unittests', ['perceptionmd/unittests/travis-example.pmd']),
                 ('perceptionmd/examples/simple',
                     ['perceptionmd/examples/simple/simple.pmd',
+                    'perceptionmd/examples/simple/sharpness.md',
                     'perceptionmd/examples/simple/reverse_cm.txt',
                      'perceptionmd/examples/simple/branches_combined.png']),
                 ('perceptionmd/examples/simple/rawtest',

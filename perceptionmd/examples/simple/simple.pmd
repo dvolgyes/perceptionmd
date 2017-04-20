@@ -109,16 +109,6 @@ In order to perform the experiment, we need some information about you.
 Would you be kind to fill the fields below?
 }
 
-Content: [sharpness.md] {
-Which image is the sharper?
-----------------------------
-
-You can use reStructuredText to describe your screen,
-including images with transparent regios, etc.
-
-.. figure:: branches_combined.png
-}
-
 
 Content: [raw_vol_question.md] {
 Which volume is sharper? Hint: right button+move (or scroll button):scroll, left+ move up/down: window center, left+left/right: window width.
