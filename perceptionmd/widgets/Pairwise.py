@@ -451,6 +451,7 @@ class Pairwise(TaskScreen.TaskScreen):
                 self.log("      {:>3} ({}  win)".format(idx, wins))
         self.log("")
 
+
     def on_button(self, button, *args, **kwargs):
         now = time.time()
         i = self.choice_idx[button]

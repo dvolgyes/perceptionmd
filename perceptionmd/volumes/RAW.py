@@ -8,7 +8,7 @@ import numpy as np
 from . import VolumeReader
 from perceptionmd.utils import detect_shape, detect_filetype
 from collections import defaultdict
-
+from perceptionmd.utils import gc_after
 
 class RAWDIR(VolumeReader.VolumeReader):
 
@@ -46,6 +46,7 @@ class RAWDIR(VolumeReader.VolumeReader):
                         self.UID2dir_cache[dirname] = path
                         yield path
 
+    @gc_after
     def volume(self, filename, dtype=None, shape='auto'):
         if filename not in self.volume_types:
             if self.dtype is None and self.dtype is None:
