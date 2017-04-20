@@ -69,7 +69,11 @@ for i in `seq 120`; do
   sleep 0.1
   xdotool mouseup 3
 
-  xdotool keydown ctrl
+  xdotool keydown shift
+  xdotool click  5
+  sleep 0.1
+  xdotool click  4
+  sleep 0.1
   xdotool mousedown 1
   sleep 0.1
   xdotool mousemove_relative  50 0
@@ -114,6 +118,6 @@ for i in `seq 120`; do
   xdotool mousemove_relative  0 -50
   sleep 0.1
   xdotool mouseup 3
-  xdotool keyup ctrl
+  xdotool keyup shift
 
 done

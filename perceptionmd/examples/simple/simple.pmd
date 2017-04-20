@@ -37,7 +37,7 @@ fullscreen = 0
     hu_center = 128
     hu_width = 128
     plane = "XY"
-    flipped_axes = 0,1,0
+    flipped_axes = 1,1,1
     rotate = 1
     options = "Reference image", "Right"
 
@@ -46,8 +46,8 @@ fullscreen = 0
     base_display_window_center = 20
     base_display_window_width = 400
     base_plane = "XY"
-    base_flipped_axes = 0,1,0
-    base_rotate = 0
+    base_flipped_axes = 1,1,1
+    base_rotate = 1
     alpha = 0.5
 
 - REFERENCE: "raw_volumes2"
