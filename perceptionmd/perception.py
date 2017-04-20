@@ -64,8 +64,6 @@ class PerceptionMDApp(App):
         pattern = "screenshot_{:03d}.png"
         directory = self.settings['screenshot_directory']
         i = 0
-        if not os.path.exists(directory):
-            return
         while os.path.exists(os.path.join(directory, pattern.format(i))):
             i += 1
         Window.screenshot(name=os.path.join(directory, pattern.format(i)))
@@ -89,10 +87,10 @@ class PerceptionMDApp(App):
             if not Window.fullscreen:
                 self.winsize = Window.size
                 Window.size = (int(self.settings['window_width']), int(self.settings['window_height']))
-            else:
+            else: # pragma: no cover
                 Window.size = self.winsize
-            if not self.automated_test:
-                Window.fullscreen ^= True # pragma: no cover
+            if not self.automated_test: # pragma: no cover
+                Window.fullscreen ^= True
             self.viewport.on_window_resize()
             for s in self.screens:
                 s.canvas.ask_update()
@@ -141,8 +139,6 @@ class PerceptionMDApp(App):
                 rep = repeated_keys[kv.key] > 1
                 if len(kv.value) == 1:
                     val = kv.value[0]
-                elif len(kv.value) == 0:
-                    val = None
                 else:
                     val = kv.value
                 if rep:
@@ -268,8 +264,6 @@ def run(*argv):
         k, v = kv.key, kv.value
         if len(v) == 1:
             settings[k] = v[0]
-        elif len(v) == 0:
-            settings[k] = None
         else:
             settings[k] = v
 

@@ -48,9 +48,6 @@ class VolumeReader(object):
                     result.append(thread)
         self.threads = result
 
-    def set_cache(self, cache):
-        self.cache = cache
-
     def preload_volume(self, UID):
         with self.lock:
             caching_thread = threading.Thread(target=self.volume, args=(UID,))

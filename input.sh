@@ -19,6 +19,7 @@ for i in `seq 120`; do
   xdotool type g
   xdotool type h
   xdotool type Enter
+  xdotool key shift+F12
   xdotool mousemove 300 300 click 1
   xdotool click --clearmodifiers 5
   sleep 0.1
@@ -54,6 +55,8 @@ for i in `seq 120`; do
   xdotool mousemove_relative -- 0 -50
   sleep 0.1
   xdotool mouseup 2
+
+  xdotool key shift+F12
 
   xdotool mousedown 3
   sleep 0.1
@@ -104,6 +107,7 @@ for i in `seq 120`; do
   xdotool mousemove_relative -- 0 -50
   sleep 0.1
   xdotool mouseup 2
+  xdotool key shift+F12
 
   xdotool mousedown 3
   sleep 0.1
