@@ -23,6 +23,7 @@ fullscreen = 0
 - PAIR: "raw_volumes"
     question = [raw_vol_question.md]
     random_pairs = [RAW::rawtest]
+    colormap = "reverse_cm.txt"
     hu_center = 128
     hu_width = 128
     plane = "XY"
@@ -60,9 +61,6 @@ fullscreen = 0
     flipped_axes = 0,1,0
     rotate = 1
     options = "Reference image", "Right"
-
-
-
 
 - QUESTION: "thanks"
   text = [thanks.md]
