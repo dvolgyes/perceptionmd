@@ -230,11 +230,8 @@ class Pairwise(TaskScreen.TaskScreen):
             if src in self.contents:
                 text = self.contents[src]
             else:
-                if os.path.exists(src):
-                    with open(src, "rt") as f:
-                        text = f.read()
-                else:
-                    text = "File not found: '%s' " % src
+                with open(src, "rt") as f:
+                    text = f.read()
             self.texts.append(text)
 
     def generate(self):
