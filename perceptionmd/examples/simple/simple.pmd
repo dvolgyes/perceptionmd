@@ -41,6 +41,15 @@ fullscreen = 0
     rotate = 1
     options = "Reference image", "Right"
 
+    base_layer = [RAW::rawtest/A.raw]
+    base_colormap = "Oranges"
+    base_display_window_center = 20
+    base_display_window_width = 400
+    base_plane = "XY"
+    base_flipped_axes = 0,1,0
+    base_rotate = 0
+    alpha = 0.5
+
 - REFERENCE: "raw_volumes2"
     question = [raw_vol_question2.md]
     random_pairs = [RAW::rawtest]
