@@ -30,28 +30,53 @@ it uses markdown-like files to define experiments.
 
 Several other softwares inspired the development, most notably [PsychoPy](http://www.psychopy.org/) and
 [ViewDEX](http://www.gu.se/english/research/publication?publicationId=235509) but
-there are crucial differencies.
+there are crucial differences.
 
 Unlike PsychoPy, PerceptionMD is tailored for medical imaging, especially for
-pairwise comparison of 3D volumes, e.g. CT volumes. The main difference compared
-to ViewDEX is that
+pairwise comparison of 3D volumes, e.g. CT volumes. The main differences compared
+to ViewDEX are:
 - PMD's main focus is on pairwise comparison studies
 - PMD is written in Python, every installation automatically distributes the source code
 - PMD's license allows studying the source code and encourages modifications and improvements,
   as long as the [AGPL 3.0](https://www.gnu.org/licenses/agpl-3.0.html) license is respected.
-  (Briefly: if you sell or publish your modificatons, it should be published your modifications under the same license.)
+  (Briefly: if you sell or publish your modifications, it should be published your modifications under the same license.)
   (Remark: the windows installer is generated from NSIS script file. The AGPL v3 license does not
-   applicable to the NSIS install system. You can check [NSIS license here](http://nsis.sourceforge.net/License) )
+   apply to the NSIS install system. You can check [NSIS license here](http://nsis.sourceforge.net/License) )
+
+### Main features
+
+- pairwise comparison of volumes (all possible pairs)
+- comparison to a reference volume
+- RAW and DICOM file formats
+- support for overlay volumes, e.g. PET-CT
+- adjustable display parameters (color maps, display window, opacity, etc.)
+- textual input (e.g. observer's age, free text response, etc.)
+- choice screens (e.g. accepting terms)
+- conditional execution (e.g., if terms are not accepted, then the experiment terminates.)
+
+#### Planned features:
+
+- "method of adjustment", e.g. adjustable blending of two images until the composite's
+noise level is equivalent with the reference image's noise level.
+(For instance, some CT reconstruction technique blend FBP and IR images in order
+to reduce dose. In this case, 3 volumes are needed: a baseline FBP, a dose reduced FBP
+and a dose reduced IR.)
+- plugin subsystem: features, like blending, could be implemented as plugins.
+This would simplify the customization of the software.
+- VGA and ROC/FROC could be implemented, but ViewDEX is available, so I don't plan it
+at the moment.
+- any other feature based on user feedbacks (none at the moment)
 
 ## Installation
 
-The main platform is Linux, but Windows is also more or less supported.
+The main platform is **Linux**, but Windows is also more or less supported.
 On Linux both Python2 and Python3 are supported, but on Windows Python3 has issues
 with the compilers, and it is really hard to set up every dependencies.
+(Most notably **kivy** and **cython** are quite problematic on Windows with 64bit Python.)
 
 ### Linux install
 
-You might need administrative priviledges, but if python and cython are already installed,
+You might need administrative privileges, but if python and cython are already installed,
 then you might use 'pip' in '--user' mode.
 
 First install python, cython, and pygame or SDL and kivy.
@@ -100,11 +125,23 @@ will start the demo application.
 
 ## Designing experiments
 
-Please read the Language_description.md file for the details.
+Please read the **Language_description.md** file for the details.
 Examples will be placed in the "Examples" directory.
 
 A brief demonstration video is available at [https://www.youtube.com/watch?v=ApLbgmZEcT0](https://www.youtube.com/watch?v=ApLbgmZEcT0).
 This is more or less what is expected when the program is called with "example" as command line parameter.
+
+## Quality control
+This is a one man project at this moment, so my options for independent testing is a bit limited.
+Automated builds on Travis and Semaphore try to catch obvious errors, and
+most of the code is covered by some tests. However, large part of the code is
+related to the GUI and user input, and these aspect are hard to test automatically.
+
+If you find a bug:
+- Please check if you are using the latest code, it might be already fixed.
+- If it exists in the latest code, then please, report the bug, and try
+to describe it as precisely as you can. If I cannot reproduce it, then I cannot fix it.
+
 
 ## Feedback
 
