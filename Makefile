@@ -18,6 +18,9 @@ test:
 	$(COVERAGE) run --parallel-mode --concurrency=thread --source perceptionmd ./PerceptionMD.py perceptionmd/examples/simple/simple.pmd
 	$(COVERAGE) combine
 
+analyze:
+	pyflakes .
+
 graph:
 	@textx check perceptionmd/lang/perception.tx perceptionmd/unittests/travis-example.pmd
 	@textx visualize perceptionmd/lang/perception.tx perceptionmd/unittests/travis-example.pmd >/dev/null

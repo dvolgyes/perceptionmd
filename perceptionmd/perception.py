@@ -27,10 +27,12 @@ from kivy.config import Config
 import textx
 import textx.metamodel
 
-from perceptionmd.widgets import ViewPort, Goto, End, Choice, Question, Pairwise, VGA
+from perceptionmd.widgets import ViewPort, Goto, End, Choice, Question, Pairwise, VGA, DICOMView
 from perceptionmd.defaults import default_settings
 from perceptionmd.utils import Logger, listify
 
+# suppress unused warning
+DICOMView
 
 class PerceptionMDApp(App):
 
