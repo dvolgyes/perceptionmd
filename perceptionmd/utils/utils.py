@@ -12,7 +12,6 @@ import shutil
 import tempfile
 import os
 import six
-from collections import namedtuple
 
 """
 This is a utility module with various, small functions and contexes
