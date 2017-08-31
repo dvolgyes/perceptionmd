@@ -19,6 +19,7 @@ from kivy.graphics.texture import Texture
 from . import TaskScreen
 from perceptionmd.utils import gc_after
 from perceptionmd.volumes import RAW, DCM, colors
+from perceptionmd.widgets import DICOMView
 import perceptionmd.utils as utils
 
 
