@@ -288,7 +288,4 @@ def run(*argv):
     app.run()
 
 if __name__ == '__main__': # pragma: no cover
-    if six.PY2:
-        run(*[unicode(x, 'utf-8') for x in sys.argv])
-    else:
-        run(*sys.argv)
+    run(*[u"%s" % x for x in sys.argv])
