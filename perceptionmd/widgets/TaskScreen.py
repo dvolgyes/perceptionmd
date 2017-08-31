@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import
-
 import time
 from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock
 from perceptionmd.utils import gc_after
 from abc import abstractmethod
-from kivy.properties import BooleanProperty
 
 
 class TaskScreen(Screen):

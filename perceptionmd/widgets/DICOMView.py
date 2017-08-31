@@ -35,7 +35,7 @@ class DICOMView(BoxLayout):
     base_layer = BooleanProperty(False)
 
     def __init__(self, *args, **kwargs):
-        super(DICOMView, self).__init__(*args,**kwargs)
+        super(DICOMView, self).__init__(*args, **kwargs)
         self.mainw = None
         self.dcm_image = None
         self.core_volume = None
@@ -115,7 +115,7 @@ class DICOMView(BoxLayout):
     def set_dummy_volume(self, base_volume=False):
         self.set_volume((self.black.reshape(1, 512, 512), defaultdict(lambda: None)), base_volume)
 
-    def on_scroll(self, touch, rel): # pragma: no cover
+    def on_scroll(self, touch, rel):  # pragma: no cover
         return None
 
     def blit(self, image, colorfmt='rgba', bufferfmt='ubyte', base_layer=False):

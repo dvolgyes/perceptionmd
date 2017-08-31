@@ -47,7 +47,7 @@ class ComboButtons(Widget):
         if self.selected >= 0:
             self.layout.children[len(self.layout.children) - 1 - self.selected].state = 'down'
 
-    def noop(self, *args, **kwargs): # pragma: no cover
+    def noop(self, *args, **kwargs):  # pragma: no cover
         pass
 
     def set_callback(self, f):
@@ -66,7 +66,7 @@ class ComboButtons(Widget):
     def on_text(self, obj, value):
         try:
             self.selected = (self.labels).index(value)
-        except: # pragma: no cover
+        except:  # pragma: no cover
             pass
 
     def on_touch_down(self, touch):

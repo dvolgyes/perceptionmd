@@ -23,7 +23,7 @@ class Viewport(ScatterPlane):
         Clock.schedule_once(self.fit_to_window, 0.1)
 
     def on_window_resize(self, *args, **kwargs):
-        self.fit_to_window() # pragma: no cover
+        self.fit_to_window()  # pragma: no cover
 
     def fit_to_window(self, *args):
         ratio = min(Window.width / float(self.width),

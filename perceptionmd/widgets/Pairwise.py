@@ -448,7 +448,7 @@ class Pairwise(TaskScreen.TaskScreen):
                 self.log("      {:>3} ({}  win)".format(idx, wins))
         self.log("")
 
-    def move_on(self,*args,**kwargs):
+    def move_on(self, *args, **kwargs):
         already_last = self.current_task_idx + 1 >= len(self.tasklist)
         self.on_button(random.choice(list(self.choice_idx.keys())))
         if not already_last:

@@ -12,7 +12,6 @@ import numpy as np
 from collections import defaultdict
 import copy
 
-from kivy.uix.button import Button
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.graphics.texture import Texture
@@ -20,7 +19,6 @@ from kivy.graphics.texture import Texture
 from . import TaskScreen
 from perceptionmd.utils import gc_after
 from perceptionmd.volumes import RAW, DCM, colors
-from perceptionmd.widgets import DICOMView
 import perceptionmd.utils as utils
 
 
