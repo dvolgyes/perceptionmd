@@ -46,7 +46,7 @@ install:
     - sudo apt-get -y install xvfb pulseaudio xclip libmtdev1
     - pip${PYVERSION} install --upgrade pip setuptools wheel
     - pip${PYVERSION} install cython
-    - pip${PYVERSION} install coveralls codecov
+    - pip${PYVERSION} install coveralls codecov pyflakes
     - pip${PYVERSION} install --only-binary=numpy,scipy scipy
     - pip${PYVERSION} install git+https://github.com/dvolgyes/perceptionmd
 
