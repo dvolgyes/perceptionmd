@@ -141,7 +141,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.z_pos = int(min(self.z_pos, self.z_max))
 
     def on_z_pos(self, *args, **kwargs):
-        self.z_pos = max(0, int(self.z_pos))
+        self.z_pos = min(max(0, int(self.z_pos)),self.z_max)
         self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
         self.dcmview1.z_pos = self.z_pos
         self.dcmview2.z_pos = self.z_pos
