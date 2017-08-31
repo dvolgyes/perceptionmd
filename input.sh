@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+
+if [ "x$CI" == "xtrue" ]; then
+  echo "CI is enabled"
+else
+  echo "CI is disabled"
+  exit 0
+fi
+
 for i in `seq 120`; do
   xdotool click 1
   xdotool key F3
