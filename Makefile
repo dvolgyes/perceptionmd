@@ -18,6 +18,12 @@ test:
 	$(COVERAGE) run --parallel-mode --concurrency=thread --source perceptionmd ./PerceptionMD.py perceptionmd/examples/simple/simple.pmd
 	$(COVERAGE) combine
 
+coverity-test:
+	python$(PYVERSION) perceptionmd/utils/utils.py
+	python$(PYVERSION) perceptionmd/utils/rev_eng.py perceptionmd/examples/simple/rawtest/A.raw
+	python$(PYVERSION) perceptionmd/utils/rev_eng.py perceptionmd/examples/simple/rawtest/A_9_512_512.raw
+	python$(PYVERSION) perceptionmd perceptionmd/utils/Log.py
+
 analyze:
 	pyflakes .
 

@@ -13,16 +13,6 @@ matrix:
           sudo: required
           python: 2.7
           env: PYVERSION=""
-        - os: linux
-          dist: precise
-          sudo: required
-          python: 3.5
-          env: PYVERSION="3"
-        - os: linux
-          dist: precise
-          sudo: required
-          python: 2.7
-          env: PYVERSION=""
 env:
   global:
    - secure: "LTt3sFx8yq0yAZ2NRgm+HHrI0tpiNJz8PEFZdrUGZmZME2Sz0rdDCi/m0AJHM7Li8Q5zEaR+qirmUJudgW5/1dIclXFfAZV6DNZriSITIOba0s4OFCG/dY0eOFt32xURigR1pAzBBVOdxkCv60wO+WeGZejDdv+oQROrWKiZLx9mMtBPWZAlYvhpxszpJklu0VFQePnFxhP4//BE70+FEyr6CC6/GY0g7Zkq3idCgfUktj1duMeS8Ak3GKDfjifQ5sgQIf3mFynS/wtH9BKa/XvZL5GvX2sXgzVFpRaZE/QcvQNv+XrEH4CLtePyvvjVLzjrHDQE6arn2jMJgLo7lCh8rRwVio0+51QfJm2HuMRQNlHvnE4EoTggc2GpCteKa1tNYSRMpK381zqkbBvhcO7hZ3uM6nWmcm6cf9KrpQ1A3Vd6siI//1V9d9uquiNhY/IftR43KZVwG2+zgbOYTZj+0oPeNm0L6Tr9mi+2yYeFXr3CkkX70D+0kqUDj8tkzOIWqraZS3Dl8KC2EZh1Xiz7BMIhGHSmBBTdb7UnAA8FksiaryG/IvmL+SFelHndOBJeaZjESdu1PMp9UWkB+31++Quv69xSEUOYWyB7fCtGkk4Yj/vncv9/lEI7NpSyDC/6da0dh1yOA9n7tndHyVeoJBJr/lbZ8t8nT0XsYsY="
@@ -37,7 +27,7 @@ addons:
       description: "PerceptionMD: perceptual image quality experiments in radiography"
     notification_email: david.volgyes@ieee.org
     build_command_prepend: ""
-    build_command:   ""
+    build_command:   "cov-build --dir cov-int --fs-capture-search . make coverity-test"
     branch_pattern: coverity_scan
 
 install:
@@ -57,11 +47,11 @@ before_script:
 
 script:
   - make analyze
-  - |
-    bash input.sh &
-    SERVER_PID=$!
+#  - |
+#    bash input.sh &
+#    SERVER_PID=$!
   - make test
-  - kill -9 $SERVER_PID
+#  - kill -9 $SERVER_PID
 
 after_success:
   - coveralls
