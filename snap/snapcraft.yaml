@@ -1,0 +1,23 @@
+name: perceptionmd
+version: '0.3.1'
+version-script: git describe --abbrev=1 --tags
+summary: python package for observer studies in radiology
+description: |
+ PerceptionMD (PMD) is a tool for conducting observer studies in radiology.
+ MD refers to both the medical field but also to the fact that
+ it uses markdown-like files to define experiments.
+grade: devel
+confinement: devmode
+icon: ../perceptionmd.png
+
+apps:
+  perceptionmd:
+    command: bin/perceptionmd
+    plugs: [home]
+
+parts:
+  perceptionmd:
+    plugin: python
+    python-version: python3
+    source: ../
+    requirements: ../requirements.txt
