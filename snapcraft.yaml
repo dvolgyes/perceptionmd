@@ -8,7 +8,7 @@ description: |
  it uses markdown-like files to define experiments.
 grade: devel
 confinement: devmode
-icon: ../perceptionmd.png
+icon: perceptionmd.png
 
 apps:
   perceptionmd:
@@ -19,5 +19,5 @@ parts:
   perceptionmd:
     plugin: python
     python-version: python3
-    source: ../
-    requirements: ../requirements.txt
+    source: .
+    requirements: requirements.txt
