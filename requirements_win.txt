@@ -4,7 +4,7 @@ numpy
 docutils
 cachetools
 textx
-matplotlib
+matplotlib==2.1.2
 pycontracts
 pydicom==1.0.0
 pygame
