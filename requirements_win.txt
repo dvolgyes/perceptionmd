@@ -5,7 +5,7 @@ docutils
 cachetools==2.0.1
 textx==1.6.1
 matplotlib==2.1.2
-pycontracts
+pycontracts==1.8.2
 pydicom==1.0.0
 pygame
 kivy.deps.angle
