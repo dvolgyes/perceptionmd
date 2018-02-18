@@ -3,7 +3,7 @@ pydicom==1.0.0
 matplotlib==2.1.2
 cachetools==2.0.1
 textx==1.6.1
-kivy
+kivy==1.10.0
 pycontracts
 docutils
 pygame
