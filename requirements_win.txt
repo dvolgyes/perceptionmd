@@ -13,6 +13,6 @@ kivy.deps.gstreamer
 kivy.deps.sdl2
 kivy.deps.glew
 kivy==1.10.0
-wget
+wget==3.2
 six
 coverage
