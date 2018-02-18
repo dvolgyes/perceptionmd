@@ -5,7 +5,7 @@ cachetools==2.0.1
 textx==1.6.1
 kivy==1.10.0
 pycontracts==1.8.2
-docutils
+docutils==0.14
 pygame
 scipy
 numpy
