@@ -9,6 +9,6 @@ docutils==0.14
 pygame==1.9.3
 scipy==1.0.0
 numpy==1.14.0
-wget
+wget==3.2
 six
 coverage
