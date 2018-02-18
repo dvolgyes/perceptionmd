@@ -4,7 +4,7 @@ matplotlib==2.1.2
 cachetools==2.0.1
 textx==1.6.1
 kivy==1.10.0
-pycontracts
+pycontracts==1.8.2
 docutils
 pygame
 scipy
