@@ -1,5 +1,5 @@
 cython==0.27.3
-pydicom
+pydicom==1.0.0
 matplotlib
 cachetools
 textx
