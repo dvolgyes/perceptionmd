@@ -8,7 +8,7 @@ pycontracts==1.8.2
 docutils==0.14
 pygame==1.9.3
 scipy==1.0.0
-numpy
+numpy==1.14.0
 wget
 six
 coverage
