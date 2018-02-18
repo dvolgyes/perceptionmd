@@ -10,7 +10,7 @@ pydicom==1.0.0
 pygame==1.9.3
 kivy.deps.angle==0.1.6
 kivy.deps.gstreamer==0.1.12
-kivy.deps.sdl2
+kivy.deps.sdl2==0.1.17
 kivy.deps.glew
 kivy==1.10.0
 wget==3.2
