@@ -12,7 +12,7 @@ kivy.deps.angle
 kivy.deps.gstreamer
 kivy.deps.sdl2
 kivy.deps.glew
-kivy
+kivy==1.10.0
 wget
 six
 coverage
