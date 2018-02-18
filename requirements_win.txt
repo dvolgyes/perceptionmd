@@ -7,7 +7,7 @@ textx==1.6.1
 matplotlib==2.1.2
 pycontracts==1.8.2
 pydicom==1.0.0
-pygame
+pygame==1.9.3
 kivy.deps.angle
 kivy.deps.gstreamer
 kivy.deps.sdl2
