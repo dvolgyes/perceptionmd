@@ -8,7 +8,7 @@ matplotlib==2.1.2
 pycontracts==1.8.2
 pydicom==1.0.0
 pygame==1.9.3
-kivy.deps.angle
+kivy.deps.angle==0.1.6
 kivy.deps.gstreamer
 kivy.deps.sdl2
 kivy.deps.glew
