@@ -6,7 +6,7 @@ cachetools
 textx
 matplotlib
 pycontracts
-pydicom
+pydicom==1.0.0
 pygame
 kivy.deps.angle
 kivy.deps.gstreamer
