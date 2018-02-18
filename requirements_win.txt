@@ -3,7 +3,7 @@ scipy
 numpy
 docutils
 cachetools==2.0.1
-textx
+textx==1.6.1
 matplotlib==2.1.2
 pycontracts
 pydicom==1.0.0
