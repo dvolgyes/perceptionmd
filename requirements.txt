@@ -1,6 +1,6 @@
 cython==0.27.3
 pydicom==1.0.0
-matplotlib
+matplotlib==2.1.2
 cachetools
 textx
 kivy
