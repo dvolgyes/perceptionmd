@@ -1,0 +1,21 @@
+#:kivy 1.8
+
+<DICOMView>
+    dcm_image: img
+    rel: img.pos
+
+    BoxLayout:
+        size_hint: None,None
+        size: img.size[0],1080
+        orientation: 'vertical'
+        Image:
+            id: img
+            size_hint: None,None
+            size: 930,930
+            canvas:
+                Color:
+                    rgb: 1, 1, 1
+                Rectangle:
+                    size: img.size
+                    pos: self.pos
+                    texture: self.texture

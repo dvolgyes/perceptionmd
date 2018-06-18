@@ -67,17 +67,17 @@ def listify(*arg):
     ['test']
     """
     if len(arg) == 0:
-        return list()
+        return []
     if len(arg) > 1:
         return list(arg)
     arg = arg[0]
     if arg is None:
-        return list()
+        return []
     if isinstance(arg, six.string_types):
-        return list((arg,))
+        return [arg, ]
     if hasattr(arg, '__iter__'):
         return list(arg)
-    return list((arg,))
+    return [arg, ]
 
 
 def KV(kvs, key):
@@ -99,7 +99,8 @@ def KV(kvs, key):
     None
 
     """
-    "Extracting value from a obj list with key and value parameters."
+
+    'Extracting value from a obj list with key and value parameters.'
     for kv in kvs:
         if kv.key == key:
             return kv.value
@@ -193,7 +194,7 @@ def test_module(name):
     try:
         importlib.import_module(name)
         return True
-    except:
+    except Exception:
         return False
 
 
@@ -210,8 +211,9 @@ def test_feature(module, name):
     try:
         x = importlib.import_module(module, 'test_feature_dummy_import_module')
         return name in x.__dict__
-    except:
+    except Exception:
         return False
+
 
 def gc(func):
     """
@@ -400,11 +402,12 @@ def tmpfile_ctx():
     """
 
     tmpfile = tempfile.mkstemp()
-    with open(tmpfile[1], "wb+") as f:
+    with open(tmpfile[1], 'wb+') as f:
         yield f
     os.remove(tmpfile[1])
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     @gc
     def test_gc():
         with gc_ctx():

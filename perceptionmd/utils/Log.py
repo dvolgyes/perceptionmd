@@ -11,10 +11,10 @@ class Logger(object):
     ...    import tempfile
     ...    idx, f = tempfile.mkstemp()
     ...    logger=Logger(f)
-    ...    logger.append("line")
-    ...    logger.append_list(["line1","line2"])
-    ...    logger("line3")
-    ...    logger(["line4","line5"])
+    ...    logger.append('line')
+    ...    logger.append_list(['line1','line2'])
+    ...    logger('line3')
+    ...    logger(['line4','line5'])
     ...    print(repr(logger).strip())
     line
     line1
@@ -26,13 +26,13 @@ class Logger(object):
 
     def __init__(self, filename):
         self.filename = filename
-        with open(self.filename, "a+"):
+        with open(self.filename, 'a+'):
             pass
 
     def append(self, line):
-        with open(self.filename, "a") as f:
+        with open(self.filename, 'a') as f:
             f.write(line.rstrip())
-            f.write("\n")
+            f.write('\n')
 
     def append_list(self, lst):
         for line in lst:
@@ -45,12 +45,13 @@ class Logger(object):
             self.append(argument)
 
     def __repr__(self):
-        result = ""
-        with open(self.filename, "r") as f:
+        result = ''
+        with open(self.filename, 'r') as f:
             for line in f.readlines():
                 result += line
         return result
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     import doctest
     doctest.testmod()

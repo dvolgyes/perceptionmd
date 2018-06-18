@@ -19,7 +19,7 @@ from kivy.graphics.texture import Texture
 from . import TaskScreen
 from perceptionmd.utils import gc_after
 from perceptionmd.volumes import RAW, DCM, colors
-import perceptionmd.utils as utils
+from perceptionmd import utils
 
 
 class VGA(TaskScreen.TaskScreen):   # pragma: no cover
@@ -35,8 +35,8 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
         self.loglines = []
         self.texts = []
         self.sources = []
-        self.choice_label = dict()
-        self.choice_idx = dict()
+        self.choice_label = {}
+        self.choice_idx = {}
         self.current_task_idx = -1
         self.lock = threading.Lock()
         self.black = None
@@ -61,24 +61,24 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
         if cmap is None:
             return
         if base_layer:
-            self.base_colormap = colors.create_colormap(self.name + "_colormap", cmap)
+            self.base_colormap = colors.create_colormap(self.name + '_colormap', cmap)
             self.dcmview1.set_colormap(self.base_colormap, base_layer)
             self.dcmview2.set_colormap(self.base_colormap, base_layer)
         else:
-            self.colormap = colors.create_colormap(self.name + "_colormap", cmap)
+            self.colormap = colors.create_colormap(self.name + '_colormap', cmap)
             self.dcmview1.set_colormap(self.colormap, base_layer)
             self.dcmview2.set_colormap(self.colormap, base_layer)
 
     def set_alpha(self, alpha):
         self.alpha = np.clip(alpha, 0.0, 1.0).item()
         if self.base:
-            self.alpha_text.text = "Alpha:"
-            self.alpha_value.text = "%.2f" % self.alpha
+            self.alpha_text.text = 'Alpha:'
+            self.alpha_value.text = '%.2f' % self.alpha
             self.status_bar.size = (800, self.status_bar.size[1])
         else:
             self.status_bar.size = (600, self.status_bar.size[1])
-            self.alpha_text.text = ""
-            self.alpha_value.text = ""
+            self.alpha_text.text = ''
+            self.alpha_value.text = ''
 
         self.dcmview1.set_alpha(self.alpha)
         self.dcmview2.set_alpha(self.alpha)
@@ -87,29 +87,31 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
         if dirs is not None:
             for s, d in enumerate(dirs):
                 result = re.match(
-                    r"(?P<protocol>[a-zA-Z]+)(\((?P<shape>\W.*)\))?::(?P<dirname>.*)", d[1:-1])
+                    r'(?P<protocol>[a-zA-Z]+)(\((?P<shape>\W.*)\))?::(?P<dirname>.*)',
+                    d[1:-1])
                 if result:
                     protocol = result.group('protocol')
                     shape = result.group('shape')
                     if shape is None or len(shape) == 0:
                         shape = 'auto'
                     else:
-                        shape = tuple(map(int, shape.split(",")))
+                        shape = tuple(map(int, shape.split(',')))
                     dirname = result.group('dirname')
                 else:
-                    protocol = "DCM"
+                    protocol = 'DCM'
                     dirname = d[1:-1]
                     shape = 'auto'
 
-                if protocol == "RAW":
-                    dic = dict()
+                if protocol == 'RAW':
+                    dic = {}
                     rawdir = RAW.RAWDIR(
                         dirname, dtype=np.dtype(self.var['raw_type']))
                     for idx, fn in enumerate(rawdir.volume_iterator()):
                         directory, filename = os.path.split(fn)
                         dic[idx] = (fn, directory)
                         if not base_layer:
-                            self.loglines.append('        volume %s: "%s" ("%s")' % (idx, directory, filename))
+                            self.loglines.append(
+                                '        volume %s: "%s" ("%s")'.format(idx, directory, filename))
                     if base_layer:
                         self.base_layer_serieses.append(dic)
                         self.base_layer_dirs.append(rawdir)
@@ -117,10 +119,10 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
                         self.serieses.append(dic)
                         self.volumedirs.append(rawdir)
 
-                if protocol == "DCM":
-                    dic = dict()
+                if protocol == 'DCM':
+                    dic = {}
                     dicomdir = DCM.DICOMDIR(cache=cache)
-                    self.loglines.append("    dicom-set %s:" % s)
+                    self.loglines.append('    dicom-set %s:' % s)
                     for idx, series in enumerate(dicomdir.volume_iterator(dirname)):
                         directory = series
                         desc = dicomdir.UID2dir(series)
@@ -137,7 +139,7 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
     def generate(self):
         result = []
         self.base = self.var['base_layer'] is not None
-        for qidx, question in enumerate(self.texts):
+        for qidx, _ in enumerate(self.texts):
             taskl = []
             for vidx, series in enumerate(self.serieses):
                 if self.reference:
@@ -163,9 +165,9 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
             random.shuffle(taskl)
             result.extend(taskl)
         self.tasklist = result
-        self.loglines.append("    results:")
+        self.loglines.append('    results:')
         self.loglines.append(
-            "        question, set, left, right, answer button, answer text, selected volume,  @time, axial pos, wwidth, wcenter")
+            '        question, set, left, right, answer button, answer text, selected volume,  @time, axial pos, wwidth, wcenter')
 
         self.plane = {'XY': 0, 'XZ': 1, 'YZ': 2}[self.var['plane']]
         self.flips = list(map(bool, self.var['flipped_axes']))
@@ -194,8 +196,8 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
 
     def update_scene(self, *args, **kwargs):
         self.disable_buttons()
-        self.document.text = "Please wait for the next volumes..."
-        self.axial_pos.text = " N/A "
+        self.document.text = 'Please wait for the next volumes...'
+        self.axial_pos.text = ' N/A '
         self.dcmview1.set_dummy_volume()
         self.dcmview2.set_dummy_volume()
         self.display_image(False)
@@ -284,11 +286,11 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
                 self.volumedirs[next_selected_set].preload_volume(next_series1)
                 self.volumedirs[next_selected_set].preload_volume(next_series2)
 
-            self.axial_pos.text = " %s / %s " % (int(self.z_pos), int(self.z_max))
+            self.axial_pos.text = ' %s / %s ' % (int(self.z_pos), int(self.z_max))
 
             if self.base:
-                self.display_window_center.text = "%s (%s)" % (int(self.wcenter), int(self.base_wcenter))
-                self.display_window_width.text = "%s (%s)" % (int(self.wwidth), int(self.base_wwidth))
+                self.display_window_center.text = '%s (%s)' % (int(self.wcenter), int(self.base_wcenter))
+                self.display_window_width.text = '%s (%s)' % (int(self.wwidth), int(self.base_wwidth))
             else:
                 self.display_window_center.text = str(int(self.wcenter))
                 self.display_window_width.text = str(int(self.wwidth))
@@ -354,13 +356,13 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
         self.loglines = []
 
         sorted_winner = sorted(self.winner.items(), key=lambda x: x[0], reverse=True)
-        self.log("    winners:")
+        self.log('    winners:')
         for idx, wins in sorted_winner:
             if wins > 1:
-                self.log("      {:>3} ({} wins)".format(idx, wins))
+                self.log('      {:>3} ({} wins)'.format(idx, wins))
             else:
-                self.log("      {:>3} ({}  win)".format(idx, wins))
-        self.log("")
+                self.log('      {:>3} ({}  win)'.format(idx, wins))
+        self.log('')
 
     def on_button(self, button, *args, **kwargs):
         now = time.time()
@@ -370,7 +372,7 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
 
         elapsed = (now - self.start_time)
         self.total_time += elapsed
-        #~ question,set,left,right,answerselectedvolume
+        #  question,set,left,right,answerselectedvolume
         selection = task[2][i]
         self.loglines.append(
             '        {:^8},{:^4},{:^5},{:^6},{:^14},{:^12},{:^16}, {:6.3f}, {:9}, {:^7}, {:^6}'.format(
@@ -387,15 +389,15 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
                 self.wcenter))
         self.winner[selection] = self.winner[selection] + 1
         self.preselected_zpos[selected_set] = self.z_pos
-        #~ self.manager.current = self.manager.next()
+        # ~ self.manager.current = self.manager.next()
         # save current selection
         if not self.next():
             self.manager.current = self.manager.next()
         else:
             self.update_scene()
-        #~ else:
-            #~ # set up new scene
-            #~ pass
+        # ~ else:
+            # ~ # set up new scene
+            # ~ pass
 
     def set(self, *args, **kwargs):
         self.generate()
@@ -485,10 +487,10 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
                 text = self.contents[src]
             else:
                 if os.path.exists(src):
-                    with open(src, "rt") as f:
+                    with open(src, 'rt') as f:
                         text = f.read()
                 else:
-                    text = "File not found: %s " % src
+                    text = 'File not found: %s ' % src
             self.texts.append(text)
 
     def on_touch_down(self, touch):
@@ -557,7 +559,7 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
                     dz = (touch.pos[1] - self.touch_pos[1])
                     self.z_pos = min(self.z_max, max(
                         0, self.tzpos + dz * 1.0))
-                    self.axial_pos.text = " %s / %s " % (
+                    self.axial_pos.text = ' %s / %s ' % (
                         self.z_pos, self.z_max)
                     self.dcmview1.set_z(self.z_pos)
                     self.dcmview2.set_z(self.z_pos)
@@ -577,8 +579,8 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
         self.dcmview2.set_window(self.base_wcenter, self.base_wwidth, True)
 
         if self.base:
-            self.display_window_center.text = "%s (%s)" % (int(self.wcenter), int(self.base_wcenter))
-            self.display_window_width.text = "%s (%s)" % (int(self.wwidth), int(self.base_wwidth))
+            self.display_window_center.text = '%s (%s)' % (int(self.wcenter), int(self.base_wcenter))
+            self.display_window_width.text = '%s (%s)' % (int(self.wwidth), int(self.base_wwidth))
         else:
             self.display_window_center.text = str(int(self.wcenter))
             self.display_window_width.text = str(int(self.wwidth))
@@ -610,7 +612,7 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
 #                #~ self.dcmview1.set_window(self.wcenter,self.wwidth)
 #                #~ self.dcmview2.set_window(self.wcenter,self.wwidth)
             self.z_pos = int(min(self.z_max, max(0, self.z_pos + direction * speed)))
-            self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
+            self.axial_pos.text = ' %s / %s ' % (self.z_pos, self.z_max)
             self.dcmview1.set_z(self.z_pos)
             self.dcmview2.set_z(self.z_pos)
             self.display_image()

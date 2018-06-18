@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import print_function, division, unicode_literals
 
 import numpy as np
 import os
-import dicom
+import pydicom as dicom
 from . import VolumeReader
 from collections import defaultdict
 from perceptionmd.utils import at_least_3d
 from perceptionmd.utils import gc_after
+
 
 class DICOMDIR(VolumeReader.VolumeReader):
 
@@ -18,7 +19,7 @@ class DICOMDIR(VolumeReader.VolumeReader):
 
     def volume_iterator(self, dirname):
         volnames = []
-        for root, dirnames, filenames in os.walk(dirname, followlinks=True):
+        for root, _, filenames in os.walk(dirname, followlinks=True):
             for f in filenames:
                 p = os.path.join(root, f)
                 try:
@@ -27,9 +28,9 @@ class DICOMDIR(VolumeReader.VolumeReader):
                     self.filename_cache[series].append(p)
                     self.UID2dir_cache[series] = root
                     volnames.append((series, root))
-                except: # pragma: no cover
+                except Exception:  # pragma: no cover
                     pass
-        for volname, root in sorted(list(set(volnames)), key=lambda x: x[1]):
+        for volname, _ in sorted(list(set(volnames)), key=lambda x: x[1]):
             yield volname
 
     @gc_after
@@ -46,7 +47,7 @@ class DICOMDIR(VolumeReader.VolumeReader):
                 z = ds.SliceLocation if 'SliceLocation' in ds else 0
                 if 'RescaleIntercept' in ds:
                     intercept = ds.RescaleIntercept
-                if  'RescaleSlope' in ds:
+                if 'RescaleSlope' in ds:
                     slope = ds.RescaleSlope
                 if 'SliceThickness' in ds:
                     pixel_size[0] = float(ds.SliceThickness)
@@ -54,7 +55,7 @@ class DICOMDIR(VolumeReader.VolumeReader):
                     y, x = ds.PixelSpacing
                     pixel_size[1], pixel_size[2] = float(y), float(x)
 
-                vol = ds.pixel_array.copy().astype(self.dtype) * slope + intercept
+                vol = ds.pixel_array.astype(self.dtype) * slope + intercept
                 zpos.append((z, vol))
             zpos = sorted(zpos, key=lambda x: x[0])
             _, volumes = zip(*zpos)

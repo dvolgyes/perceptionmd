@@ -20,7 +20,7 @@ from kivy.graphics.texture import Texture
 from . import TaskScreen
 from perceptionmd.utils import gc_after
 from perceptionmd.volumes import RAW, DCM, colors
-import perceptionmd.utils as utils
+from perceptionmd import utils
 
 from kivy.properties import ObjectProperty, DictProperty, NumericProperty, ListProperty, BooleanProperty
 
@@ -74,9 +74,9 @@ class Pairwise(TaskScreen.TaskScreen):
         if cmap is None:
             return
         if base_layer:
-            self.base_colormap = colors.create_colormap(self.name + "_colormap", cmap)
+            self.base_colormap = colors.create_colormap(self.name + '_colormap', cmap)
         else:
-            self.colormap = colors.create_colormap(self.name + "_colormap", cmap)
+            self.colormap = colors.create_colormap(self.name + '_colormap', cmap)
 
     def on_colormap(self, *args, **kwargs):
         self.initialized_cmap = False
@@ -91,13 +91,13 @@ class Pairwise(TaskScreen.TaskScreen):
     def on_alpha(self, *args):
         self.alpha = np.clip(self.alpha, 0.0, 1.0).item()
         if self.base:
-            self.alpha_text.text = "Alpha:"
-            self.alpha_value.text = "%.2f" % self.alpha
+            self.alpha_text.text = 'Alpha:'
+            self.alpha_value.text = '%.2f' % self.alpha
             self.status_bar.size = (800, self.status_bar.size[1])
         else:
             self.status_bar.size = (600, self.status_bar.size[1])
-            self.alpha_text.text = ""
-            self.alpha_value.text = ""
+            self.alpha_text.text = ''
+            self.alpha_value.text = ''
         self.dcmview1.alpha = self.alpha
         self.dcmview2.alpha = self.alpha
 
@@ -106,7 +106,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.dcmview1.wcenter = self.wcenter
         self.dcmview2.wcenter = self.wcenter
         if self.base:
-            self.display_window_center.text = "%s (%s)" % (self.wcenter, self.base_wcenter)
+            self.display_window_center.text = '%s (%s)' % (self.wcenter, self.base_wcenter)
         else:
             self.display_window_center.text = str(self.wcenter)
 
@@ -115,7 +115,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.dcmview1.wwidth = self.wwidth
         self.dcmview2.wwidth = self.wwidth
         if self.base:
-            self.display_window_width.text = "%s (%s)" % (self.wwidth, self.base_wwidth)
+            self.display_window_width.text = '%s (%s)' % (self.wwidth, self.base_wwidth)
         else:
             self.display_window_width.text = str(self.wwidth)
 
@@ -124,7 +124,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.dcmview1.base_wcenter = self.base_wcenter
         self.dcmview2.base_wcenter = self.base_wcenter
         if self.base:
-            self.display_window_center.text = "%s (%s)" % (self.wcenter, self.base_wcenter)
+            self.display_window_center.text = '%s (%s)' % (self.wcenter, self.base_wcenter)
         else:
             self.display_window_center.text = str(self.wcenter)
 
@@ -133,7 +133,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.dcmview1.base_wwidth = self.base_wwidth
         self.dcmview2.base_wwidth = self.base_wwidth
         if self.base:
-            self.display_window_width.text = "%s (%s)" % (self.wwidth, self.base_wwidth)
+            self.display_window_width.text = '%s (%s)' % (self.wwidth, self.base_wwidth)
         else:
             self.display_window_width.text = str(self.wwidth)
 
@@ -141,8 +141,8 @@ class Pairwise(TaskScreen.TaskScreen):
         self.z_pos = int(min(self.z_pos, self.z_max))
 
     def on_z_pos(self, *args, **kwargs):
-        self.z_pos = min(max(0, int(self.z_pos)),self.z_max)
-        self.axial_pos.text = " %s / %s " % (self.z_pos, self.z_max)
+        self.z_pos = min(max(0, int(self.z_pos)), self.z_max)
+        self.axial_pos.text = ' %s / %s ' % (self.z_pos, self.z_max)
         self.dcmview1.z_pos = self.z_pos
         self.dcmview2.z_pos = self.z_pos
 
@@ -176,22 +176,22 @@ class Pairwise(TaskScreen.TaskScreen):
         if dirs is not None:
             for s, d in enumerate(dirs):
                 result = re.match(
-                    r"(?P<protocol>[a-zA-Z]+)(\((?P<shape>\W.*)\))?::(?P<dirname>.*)", d[1:-1])
+                    r'(?P<protocol>[a-zA-Z]+)(\((?P<shape>\W.*)\))?::(?P<dirname>.*)', d[1:-1])
                 if result:
                     protocol = result.group('protocol')
                     shape = result.group('shape')
                     if shape is None or len(shape) == 0:
                         shape = 'auto'
                     else:
-                        shape = tuple(map(int, shape.split(",")))
+                        shape = tuple(map(int, shape.split(',')))
                     dirname = result.group('dirname')
                 else:
-                    protocol = "DCM"
+                    protocol = 'DCM'
                     dirname = d[1:-1]
                     shape = 'auto'
 
-                if protocol == "RAW":
-                    dic = dict()
+                if protocol == 'RAW':
+                    dic = {}
                     rawdir = RAW.RAWDIR(
                         dirname, dtype=np.dtype(self.var['raw_type']))
                     for idx, fn in enumerate(rawdir.volume_iterator()):
@@ -206,10 +206,10 @@ class Pairwise(TaskScreen.TaskScreen):
                         self.serieses.append(dic)
                         self.volumedirs.append(rawdir)
 
-                if protocol == "DCM":
-                    dic = dict()
+                if protocol == 'DCM':
+                    dic = {}
                     dicomdir = DCM.DICOMDIR(cache=cache)
-                    self.loglines.append("    dicom-set %s:" % s)
+                    self.loglines.append('    dicom-set %s:' % s)
                     for idx, series in enumerate(dicomdir.volume_iterator(dirname)):
                         directory = series
                         desc = dicomdir.UID2dir(series)
@@ -230,14 +230,14 @@ class Pairwise(TaskScreen.TaskScreen):
             if src in self.contents:
                 text = self.contents[src]
             else:
-                with open(src, "rt") as f:
+                with open(src, 'rt') as f:
                     text = f.read()
             self.texts.append(text)
 
     def generate(self):
         result = []
         self.base = self.var['base_layer'] is not None
-        for qidx, question in enumerate(self.texts):
+        for qidx, _ in enumerate(self.texts):
             taskl = []
             for vidx, series in enumerate(self.serieses):
                 if self.reference:
@@ -263,9 +263,9 @@ class Pairwise(TaskScreen.TaskScreen):
             random.shuffle(taskl)
             result.extend(taskl)
         self.tasklist = result
-        self.loglines.append("    results:")
+        self.loglines.append('    results:')
         self.loglines.append(
-            "        question, set, left, right, answer button,   answer text  , selected volume,  @time, axial pos, wwidth, wcenter")
+            '        question, set, left, right, answer button,   answer text  , selected volume,  @time, axial pos, wwidth, wcenter')
 
         self.plane = {'XY': 0, 'XZ': 1, 'YZ': 2}[self.var['plane']]
         self.flips = list(map(bool, self.var['flipped_axes']))
@@ -295,8 +295,8 @@ class Pairwise(TaskScreen.TaskScreen):
 
     def update_scene(self, *args, **kwargs):
         self.disable_buttons()
-        self.document.text = "Please wait for the next volumes..."
-        self.axial_pos.text = " N/A "
+        self.document.text = 'Please wait for the next volumes...'
+        self.axial_pos.text = ' N/A '
         self.dcmview1.set_dummy_volume()
         self.dcmview2.set_dummy_volume()
         self.display_image(False)
@@ -421,11 +421,11 @@ class Pairwise(TaskScreen.TaskScreen):
     def on_pre_leave(self, *args, **kwargs):
         try:
             self._keyboard.unbind(on_key_down=self._on_keyboard_down)
-        except:
+        except Exception:
             pass
         try:
             self._keyboard.unbind(on_key_up=self._on_keyboard_up)
-        except:
+        except Exception:
             pass
 
         leave_time = time.time()
@@ -440,13 +440,13 @@ class Pairwise(TaskScreen.TaskScreen):
         self.loglines = []
 
         sorted_winner = sorted(self.winner.items(), key=lambda x: x[0], reverse=True)
-        self.log("    winners:")
+        self.log('    winners:')
         for idx, wins in sorted_winner:
             if wins > 1:
-                self.log("      {:>3} ({} wins)".format(idx, wins))
+                self.log('      {:>3} ({} wins)'.format(idx, wins))
             else:
-                self.log("      {:>3} ({}  win)".format(idx, wins))
-        self.log("")
+                self.log('      {:>3} ({}  win)'.format(idx, wins))
+        self.log('')
 
     def move_on(self, *args, **kwargs):
         already_last = self.current_task_idx + 1 >= len(self.tasklist)
@@ -539,7 +539,7 @@ class Pairwise(TaskScreen.TaskScreen):
         return True
 
     def add_options(self, button_labels):
-        self.buttons = dict()
+        self.buttons = {}
         self.dcmview1.mainw = self
         self.dcmview2.mainw = self
 

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import print_function, division, unicode_literals
 
 import os
 import re
@@ -9,6 +9,7 @@ from . import VolumeReader
 from perceptionmd.utils import detect_shape, detect_filetype
 from collections import defaultdict
 from perceptionmd.utils import gc_after
+
 
 class RAWDIR(VolumeReader.VolumeReader):
 
@@ -19,7 +20,7 @@ class RAWDIR(VolumeReader.VolumeReader):
     def infer_shape(self, filename, dtype='auto'):
 
         shape_regexp = re.compile(
-            r"\D+(\d+)\D+(\d+)\D+(\d+)\D*.raw", flags=re.IGNORECASE)
+            r'\D+(\d+)\D+(\d+)\D+(\d+)\D*.raw', flags=re.IGNORECASE)
         result = shape_regexp.match(os.path.split(filename)[1])
         if result:
             z, y, x = result.group(1, 2, 3)
@@ -39,17 +40,19 @@ class RAWDIR(VolumeReader.VolumeReader):
             return
 
         if os.path.exists(dirname):
-            for root, dirs, files in os.walk(dirname, topdown=True):
+            for root, _, files in os.walk(dirname, topdown=True):
                 for fn in files:
-                    if fn.lower().endswith("raw"):
+                    if fn.lower().endswith('raw'):
                         path = os.path.join(root, fn)
                         self.UID2dir_cache[dirname] = path
                         yield path
+
     @gc_after
     def volume(self, filename, dtype=None, shape='auto'):
         pixel_size = [1., 1., 1.]
         if filename not in self.volume_types:
-            dtype = detect_filetype(filename) if self.dtype is None else self.dtype
+            if self.dtype is None:
+                dtype = detect_filetype(filename)
         else:
             dtype = self.volume_types[filename]
         shape = self.volume_shapes.get(filename, 'auto')
@@ -61,5 +64,5 @@ class RAWDIR(VolumeReader.VolumeReader):
 
         meta = defaultdict(lambda: None)
         meta['pixel_size'] = pixel_size
-
-        return np.memmap(filename, mode="r", offset=0, dtype=dtype).reshape(shape), meta
+        mmap = np.memmap(filename, mode='r', offset=0, dtype=dtype)
+        return mmap.reshape(shape), meta

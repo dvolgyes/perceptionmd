@@ -22,15 +22,17 @@ class Choice(TaskScreen.TaskScreen):
     def on_pre_leave(self, *args, **kwargs):
         leave_time = time.time()
         if self.type == 'INFO':
-            self.log('- INFO: "%s", @time: %.3f' %
-                     (self.name, (leave_time - self.start_time)))
+            self.log('- INFO: "{}", @time: {.3f}'.format(
+                self.name, (leave_time - self.start_time)))
         elif self.type == 'CHOICE':
-            self.log('- CHOICE: "%s", @time: %.3f' % (self.name, (leave_time - self.start_time)))
-            self.log('    options    = "%s"' % ('", "'.join(self.buttons.labels)))
-            self.log('    {:<10} = {}' .format("selection", self.choice))
+            self.log('- CHOICE: "{}", @time: {.3f}'.format(
+                self.name, (leave_time - self.start_time)))
+            self.log('    options    = "{}"'.format(
+                '', ''.join(self.buttons.labels)))
+            self.log('    {:<10} = {}' .format('selection', self.choice))
             self.log('    {:<10} = "{}"' .format(
-                "label", self.text))
-        self.log("")
+                'label', self.text))
+        self.log('')
 
     def move_on(self, *args, **kwargs):
         self.on_button(random.randrange(len(self.buttons.labels)))

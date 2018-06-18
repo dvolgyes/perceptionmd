@@ -1,11 +1,11 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import
 
 try:   # pragma: no cover
     import gi
     gi.require_version('Gtk', '3.0')
-except:
+except ImportError:
     pass  # no GTK is installed
 
 import sys
@@ -27,12 +27,14 @@ from kivy.config import Config
 import textx
 import textx.metamodel
 
-from perceptionmd.widgets import ViewPort, Goto, End, Choice, Question, Pairwise, VGA, DICOMView
+from perceptionmd.widgets import (ViewPort, Goto, End,
+                                  Choice, Question, Pairwise, VGA, DICOMView)
 from perceptionmd.defaults import default_settings
 from perceptionmd.utils import Logger, listify
 
 # suppress unused warning
 DICOMView
+
 
 class PerceptionMDApp(App):
 
@@ -56,14 +58,14 @@ class PerceptionMDApp(App):
 
     def __init__(self, *args, **kwargs):
         super(PerceptionMDApp, self).__init__(*args, **kwargs)
-        self.screen_dict = dict()
+        self.screen_dict = {}
         self.winsize = Window.size
 
     def on_start(self, *args, **kwargs):
         Window.bind(on_key_down=self.on_key_down)
 
     def screenshot(self, *args):
-        pattern = "screenshot_{:03d}.png"
+        pattern = 'screenshot_{:03d}.png'
         directory = self.settings['screenshot_directory']
         i = 0
         while os.path.exists(os.path.join(directory, pattern.format(i))):
@@ -72,7 +74,7 @@ class PerceptionMDApp(App):
 
     def on_key_down(self, win, key, scancode, string, modifiers):
         def key_match(scancode, modifiers, hotkey):
-            parts = list(map(six.text_type.strip, hotkey.lower().split("+")))
+            parts = list(map(six.text_type.strip, hotkey.lower().split('+')))
             code = parts[-1]
             if six.text_type(self.scancode_dict.get(scancode, None)) != code:
                 return False
@@ -81,17 +83,20 @@ class PerceptionMDApp(App):
                 return False
             return True
 
-        if key_match(scancode, set(modifiers), six.text_type(self.settings["screenshot_hotkey"])):
+        if key_match(scancode, set(modifiers),
+                     six.text_type(self.settings['screenshot_hotkey'])):
             self.screenshot()
             return True
 
-        if key_match(scancode, set(modifiers), six.text_type(self.settings["fullscreen_hotkey"])):
+        if key_match(scancode, set(modifiers),
+                     six.text_type(self.settings['fullscreen_hotkey'])):
             if not Window.fullscreen:
                 self.winsize = Window.size
-                Window.size = (int(self.settings['window_width']), int(self.settings['window_height']))
-            else: # pragma: no cover
+                Window.size = (int(self.settings['window_width']),
+                               int(self.settings['window_height']))
+            else:  # pragma: no cover
                 Window.size = self.winsize
-            if not self.automated_test: # pragma: no cover
+            if not self.automated_test:  # pragma: no cover
                 Window.fullscreen ^= True
             self.viewport.on_window_resize()
             for s in self.screens:
@@ -105,23 +110,23 @@ class PerceptionMDApp(App):
         self.volumecache = cachetools.LRUCache(maxsize=4)
 
         for idx, event in enumerate(self.events):
-            if event.type == "END":
-                screen = End.End(name="%s" % event.name)
-            if event.type == "GOTO":
-                screen = Goto.Goto(name="goto_%s" % idx)
+            if event.type == 'END':
+                screen = End.End(name='{}'.format(event.name))
+            if event.type == 'GOTO':
+                screen = Goto.Goto(name='goto_{}'.format(idx))
                 screen.label = event.name
-            elif event.type == "INFO":
-                screen = Choice.Choice(name="%s" % event.name)
-            elif event.type == "CHOICE":
-                screen = Choice.Choice(name="%s" % event.name)
-            elif event.type == "QUESTION":
-                screen = Question.Question(name="%s" % event.name)
-            elif event.type == "VGA":
-                screen = VGA.VGA(name="%s" % event.name) # pragma: no cover
-            elif event.type == "PAIR":
-                screen = Pairwise.Pairwise(name="%s" % event.name)
-            elif event.type == "REFERENCE":
-                screen = Pairwise.Pairwise(name="%s" % event.name)
+            elif event.type == 'INFO':
+                screen = Choice.Choice(name='{}'.format(event.name))
+            elif event.type == 'CHOICE':
+                screen = Choice.Choice(name='{}'.format(event.name))
+            elif event.type == 'QUESTION':
+                screen = Question.Question(name='{}'.format(event.name))
+            elif event.type == 'VGA':
+                screen = VGA.VGA(name='{}'.format(event.name))
+            elif event.type == 'PAIR':
+                screen = Pairwise.Pairwise(name='{}'.format(event.name))
+            elif event.type == 'REFERENCE':
+                screen = Pairwise.Pairwise(name='{}'.format(event.name))
                 screen.reference = True
 
             screen.automated_test = self.automated_test
@@ -148,35 +153,36 @@ class PerceptionMDApp(App):
                 else:
                     var[kv.key] = val
 
-            if event.type == "END":
+            if event.type == 'END':
                 continue
 
-            if event.type == "GOTO":
+            if event.type == 'GOTO':
                 continue
 
-            if event.type == "INFO":
+            if event.type == 'INFO':
                 screen.add_options((var.get('button', 'Next'),))
 
-            if event.type == "CHOICE":
+            if event.type == 'CHOICE':
                 screen.add_options(screen.var['options'])
                 screen.add_conditionals(event.branch)
 
-            if event.type == "QUESTION":
+            if event.type == 'QUESTION':
                 screen.questions = event.question
                 screen.ratio = var['text_input_ratio']
-            if event.type == "VGA": # pragma: no cover
+            if event.type == 'VGA':  # pragma: no cover
                 pass
 
-            if event.type in ["PAIR", "REFERENCE"]:
+            if event.type in ['PAIR', 'REFERENCE']:
                 screen.add_questions(listify(screen.var['question']))
                 screen.add_dirs(listify(screen.var['random_pairs']), self.volumecache)
                 screen.add_dirs(listify(screen.var['base_layer']), self.volumecache, base_layer=True)
                 screen.add_options(screen.var['options'])
 
-            if event.type in ["VGA"]: # pragma: no cover
+            if event.type in ['VGA']:  # pragma: no cover
                 screen.add_dirs(listify(screen.var['random_volumes']), self.volumecache)
                 screen.add_dirs(listify(screen.var['base_layer']), self.volumecache, base_layer=True)
-                screen.add_questions(listify(screen.var['question']), screen.var['options'])
+                screen.add_questions(listify(screen.var['question']),
+                                     screen.var['options'])
 
             if 'text' in var:
                 src = var['text'][1:-1]
@@ -186,30 +192,29 @@ class PerceptionMDApp(App):
                     if os.path.exists(src):
                         screen.document.source = src
 
-        screen = End.End(name="automatic exit point")
+        screen = End.End(name='automatic exit point')
         self.sm.add_widget(screen)
         self.screens.append(screen)
         self.screen_dict[screen.name] = screen
         for s in self.screens:
             s.log = self.logger
 
-        self.logger(
-            "------------------------------------------------------------------")
-        self.logger("<General>")
+        self.logger('-'*60)
+        self.logger('<General>')
         t = time.time()
         d = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
-        self.logger('  date = "%s"' % d)
-        self.logger('  timestamp = %s' % t)
-        if var['random_seed'] == "time":
+        self.logger('  date = {}'.format(d))
+        self.logger('  timestamp = {}'.format(t))
+        if var['random_seed'] == 'time':
             seed = int(time.time())
         else:
             seed = int(var['random_seed'])
-        self.logger('  random_seed = %s' % seed)
+        self.logger('  random_seed = {}'.format(seed))
         random.seed(seed)
         np.random.seed(seed)
-        self.logger("")
-        self.logger("<Timeline>")
-        self.logger("")
+        self.logger('')
+        self.logger('<Timeline>')
+        self.logger('')
 
         self.viewport = ViewPort.Viewport(
             size=(int(self.settings['window_width']),
@@ -221,22 +226,22 @@ class PerceptionMDApp(App):
 def run(*argv):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     continuous_integration = os.environ.get('CI', 'false') != 'false'
-    if not continuous_integration: # pragma: no cover
+    if not continuous_integration:  # pragma: no cover
         if len(argv) != 2:
-            print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")
+            print('Usage: PerceptionMD STUDY_DESCRIPTION_FILE')
             sys.exit(1)
 
-        if argv[1] == "example":
-            filename = os.path.join(dir_path, "examples/simple/simple.pmd")
+        if argv[1] == 'example':
+            filename = os.path.join(dir_path, 'examples/simple/simple.pmd')
         else:
             if not os.path.exists(argv[1]):
-                print("Usage: PerceptionMD STUDY_DESCRIPTION_FILE")
-                print("Note: the file must exist and readable!")
+                print('Usage: PerceptionMD STUDY_DESCRIPTION_FILE')
+                print('Note: the file must exist and readable!')
                 sys.exit(1)
             filename = os.path.abspath(argv[1])
     else:
         if len(argv) != 2:
-            filename = os.path.join(dir_path, "unittests/travis-example.pmd")
+            filename = os.path.join(dir_path, 'unittests/travis-example.pmd')
         else:
             filename = sys.argv[1]
 
@@ -249,12 +254,13 @@ def run(*argv):
     Config.set('graphics', 'fullscreen', 'auto')
 
     langfile = os.path.join(dir_path, 'lang', 'perception.tx')
-    explang_mm = textx.metamodel.metamodel_from_file(langfile)
+
+    explang_mm = textx.metamodel_from_file(langfile)
     model = explang_mm.model_from_file(filename)
 
     # Parsing global settings
-    contents = dict()
-    settings = dict()
+    contents = {}
+    settings = {}
 
     settings.update(default_settings)
     for content in model.contents:
@@ -270,8 +276,8 @@ def run(*argv):
             settings[k] = v
 
     # Building application and its window
-    Builder.load_file(os.path.join(dir_path, "widgets/ComboButtons.kv"))
-    Builder.load_file(os.path.join(dir_path, "widgets/infoscreen.kv"))
+    Builder.load_file(os.path.join(dir_path, 'widgets/ComboButtons.kv'))
+    Builder.load_file(os.path.join(dir_path, 'widgets/infoscreen.kv'))
     Window.size = (int(settings['window_width']),
                    int(settings['window_height']))
     Window.fullscreen = settings['fullscreen'] != 0
@@ -284,8 +290,9 @@ def run(*argv):
     app.events = model.timeline.events
     app.automated_test = continuous_integration
     if continuous_integration:
-        print("Continuous integration: test run")
+        print('Continuous integration: test run')
     app.run()
 
-if __name__ == '__main__': # pragma: no cover
-    run(*[u"%s" % x for x in sys.argv])
+
+if __name__ == '__main__':  # pragma: no cover
+    run(*[u'{}'.format(x) for x in sys.argv])

@@ -1,7 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, absolute_import
 import perceptionmd
 import sys
+import six
 
-perceptionmd.run(*[u"%s" % x for x in sys.argv])
+if six.PY2:
+    perceptionmd.run(*[u'{}'.format(x) for x in sys.argv])
+else:
+    perceptionmd.run(*sys.argv)

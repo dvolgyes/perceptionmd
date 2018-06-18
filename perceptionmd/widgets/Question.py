@@ -45,14 +45,14 @@ class Question(TaskScreen.TaskScreen):
             value = self.variables[key][0].text
             field_type = self.variables[key][1]
             self.variables[key] = value
-            if field_type == "STRING":
+            if field_type == 'STRING':
                 self.log('    {:<10} = "{}"' .format(key, value))
             else:
                 if len(value) == 0:
                     value = 0
                 self.log('    {:<10} = {}' .format(key, value))
 
-        self.log("")
+        self.log('')
 
     def move_on(self, *args, **kwargs):
         self.on_button_press()

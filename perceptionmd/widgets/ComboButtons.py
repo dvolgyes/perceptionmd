@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 from kivy.uix.widget import Widget
 from kivy.properties import StringProperty, NumericProperty, ListProperty, BooleanProperty
@@ -12,7 +13,7 @@ class ComboButtons(Widget):
     selected = NumericProperty(-1)
     font_size = NumericProperty(16)
     button_size = NumericProperty(16)
-    text = StringProperty("")
+    text = StringProperty('')
     group = StringProperty()
     allow_no_selection = BooleanProperty(False)
 
@@ -42,7 +43,7 @@ class ComboButtons(Widget):
             widget.font_size = self.font_size
             self.layout.add_widget(widget)
 
-        if self.text != "":
+        if self.text != '':
             self.selected = (self.labels).index(self.text)
         if self.selected >= 0:
             self.layout.children[len(self.layout.children) - 1 - self.selected].state = 'down'
@@ -66,7 +67,7 @@ class ComboButtons(Widget):
     def on_text(self, obj, value):
         try:
             self.selected = (self.labels).index(value)
-        except:  # pragma: no cover
+        except Exception:  # pragma: no cover
             pass
 
     def on_touch_down(self, touch):

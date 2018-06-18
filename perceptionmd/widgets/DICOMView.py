@@ -5,10 +5,14 @@ from __future__ import print_function, division, absolute_import
 import numpy as np
 
 from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import ObjectProperty, BooleanProperty, ListProperty, BoundedNumericProperty, NumericProperty
+from kivy.properties import (ObjectProperty,
+                             BooleanProperty,
+                             ListProperty,
+                             BoundedNumericProperty,
+                             NumericProperty)
 from kivy.graphics.texture import Texture
 from perceptionmd.utils import gc_after
-import perceptionmd.utils as utils
+from perceptionmd import utils
 from kivy.clock import Clock
 from functools import partial
 from collections import defaultdict
@@ -140,7 +144,7 @@ class DICOMView(BoxLayout):
         self.initialized = True
         if show:
             shift = self.wcenter - self.wwidth / 2.0
-            print(self.z_pos, shift, self.wwidth,type(self.z_pos),type(self.volume[self.z_pos, ...]))
+            print(self.z_pos, shift, self.wwidth, type(self.z_pos), type(self.volume[self.z_pos, ...]))
             array = np.clip((self.volume[self.z_pos, ...] - shift) / (self.wwidth / 255.0), 0, 255).astype(np.uint8)
             if array.shape[0] != array.shape[1]:
                 array = utils.padding_square(np.clip(array, 0, 255).astype(np.uint8))

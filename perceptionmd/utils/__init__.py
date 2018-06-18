@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import print_function, division, unicode_literals
 
 from . import utils
 from . import rev_eng
 from . import Log
 
-__all__ = ["utils", "rev_eng", "Log"]
+__all__ = ['utils', 'rev_eng', 'Log']
 
 KV = utils.KV
 at_least_3d = utils.at_least_3d
