@@ -3,7 +3,11 @@
 from __future__ import print_function, division, unicode_literals
 from collections import defaultdict
 import time
+
+
 default_settings = defaultdict()
+
+
 default_settings.update({
     'font_size': 32,
     'logfile': 'results.txt',

@@ -22,10 +22,10 @@ class Choice(TaskScreen.TaskScreen):
     def on_pre_leave(self, *args, **kwargs):
         leave_time = time.time()
         if self.type == 'INFO':
-            self.log('- INFO: "{}", @time: {.3f}'.format(
+            self.log('- INFO: "{}", @time: {:.3f}'.format(
                 self.name, (leave_time - self.start_time)))
         elif self.type == 'CHOICE':
-            self.log('- CHOICE: "{}", @time: {.3f}'.format(
+            self.log('- CHOICE: "{}", @time: {:.3f}'.format(
                 self.name, (leave_time - self.start_time)))
             self.log('    options    = "{}"'.format(
                 '', ''.join(self.buttons.labels)))

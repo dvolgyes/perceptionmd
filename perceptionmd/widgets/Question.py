@@ -39,8 +39,8 @@ class Question(TaskScreen.TaskScreen):
 
     def on_pre_leave(self, *args, **kwargs):
         leave_time = time.time()
-        self.log('- QUESTION: "%s", @time: %.3f' %
-                 (self.name, (leave_time - self.start_time)))
+        self.log('- QUESTION: "{}", @time: {:.3f}'.format(
+                 self.name, (leave_time - self.start_time)))
         for key in self.variables:
             value = self.variables[key][0].text
             field_type = self.variables[key][1]

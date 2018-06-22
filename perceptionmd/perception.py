@@ -199,7 +199,7 @@ class PerceptionMDApp(App):
         for s in self.screens:
             s.log = self.logger
 
-        self.logger('-'*60)
+        self.logger('-' * 60)
         self.logger('<General>')
         t = time.time()
         d = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')

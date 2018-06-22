@@ -62,26 +62,28 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
             return
         if base_layer:
             self.base_colormap = colors.create_colormap(self.name + '_colormap', cmap)
-            self.dcmview1.set_colormap(self.base_colormap, base_layer)
-            self.dcmview2.set_colormap(self.base_colormap, base_layer)
+            self.dcmview1.base_colormap = self.base_colormap
+            self.dcmview2.base_colormap = self.base_colormap
         else:
             self.colormap = colors.create_colormap(self.name + '_colormap', cmap)
-            self.dcmview1.set_colormap(self.colormap, base_layer)
-            self.dcmview2.set_colormap(self.colormap, base_layer)
+            self.initialized_cmap = False
+            self.dcmview1.colormap = self.colormap
+            self.dcmview2.colormap = self.colormap
+            self.initialized_cmap = True
 
     def set_alpha(self, alpha):
         self.alpha = np.clip(alpha, 0.0, 1.0).item()
         if self.base:
             self.alpha_text.text = 'Alpha:'
-            self.alpha_value.text = '%.2f' % self.alpha
+            self.alpha_value.text = '{:.2f}'.format(self.alpha)
             self.status_bar.size = (800, self.status_bar.size[1])
         else:
             self.status_bar.size = (600, self.status_bar.size[1])
             self.alpha_text.text = ''
             self.alpha_value.text = ''
 
-        self.dcmview1.set_alpha(self.alpha)
-        self.dcmview2.set_alpha(self.alpha)
+        self.dcmview1.alpha = self.alpha
+        self.dcmview2.alpha = self.alpha
 
     def add_dirs(self, dirs, cache, base_layer=False):
         if dirs is not None:
@@ -122,7 +124,7 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
                 if protocol == 'DCM':
                     dic = {}
                     dicomdir = DCM.DICOMDIR(cache=cache)
-                    self.loglines.append('    dicom-set %s:' % s)
+                    self.loglines.append('    dicom-set {}:'.format(s))
                     for idx, series in enumerate(dicomdir.volume_iterator(dirname)):
                         directory = series
                         desc = dicomdir.UID2dir(series)
@@ -346,11 +348,11 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
 
         leave_time = time.time()
         if self.reference:
-            self.log('- REFERENCE: "%s", @time: %.3f @effective_time: %.3f ' %
-                     (self.name, leave_time - self.wall_time, self.total_time))
+            self.log('- REFERENCE: "{}", @time: {:.3f} @effective_time: {:.3f} '.format(
+                     self.name, leave_time - self.wall_time, self.total_time))
         else:
-            self.log('- PAIR: "%s", @time: %.3f @effective_time: %.3f ' %
-                     (self.name, leave_time - self.wall_time, self.total_time))
+            self.log('- PAIR: "{}", @time: {:.3f} @effective_time: {:.3f} '.format(
+                     self.name, leave_time - self.wall_time, self.total_time))
 
         self.log(self.loglines)
         self.loglines = []
@@ -490,7 +492,7 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
                     with open(src, 'rt') as f:
                         text = f.read()
                 else:
-                    text = 'File not found: %s ' % src
+                    text = 'File not found: {} '.format(src)
             self.texts.append(text)
 
     def on_touch_down(self, touch):

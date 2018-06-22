@@ -92,7 +92,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.alpha = np.clip(self.alpha, 0.0, 1.0).item()
         if self.base:
             self.alpha_text.text = 'Alpha:'
-            self.alpha_value.text = '%.2f' % self.alpha
+            self.alpha_value.text = '{:.2f}'.format(self.alpha)
             self.status_bar.size = (800, self.status_bar.size[1])
         else:
             self.status_bar.size = (600, self.status_bar.size[1])
@@ -209,7 +209,7 @@ class Pairwise(TaskScreen.TaskScreen):
                 if protocol == 'DCM':
                     dic = {}
                     dicomdir = DCM.DICOMDIR(cache=cache)
-                    self.loglines.append('    dicom-set %s:' % s)
+                    self.loglines.append('    dicom-set {}:'.format(s))
                     for idx, series in enumerate(dicomdir.volume_iterator(dirname)):
                         directory = series
                         desc = dicomdir.UID2dir(series)
@@ -430,11 +430,11 @@ class Pairwise(TaskScreen.TaskScreen):
 
         leave_time = time.time()
         if self.reference:
-            self.log('- REFERENCE: "%s", @time: %.3f @effective_time: %.3f ' %
-                     (self.name, leave_time - self.wall_time, self.total_time))
+            self.log('- REFERENCE: "{}", @time: {:.3f} @effective_time: {:.3f} '.format(
+                     self.name, leave_time - self.wall_time, self.total_time))
         else:
-            self.log('- PAIR: "%s", @time: %.3f @effective_time: %.3f ' %
-                     (self.name, leave_time - self.wall_time, self.total_time))
+            self.log('- PAIR: "{}", @time: {:.3f} @effective_time: {:.3f} '.format(
+                     self.name, leave_time - self.wall_time, self.total_time))
 
         self.log(self.loglines)
         self.loglines = []
