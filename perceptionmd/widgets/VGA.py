@@ -128,7 +128,7 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
                         desc = dicomdir.UID2dir(series)
                         dic[idx] = (series, directory)
                         if not base_layer:
-                            self.loglines.append('        volume %s: "%s" ("%s")' % (idx, directory, desc))
+                            self.loglines.append('        volume {}: "{}" ("{}")'.format(idx, directory, desc))
                     if base_layer:
                         self.base_layer_serieses.append(dic)
                         self.base_layer_dirs.append(dicomdir)
@@ -286,11 +286,11 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
                 self.volumedirs[next_selected_set].preload_volume(next_series1)
                 self.volumedirs[next_selected_set].preload_volume(next_series2)
 
-            self.axial_pos.text = ' %s / %s ' % (int(self.z_pos), int(self.z_max))
+            self.axial_pos.text = ' {} / {} '.format(int(self.z_pos), int(self.z_max))
 
             if self.base:
-                self.display_window_center.text = '%s (%s)' % (int(self.wcenter), int(self.base_wcenter))
-                self.display_window_width.text = '%s (%s)' % (int(self.wwidth), int(self.base_wwidth))
+                self.display_window_center.text = '{} ({})'.format(int(self.wcenter), int(self.base_wcenter))
+                self.display_window_width.text = '{} ({})'.format(int(self.wwidth), int(self.base_wwidth))
             else:
                 self.display_window_center.text = str(int(self.wcenter))
                 self.display_window_width.text = str(int(self.wwidth))
@@ -559,7 +559,7 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
                     dz = (touch.pos[1] - self.touch_pos[1])
                     self.z_pos = min(self.z_max, max(
                         0, self.tzpos + dz * 1.0))
-                    self.axial_pos.text = ' %s / %s ' % (
+                    self.axial_pos.text = ' {} / {} '.format(
                         self.z_pos, self.z_max)
                     self.dcmview1.set_z(self.z_pos)
                     self.dcmview2.set_z(self.z_pos)
@@ -579,8 +579,8 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
         self.dcmview2.set_window(self.base_wcenter, self.base_wwidth, True)
 
         if self.base:
-            self.display_window_center.text = '%s (%s)' % (int(self.wcenter), int(self.base_wcenter))
-            self.display_window_width.text = '%s (%s)' % (int(self.wwidth), int(self.base_wwidth))
+            self.display_window_center.text = '{} ({})'.format(int(self.wcenter), int(self.base_wcenter))
+            self.display_window_width.text = '{} ({})'.format(int(self.wwidth), int(self.base_wwidth))
         else:
             self.display_window_center.text = str(int(self.wcenter))
             self.display_window_width.text = str(int(self.wwidth))
@@ -612,7 +612,7 @@ class VGA(TaskScreen.TaskScreen):   # pragma: no cover
 #                #~ self.dcmview1.set_window(self.wcenter,self.wwidth)
 #                #~ self.dcmview2.set_window(self.wcenter,self.wwidth)
             self.z_pos = int(min(self.z_max, max(0, self.z_pos + direction * speed)))
-            self.axial_pos.text = ' %s / %s ' % (self.z_pos, self.z_max)
+            self.axial_pos.text = ' {} / {} '.format(self.z_pos, self.z_max)
             self.dcmview1.set_z(self.z_pos)
             self.dcmview2.set_z(self.z_pos)
             self.display_image()

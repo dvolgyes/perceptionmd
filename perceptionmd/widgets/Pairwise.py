@@ -106,7 +106,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.dcmview1.wcenter = self.wcenter
         self.dcmview2.wcenter = self.wcenter
         if self.base:
-            self.display_window_center.text = '%s (%s)' % (self.wcenter, self.base_wcenter)
+            self.display_window_center.text = '{} ({})'.format(self.wcenter, self.base_wcenter)
         else:
             self.display_window_center.text = str(self.wcenter)
 
@@ -115,7 +115,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.dcmview1.wwidth = self.wwidth
         self.dcmview2.wwidth = self.wwidth
         if self.base:
-            self.display_window_width.text = '%s (%s)' % (self.wwidth, self.base_wwidth)
+            self.display_window_width.text = '{} ({})'.format(self.wwidth, self.base_wwidth)
         else:
             self.display_window_width.text = str(self.wwidth)
 
@@ -124,7 +124,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.dcmview1.base_wcenter = self.base_wcenter
         self.dcmview2.base_wcenter = self.base_wcenter
         if self.base:
-            self.display_window_center.text = '%s (%s)' % (self.wcenter, self.base_wcenter)
+            self.display_window_center.text = '{} ({})'.format(self.wcenter, self.base_wcenter)
         else:
             self.display_window_center.text = str(self.wcenter)
 
@@ -133,7 +133,7 @@ class Pairwise(TaskScreen.TaskScreen):
         self.dcmview1.base_wwidth = self.base_wwidth
         self.dcmview2.base_wwidth = self.base_wwidth
         if self.base:
-            self.display_window_width.text = '%s (%s)' % (self.wwidth, self.base_wwidth)
+            self.display_window_width.text = '{} ({})'.format(self.wwidth, self.base_wwidth)
         else:
             self.display_window_width.text = str(self.wwidth)
 
@@ -142,7 +142,7 @@ class Pairwise(TaskScreen.TaskScreen):
 
     def on_z_pos(self, *args, **kwargs):
         self.z_pos = min(max(0, int(self.z_pos)), self.z_max)
-        self.axial_pos.text = ' %s / %s ' % (self.z_pos, self.z_max)
+        self.axial_pos.text = ' {} / {} '.format(self.z_pos, self.z_max)
         self.dcmview1.z_pos = self.z_pos
         self.dcmview2.z_pos = self.z_pos
 
@@ -198,7 +198,7 @@ class Pairwise(TaskScreen.TaskScreen):
                         directory, filename = os.path.split(fn)
                         dic[idx] = (fn, directory)
                         if not base_layer:
-                            self.loglines.append('        volume %s: "%s" ("%s")' % (idx, directory, filename))
+                            self.loglines.append('        volume {}: "{}" ("{}")'.format(idx, directory, filename))
                     if base_layer:
                         self.base_layer_serieses.append(dic)
                         self.base_layer_dirs.append(rawdir)
@@ -215,7 +215,7 @@ class Pairwise(TaskScreen.TaskScreen):
                         desc = dicomdir.UID2dir(series)
                         dic[idx] = (series, directory)
                         if not base_layer:
-                            self.loglines.append('        volume %s: "%s" ("%s")' % (idx, directory, desc))
+                            self.loglines.append('        volume {}: "{}" ("{}")'.format(idx, directory, desc))
                     if base_layer:
                         self.base_layer_serieses.append(dic)
                         self.base_layer_dirs.append(dicomdir)
