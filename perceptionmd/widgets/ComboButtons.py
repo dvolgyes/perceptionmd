@@ -34,12 +34,14 @@ class ComboButtons(Widget):
     def on_labels(self, *args, **kwargs):
         self.layout.clear_widgets()
         self.layout.size = self.layout.size[0], self.button_size
-        for i in range(len(self.labels)):
+        for label in self.labels:
             widget = ToggleButton(
-                text=self.labels[i],
+                text=label,
                 group=self.group,
                 allow_no_selection=self.allow_no_selection,
-                state='normal')
+                state='normal',
+            )
+
             widget.font_size = self.font_size
             self.layout.add_widget(widget)
 

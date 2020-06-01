@@ -79,9 +79,7 @@ class PerceptionMDApp(App):
             if six.text_type(self.scancode_dict.get(scancode, None)) != code:
                 return False
             mods = set(parts[:-1])
-            if len(mods ^ modifiers) > 0:
-                return False
-            return True
+            return len(mods ^ modifiers) <= 0
 
         if key_match(scancode, set(modifiers),
                      six.text_type(self.settings['screenshot_hotkey'])):
@@ -112,23 +110,21 @@ class PerceptionMDApp(App):
         for idx, event in enumerate(self.events):
             if event.type == 'END':
                 screen = End.End(name='{}'.format(event.name))
-            if event.type == 'GOTO':
+            elif event.type == 'GOTO':
                 screen = Goto.Goto(name='goto_{}'.format(idx))
                 screen.label = event.name
-            elif event.type == 'INFO':
+            elif event.type in ['INFO', 'CHOICE']:
                 screen = Choice.Choice(name='{}'.format(event.name))
-            elif event.type == 'CHOICE':
-                screen = Choice.Choice(name='{}'.format(event.name))
-            elif event.type == 'QUESTION':
-                screen = Question.Question(name='{}'.format(event.name))
-            elif event.type == 'VGA':
-                screen = VGA.VGA(name='{}'.format(event.name))
             elif event.type == 'PAIR':
                 screen = Pairwise.Pairwise(name='{}'.format(event.name))
+            elif event.type == 'QUESTION':
+                screen = Question.Question(name='{}'.format(event.name))
             elif event.type == 'REFERENCE':
                 screen = Pairwise.Pairwise(name='{}'.format(event.name))
                 screen.reference = True
 
+            elif event.type == 'VGA':
+                screen = VGA.VGA(name='{}'.format(event.name))
             screen.automated_test = self.automated_test
             screen.var = defaultdict(list)
             var = screen.var
@@ -144,10 +140,7 @@ class PerceptionMDApp(App):
 
             for kv in event.keyvalue:
                 rep = repeated_keys[kv.key] > 1
-                if len(kv.value) == 1:
-                    val = kv.value[0]
-                else:
-                    val = kv.value
+                val = kv.value[0] if len(kv.value) == 1 else kv.value
                 if rep:
                     var[kv.key].append(val)
                 else:
@@ -166,12 +159,9 @@ class PerceptionMDApp(App):
                 screen.add_options(screen.var['options'])
                 screen.add_conditionals(event.branch)
 
-            if event.type == 'QUESTION':
+            elif event.type == 'QUESTION':
                 screen.questions = event.question
                 screen.ratio = var['text_input_ratio']
-            if event.type == 'VGA':  # pragma: no cover
-                pass
-
             if event.type in ['PAIR', 'REFERENCE']:
                 screen.add_questions(listify(screen.var['question']))
                 screen.add_dirs(listify(screen.var['random_pairs']), self.volumecache)
@@ -226,7 +216,13 @@ class PerceptionMDApp(App):
 def run(*argv):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     continuous_integration = os.environ.get('CI', 'false') != 'false'
-    if not continuous_integration:  # pragma: no cover
+    if continuous_integration:
+        if len(argv) == 2:
+            filename = sys.argv[1]
+
+        else:
+            filename = os.path.join(dir_path, 'unittests/travis-example.pmd')
+    else:    # pragma: no cover
         if len(argv) != 2:
             print('Usage: PerceptionMD STUDY_DESCRIPTION_FILE')
             sys.exit(1)
@@ -239,12 +235,6 @@ def run(*argv):
                 print('Note: the file must exist and readable!')
                 sys.exit(1)
             filename = os.path.abspath(argv[1])
-    else:
-        if len(argv) != 2:
-            filename = os.path.join(dir_path, 'unittests/travis-example.pmd')
-        else:
-            filename = sys.argv[1]
-
     import kivy
     kivy.require('1.8.0')
     Config.set('kivy', 'desktop', '1')
@@ -270,11 +260,7 @@ def run(*argv):
 
     for kv in model.settings.keyvalue:
         k, v = kv.key, kv.value
-        if len(v) == 1:
-            settings[k] = v[0]
-        else:
-            settings[k] = v
-
+        settings[k] = v[0] if len(v) == 1 else v
     # Building application and its window
     Builder.load_file(os.path.join(dir_path, 'widgets/ComboButtons.kv'))
     Builder.load_file(os.path.join(dir_path, 'widgets/infoscreen.kv'))
