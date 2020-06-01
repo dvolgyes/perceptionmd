@@ -28,7 +28,6 @@ class TaskScreen(Screen):
         self.start_time = time.time()
         if self.automated_test:
             print('screen has been loaded: {}'.format(self.name))
-        if self.automated_test:
             Clock.schedule_once(self.move_on, 5)
             Clock.schedule_once(self.move_on, 95)
 

@@ -173,55 +173,56 @@ class Pairwise(TaskScreen.TaskScreen):
         self.dcmview2.base_axis = self.base_plane
 
     def add_dirs(self, dirs, cache, base_layer=False):
-        if dirs is not None:
-            for s, d in enumerate(dirs):
-                result = re.match(
-                    r'(?P<protocol>[a-zA-Z]+)(\((?P<shape>\W.*)\))?::(?P<dirname>.*)', d[1:-1])
-                if result:
-                    protocol = result.group('protocol')
-                    shape = result.group('shape')
-                    if shape is None or len(shape) == 0:
-                        shape = 'auto'
-                    else:
-                        shape = tuple(map(int, shape.split(',')))
-                    dirname = result.group('dirname')
-                else:
-                    protocol = 'DCM'
-                    dirname = d[1:-1]
+        if dirs is None:
+            return
+        for s, d in enumerate(dirs):
+            result = re.match(
+                r'(?P<protocol>[a-zA-Z]+)(\((?P<shape>\W.*)\))?::(?P<dirname>.*)', d[1:-1])
+            if result:
+                protocol = result.group('protocol')
+                shape = result.group('shape')
+                if shape is None or len(shape) == 0:
                     shape = 'auto'
+                else:
+                    shape = tuple(map(int, shape.split(',')))
+                dirname = result.group('dirname')
+            else:
+                protocol = 'DCM'
+                dirname = d[1:-1]
+                shape = 'auto'
 
-                if protocol == 'RAW':
-                    dic = {}
-                    rawdir = RAW.RAWDIR(
-                        dirname, dtype=np.dtype(self.var['raw_type']))
-                    for idx, fn in enumerate(rawdir.volume_iterator()):
-                        directory, filename = os.path.split(fn)
-                        dic[idx] = (fn, directory)
-                        if not base_layer:
-                            self.loglines.append('        volume {}: "{}" ("{}")'.format(idx, directory, filename))
-                    if base_layer:
-                        self.base_layer_serieses.append(dic)
-                        self.base_layer_dirs.append(rawdir)
-                    else:
-                        self.serieses.append(dic)
-                        self.volumedirs.append(rawdir)
+            if protocol == 'RAW':
+                dic = {}
+                rawdir = RAW.RAWDIR(
+                    dirname, dtype=np.dtype(self.var['raw_type']))
+                for idx, fn in enumerate(rawdir.volume_iterator()):
+                    directory, filename = os.path.split(fn)
+                    dic[idx] = (fn, directory)
+                    if not base_layer:
+                        self.loglines.append('        volume {}: "{}" ("{}")'.format(idx, directory, filename))
+                if base_layer:
+                    self.base_layer_serieses.append(dic)
+                    self.base_layer_dirs.append(rawdir)
+                else:
+                    self.serieses.append(dic)
+                    self.volumedirs.append(rawdir)
 
-                if protocol == 'DCM':
-                    dic = {}
-                    dicomdir = DCM.DICOMDIR(cache=cache)
-                    self.loglines.append('    dicom-set {}:'.format(s))
-                    for idx, series in enumerate(dicomdir.volume_iterator(dirname)):
-                        directory = series
-                        desc = dicomdir.UID2dir(series)
-                        dic[idx] = (series, directory)
-                        if not base_layer:
-                            self.loglines.append('        volume {}: "{}" ("{}")'.format(idx, directory, desc))
-                    if base_layer:
-                        self.base_layer_serieses.append(dic)
-                        self.base_layer_dirs.append(dicomdir)
-                    else:
-                        self.serieses.append(dic)
-                        self.volumedirs.append(dicomdir)
+            if protocol == 'DCM':
+                dic = {}
+                dicomdir = DCM.DICOMDIR(cache=cache)
+                self.loglines.append('    dicom-set {}:'.format(s))
+                for idx, series in enumerate(dicomdir.volume_iterator(dirname)):
+                    directory = series
+                    desc = dicomdir.UID2dir(series)
+                    dic[idx] = (series, directory)
+                    if not base_layer:
+                        self.loglines.append('        volume {}: "{}" ("{}")'.format(idx, directory, desc))
+                if base_layer:
+                    self.base_layer_serieses.append(dic)
+                    self.base_layer_dirs.append(dicomdir)
+                else:
+                    self.serieses.append(dic)
+                    self.volumedirs.append(dicomdir)
 
     def add_questions(self, questions):
         for question in questions:
@@ -561,16 +562,13 @@ class Pairwise(TaskScreen.TaskScreen):
         if not self.collide_point(touch.x, touch.y):
             return
         if 'button' in touch.profile:
-            if self.keypresses['shift']:
-                if touch.button == 'scrolldown':
+            if touch.button == 'scrolldown':
+                if self.keypresses['shift']:
                     self.alpha += 0.05
-                if touch.button == 'scrollup':
-                    self.alpha -= 0.05
-            else:
-                if touch.button == 'scrolldown':
+                else:
                     self.on_scroll(1)
-                if touch.button == 'scrollup':
-                    self.on_scroll(-1)
+            elif touch.button == 'scrollup':
+                self.alpha -= 0.05
             if touch.button == 'left':
                 for b in self.buttons:
                     if b.on_touch_down(touch):
@@ -586,50 +584,47 @@ class Pairwise(TaskScreen.TaskScreen):
                 return True
 
     def on_touch_move(self, touch):
-        if touch.grab_current is self:
-            if touch.button in (self.var['display_window_mouse_button'], self.var['display_window_mouse_button2']):
-                dx, dy = touch.dpos
+        if touch.grab_current is not self:
+            return
+        if touch.button in (self.var['display_window_mouse_button'], self.var['display_window_mouse_button2']):
+            dx, dy = touch.dpos
 #                r = np.sqrt(dx * dx + dy * dy)
-                direction = abs(dx) > abs(dy)
-                angle = int(math.atan2(dy, dx) / math.pi * 4) + 4
-                speed = 4 if self.keypresses['ctrl'] or self.keypresses['rctrl'] else 1
-                base = self.keypresses['shift'] or self.keypresses['rshift']
+            direction = abs(dx) > abs(dy)
+            angle = int(math.atan2(dy, dx) / math.pi * 4) + 4
+            speed = 4 if self.keypresses['ctrl'] or self.keypresses['rctrl'] else 1
+            base = self.keypresses['shift'] or self.keypresses['rshift']
 
-                if base:
-                    if (angle % 2 == 0):
-                        if direction == (int(self.var['display_window_center_vertical_mouse']) == 0):
-                            delta = int(dx * speed)
-                            self.base_wwidth = max(10, self.base_wwidth + delta)
-                        else:
-                            delta = int(dy * speed)
-                            self.base_wcenter = self.base_wcenter + delta
-                else:
-                    if (angle % 2 == 0):
-                        if direction == (int(self.var['display_window_center_vertical_mouse']) == 0):
-                            delta = int(dx * speed)
-                            self.wwidth = max(10, self.wwidth + delta)
-                        else:
-                            delta = int(dy * speed)
-                            self.wcenter = self.wcenter + delta
-
-                self.display_image()
-            elif touch.button == self.var['mouse_window_scroll_button']:
-                dx, dy = touch.dpos
-#                r = np.sqrt(dx * dx + dy * dy)
-                direction = abs(dx) > abs(dy)
-                angle = int(math.atan2(dy, dx) / math.pi * 4) + 4
+            if base:
                 if (angle % 2 == 0):
-                    dz = (touch.pos[1] - self.touch_pos[1])
-                    self.z_pos = self.tzpos + dz * 1.0
-                    self.display_image()
+                    if direction == (int(self.var['display_window_center_vertical_mouse']) == 0):
+                        delta = int(dx * speed)
+                        self.base_wwidth = max(10, self.base_wwidth + delta)
+                    else:
+                        delta = int(dy * speed)
+                        self.base_wcenter = self.base_wcenter + delta
             else:
-                pass
+                if (angle % 2 == 0):
+                    if direction == (int(self.var['display_window_center_vertical_mouse']) == 0):
+                        delta = int(dx * speed)
+                        self.wwidth = max(10, self.wwidth + delta)
+                    else:
+                        delta = int(dy * speed)
+                        self.wcenter = self.wcenter + delta
+
+            self.display_image()
+        elif touch.button == self.var['mouse_window_scroll_button']:
+            dx, dy = touch.dpos
+#                r = np.sqrt(dx * dx + dy * dy)
+            direction = abs(dx) > abs(dy)
+            angle = int(math.atan2(dy, dx) / math.pi * 4) + 4
+            if (angle % 2 == 0):
+                dz = (touch.pos[1] - self.touch_pos[1])
+                self.z_pos = self.tzpos + dz * 1.0
+                self.display_image()
 
     def on_touch_up(self, touch):
         if touch.grab_current is self:
             touch.ungrab(self)
-        else:
-            pass
 
     def on_scroll(self, direction):
         with self.lock:
